@@ -1,0 +1,10 @@
+[
+  {
+    "staffId": 1,
+    "name": "Tom",
+    "email": "tdc.tom@gmail.com",
+    "orders": {
+      "connect": []
+    }
+  }
+]

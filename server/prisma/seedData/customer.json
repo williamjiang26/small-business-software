@@ -1,0 +1,13 @@
+[
+    {
+      "customerId": 1,
+      "address": "946 3rd Ave",
+      "name": "Gary",
+      "phone": "347-123-2334",
+      "email": "tdc.gary@gmail.com",
+      "profile": "https://example.com/customer.jpg",
+      "orders": {
+        "connect": []
+      }
+    }
+  ]
