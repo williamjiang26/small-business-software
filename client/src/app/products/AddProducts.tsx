@@ -8,7 +8,6 @@ import { z } from "zod";
 import { CustomFormField } from "./FormField";
 
 const formSchema = z.object({
-  productId: z.coerce.number().positive().min(0).int(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
   name: z.string().min(1, "Name is required"),
@@ -80,10 +79,7 @@ const AddProducts = ({ onClose }) => {
           {/* Basic Info */}
           <div className="m-5">
             <h2 className="text-lg font-semibold mb-4">Product Description</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <CustomFormField name="productId" label="id" />
-              <CustomFormField name="name" label="description" />
-            </div>
+            <CustomFormField name="name" label="description" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <CustomFormField name="color" label="color" />
               <CustomFormField name="price" label="price" />

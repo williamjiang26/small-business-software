@@ -40,11 +40,13 @@ const Products = () => {
       </div>
 
       {/* Body Products List */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 lg-grid-cols-4 gap-10 justify-between">
+      <div className="grid grid-cols-1  gap-6">
         {isLoading ? (
           <div>Loading...</div>
         ) : (
-          products?.map((product) => <Product product={product} />)
+          products?.map((product) => (
+            <Product key={product.productId} product={product} />
+          ))
         )}
       </div>
     </div>
