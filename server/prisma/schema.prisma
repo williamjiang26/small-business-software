@@ -14,10 +14,10 @@ enum OrderStatus{
 
 model Product {
   productId     Int          @id @default(autoincrement())
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime?    @default(now())
+  updatedAt     DateTime?    @updatedAt
   name          String
-  photoUrls     String[]
+  photoUrls     String[]?
   height        Float
   width         Float
   length        Float
@@ -25,7 +25,7 @@ model Product {
   color         String
   rating        Float?
   quantity      Int
-  managerId     Int 
+  managerId     Int?
 
   manager       Manager       @relation(fields: [managerId], references: [managerId])
   orders        Order[]         

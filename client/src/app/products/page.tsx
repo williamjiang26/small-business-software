@@ -1,20 +1,21 @@
 "use client";
-import { useCreateProductMutation, useGetProductsQuery } from "@/state/api";
-import { useState } from "react";
+import { useGetProductsQuery } from "@/state/api";
 import Product from "./Product";
-
-type ProductFormData = {
- 
-};
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import AddProducts from "./AddProducts";
 
 const Products = () => {
-  const [searchTerm, setSearchTerm] = useState(" ");
-  const {
-    data: products,
-    isLoading,
-    isError,
-  } = useGetProductsQuery(searchTerm);
-  const [createProduct] = useCreateProductMutation();
+  const { data: products, isLoading, isError } = useGetProductsQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
@@ -27,11 +28,15 @@ const Products = () => {
     );
   }
 
-  return (
+  return isModalOpen ? (
+    <AddProducts onClose={closeModal} />
+  ) : (
     <div className="mx-auto pb-5 w-full m-6">
       {/* Header Bar*/}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-700">Products</h1>
+        {/* Add Product */}
+        <Button onClick={openModal}>Add</Button>
       </div>
 
       {/* Body Products List */}
