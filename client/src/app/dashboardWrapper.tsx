@@ -1,18 +1,22 @@
 "use client";
 
+import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "./Components/Header";
+import AppSidebar from "./Components/Sidebar";
 
 import StoreProvider, { useAppSelector } from "./redux";
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex bg-gray-50 text-gray-900 w-full min-h-screen">
-      
-      <div className="flex flex-col w-full h-full py-7 px-9 bg-gray-50 ">
-        <Header />
-        {children}
+    <SidebarProvider>
+      <div className="flex bg-gray-50 text-gray-900 w-full min-h-screen">
+        <AppSidebar />
+        <div className="flex flex-col w-full h-full py-7 px-9 bg-gray-50 ">
+          <Header />
+          {children}
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
 
