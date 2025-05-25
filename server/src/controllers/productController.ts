@@ -30,11 +30,6 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    // const files = req.files as Express.Multer.File[];
-
-    console.log("BODY:", req.body); // Form fields
-    // console.log("FILES:", req.files);
-
     const {
       name,
       height,
@@ -45,7 +40,8 @@ export const createProduct = async (
       rating,
       quantity,
       managerId,
-    } = req.body;
+    } = req.body; 
+      console.log(req.body)
     const newProduct = await prisma.product.create({
       data: {
         name,
@@ -61,8 +57,10 @@ export const createProduct = async (
     });
 
     res.status(201).json(newProduct);
+
   } catch (error) {
     console.error("Product creation error:", error);
     res.status(500).json({ message: "Error creating product" });
+  
   }
 };

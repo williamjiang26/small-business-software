@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateProductMutation } from "@/state/api";
 import { z } from "zod";
-import { CustomFormField } from "./FormField";
+import { CustomFormField } from "../Components/FormField";
 
 const formSchema = z.object({
   createdAt: z.string().optional(),
@@ -61,6 +61,7 @@ const AddProducts = ({ onClose }) => {
         formData.append(key, String(value));
       }
     });
+    console.log(data)
     await createProduct(formData);
   };
 
@@ -120,6 +121,7 @@ const AddProducts = ({ onClose }) => {
           >
             Add Product
           </Button>
+
         </form>
       </Form>
     </div>

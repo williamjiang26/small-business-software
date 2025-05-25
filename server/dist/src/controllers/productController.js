@@ -34,10 +34,8 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getProducts = getProducts;
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const files = req.files as Express.Multer.File[];
-        console.log("BODY:", req.body); // Form fields
-        // console.log("FILES:", req.files);
         const { name, height, width, length, price, color, rating, quantity, managerId, } = req.body;
+        console.log(req.body);
         const newProduct = yield prisma.product.create({
             data: {
                 name,
