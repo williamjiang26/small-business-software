@@ -61,13 +61,15 @@ const AddProducts = ({ onClose }) => {
         formData.append(key, String(value));
       }
     });
-    console.log(data)
+    console.log(data);
     await createProduct(formData);
   };
 
   return (
-    <div>
-      <div className="flex justify-end mt-2">
+    <div className="mx-auto pb-5 w-full m-6">
+      <div className="flex justify-between items-center mb-6">
+        <div className="text-2xl font-semibold text-gray-700">Add Product</div>
+        {/* Add Product */}
         <Button onClick={onClose}>Close</Button>
       </div>
 
@@ -79,10 +81,10 @@ const AddProducts = ({ onClose }) => {
         >
           {/* Basic Info */}
           <div className="m-5">
-            <h2 className="text-lg font-semibold mb-4">Product Description</h2>
-            <CustomFormField name="name" label="description" />
+            <h2 className="text-lg font-semibold mb-4">Description</h2>
+            <CustomFormField name="name" label="type" type="switch" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <CustomFormField name="color" label="color" />
+              <CustomFormField name="color" label="color" type="switch" />
               <CustomFormField name="price" label="price" />
               <CustomFormField name="quantity" label="quantity" type="number" />
             </div>
@@ -90,7 +92,7 @@ const AddProducts = ({ onClose }) => {
 
           {/* Dimensions */}
           <div className="m-5">
-            <h2 className="text-lg font-semibold mb-4">Product Dimensions</h2>
+            <h2 className="text-lg font-semibold mb-4">Dimensions</h2>
             <div>
               <CustomFormField name="height" label="height" type="number" />
               <CustomFormField name="width" label="width" type="number" />
@@ -104,7 +106,7 @@ const AddProducts = ({ onClose }) => {
           </div>
 
           {/*  Photos */}
-          <div>
+          <div className="m-5">
             <h2 className="text-lg font-semibold mb-4">Photos</h2>
             <CustomFormField
               name="photoUrls"
@@ -115,13 +117,14 @@ const AddProducts = ({ onClose }) => {
           </div>
 
           {/* Submit */}
-          <Button
-            type="submit"
-            className="bg-primary-700 text-black w-full mt-8"
-          >
-            Add Product
-          </Button>
-
+          <div className="m-5">
+            <Button
+              type="submit"
+              className="bg-primary-700 text-black w-full mt-8"
+            >
+              Add Product
+            </Button>
+          </div>
         </form>
       </Form>
     </div>

@@ -18,21 +18,9 @@ type InvoiceFormData = {
 const Invoices = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
-  const { data: invoices, isError, isLoading } = useGetInvoicesQuery();
-  const [createInvoice] = useCreateInvoiceMutation();
-  const [deleteInvoice] = useDeleteInvoiceMutation();
+  
 
-  if (isLoading) {
-    return <div className="py-4">Loading...</div>;
-  }
 
-  if (isError || !invoices) {
-    return (
-      <div className="text-center text-red-500 py-4">
-        Failed to fetch invoices
-      </div>
-    );
-  }
 
   const handleCreateInvoice = async (invoiceData: InvoiceFormData) => {
     await createInvoice(invoiceData);

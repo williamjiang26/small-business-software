@@ -13,25 +13,36 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import React from "react";
-import { Warehouse, SquareUser } from "lucide-react";
+import { Package, SquareUser, ReceiptText } from "lucide-react";
+
 // menu items
 const items = [
   {
-    title: "Products",
+    title: "Invoices",
+    url: "/invoices",
+    icon: ReceiptText,
+  },
+  {
+    title: "Inventory",
     url: "/products",
-    icon: Warehouse,
+    icon: Package,
   },
- { 
-    title: "Customers",
-    url: "/customers",
-    icon: SquareUser,
-  },
+  // {
+  //   title: "Leads",
+  //   url: "/",
+  //   icon: ReceiptText,
+  // },
+  // {
+  //   title: "Customers",
+  //   url: "/customers",
+  //   icon: SquareUser,
+  // },
 ];
 
 const AppSidebar = () => {
   return (
     <Sidebar>
-      <SidebarHeader />
+      <SidebarHeader></SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel></SidebarGroupLabel>
