@@ -1,9 +1,16 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const ProductDetails = ({ onClose, product }) => {
   // update product log
-
   return (
     <div className="mx-auto pb-5 w-full m-6">
       <div className="flex justify-between items-center mb-6">
@@ -33,9 +40,35 @@ const ProductDetails = ({ onClose, product }) => {
         </div>
       </div>
 
-      {/* notes, updates */}
-      <div>Updates and Notes:</div>
-      
+      {/* Content */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="text-l font-semibold text-gray-700">
+          Updates and Notes:
+        </div>
+        {/* Add Product */}
+        <Button onClick={() => {}}>Add</Button>
+      </div>
+      <Table>
+        <TableCaption>list of product instances</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Ordered Date</TableHead>
+            <TableHead>Product ID</TableHead>
+            <TableHead>Section</TableHead>
+            <TableHead>Row</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {product.products?.map((product) => (
+            <TableRow>
+              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.dateOrdered}</TableCell>
+              <TableCell>{product.section}</TableCell>
+              <TableCell>{product.row}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

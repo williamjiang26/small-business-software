@@ -37,9 +37,6 @@ export const createProduct = async (
       length,
       price,
       color,
-      rating,
-      quantity,
-      managerId,
     } = req.body; 
       console.log(req.body)
     const newProduct = await prisma.product.create({
@@ -50,9 +47,6 @@ export const createProduct = async (
         length: parseFloat(length),
         price: parseFloat(price),
         color,
-        rating: parseFloat(rating),
-        quantity: parseInt(quantity),
-        managerId: parseInt(managerId),
       },
     });
 

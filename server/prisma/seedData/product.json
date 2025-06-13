@@ -3,21 +3,15 @@
     "productId": 1,
     "createdAt": "2025-05-03T00:00:00Z",
     "updatedAt": "2025-05-03T00:00:00Z",
-    "name": "Single Door",
-    "photoUrls": [
-      "https://example.com/door.png"
-    ],
+    "name": "Double",
+    "photoUrls": ["https://example.com/door.png"],
     "height": 96.0,
     "width": 74.0,
-    "length": 3.0, 
+    "length": 3.0,
     "price": 2600.0,
     "color": "brown",
-    "rating": 4,
-    "quantity": 1,
-    "managerId": 1,
-    "orders": {
+    "products": {
       "connect": []
     }
   }
 ]
-

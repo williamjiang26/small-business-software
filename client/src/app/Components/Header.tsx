@@ -7,7 +7,7 @@ const Header = () => {
     <header className="flex justify-between items-center p-4 bg-white text-black border-b rounded">
       <SidebarTrigger />
       <div className="flex-grow text-center">
-        <h1 className="text-2xl font-bold">Store Management</h1>
+        <h1 className="text-2xl font-bold">Management Dashboard</h1>
       </div>
 
       <div className="flex flex-row justify-between items-center ml-3"></div>

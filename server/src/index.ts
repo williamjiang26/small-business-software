@@ -7,7 +7,6 @@ import morgan from "morgan";
 
 // route imports
 import productRoutes from "./routes/productRoutes";
-import customerRoutes from "./routes/customerRoutes";
 
 // configurations
 dotenv.config();
@@ -22,7 +21,6 @@ app.use(cors());
 
 // routes
 app.use("/products", productRoutes);
-app.use("/customers", customerRoutes);
 
 // server
 const port = process.env.PORT || 3001;

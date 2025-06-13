@@ -1,6 +1,6 @@
 "use client";
 import { useGetProductsQuery } from "@/state/api";
-import Product from "./Product";
+import Product from "./ProductCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import AddProducts from "./AddProducts";

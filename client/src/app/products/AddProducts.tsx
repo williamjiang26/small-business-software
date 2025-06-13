@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateProductMutation } from "@/state/api";
 import { z } from "zod";
 import { CustomFormField } from "../Components/FormField";
+import { ProductEnum, ProductColorEnum } from "@/lib/constants";
 
 const formSchema = z.object({
   createdAt: z.string().optional(),
@@ -19,9 +20,6 @@ const formSchema = z.object({
   length: z.coerce.number().positive().min(0).int(),
   price: z.coerce.number().positive().min(0).int(),
   color: z.string().min(1, "Color is required"),
-  rating: z.coerce.number().positive().min(0).int(),
-  quantity: z.coerce.number().positive().min(0).int(),
-  managerId: z.coerce.number().positive().min(0).int().optional(),
 });
 
 const AddProducts = ({ onClose }) => {
@@ -82,9 +80,25 @@ const AddProducts = ({ onClose }) => {
           {/* Basic Info */}
           <div className="m-5">
             <h2 className="text-lg font-semibold mb-4">Description</h2>
-            <CustomFormField name="name" label="type" type="switch" />
+            <CustomFormField
+              name="name"
+              label="type"
+              type="select"
+              options={Object.keys(ProductEnum).map((type) => ({
+                value: type,
+                label: type,
+              }))}
+            />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <CustomFormField name="color" label="color" type="switch" />
+              <CustomFormField
+                name="color"
+                label="color"
+                type="select"
+                options={Object.keys(ProductColorEnum).map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
+              />
               <CustomFormField name="price" label="price" />
               <CustomFormField name="quantity" label="quantity" type="number" />
             </div>
@@ -100,10 +114,6 @@ const AddProducts = ({ onClose }) => {
             </div>
           </div>
 
-          {/*  Rating */}
-          <div className="m-5">
-            <CustomFormField name="rating" label="rating" />
-          </div>
 
           {/*  Photos */}
           <div className="m-5">

@@ -4,8 +4,6 @@ export interface Product {
   productId: string;
   name: string;
   price: number;
-  rating?: number;
-  quantity: number;
 }
 export interface NewProduct {
   productId: number;
@@ -16,8 +14,6 @@ export interface NewProduct {
   length: number;
   price: number;
   color: string;
-  quantity: number;
-  rating: number;
 }
 export interface Customer {
   customerId: number;
@@ -61,6 +57,13 @@ export const api = createApi({
         url: "/products",
         method: "DELETE",
         params: productId ? { productId } : {},
+      }),
+      providesTags: ["Products"],
+    }),
+    getProductInstances: build.query<Product[], string | void>({
+      query: (search) => ({
+        url: "/products",
+        params: search ? { search } : {},
       }),
       providesTags: ["Products"],
     }),
