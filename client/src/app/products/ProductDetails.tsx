@@ -14,9 +14,7 @@ const ProductDetails = ({ onClose, product }) => {
   return (
     <div className="mx-auto pb-5 w-full m-6">
       <div className="flex justify-between items-center mb-6">
-        <div className="text-2xl font-semibold text-gray-700">
-          {product.productId} {product.name}
-        </div>
+        <div className="text-2xl font-semibold text-gray-700">{product.id}</div>
         <Button onClick={onClose}>Close</Button>
       </div>
 
@@ -31,6 +29,9 @@ const ProductDetails = ({ onClose, product }) => {
         </div>
         <div className="flex-col items-center">
           <div className="text-l font-semibold text-gray-700">
+            {product.name}
+          </div>
+          <div className="text-l font-semibold text-gray-700">
             {product.color}
           </div>
           <div> Height: {product.height}</div>
@@ -43,7 +44,7 @@ const ProductDetails = ({ onClose, product }) => {
       {/* Content */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-l font-semibold text-gray-700">
-          Updates and Notes:
+          Display products:
         </div>
         {/* Add Product */}
         <Button onClick={() => {}}>Add</Button>

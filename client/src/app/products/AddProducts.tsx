@@ -3,7 +3,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateProductMutation } from "@/state/api";
+import { useCreateProductInstanceMutation } from "@/state/api";
 import { z } from "zod";
 import { CustomFormField } from "../Components/FormField";
 import { ProductEnum, ProductColorEnum } from "@/lib/constants";
@@ -23,7 +23,7 @@ const formSchema = z.object({
 });
 
 const AddProducts = ({ onClose }) => {
-  const [createProduct] = useCreateProductMutation();
+  const [createProductInstance] = useCreateProductInstanceMutation();
   const now = new Date().toISOString();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,7 +60,7 @@ const AddProducts = ({ onClose }) => {
       }
     });
     console.log(data);
-    await createProduct(formData);
+    await createProductInstance(formData);
   };
 
   return (
@@ -113,7 +113,6 @@ const AddProducts = ({ onClose }) => {
               <CustomFormField name="length" label="length" type="number" />
             </div>
           </div>
-
 
           {/*  Photos */}
           <div className="m-5">

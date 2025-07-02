@@ -9,5 +9,6 @@ const router = Router();
 
 router.get("/", getProducts);
 router.post("/", upload.array("photos"), createProduct);
+// router.put("/", upload.array("photos"), createProductInstance);
 
 export default router;

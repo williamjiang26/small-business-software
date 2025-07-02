@@ -11,4 +11,5 @@ const upload = (0, multer_1.default)({ storage: storage });
 const router = (0, express_1.Router)();
 router.get("/", productController_1.getProducts);
 router.post("/", upload.array("photos"), productController_1.createProduct);
+// router.put("/", upload.array("photos"), createProductInstance);
 exports.default = router;

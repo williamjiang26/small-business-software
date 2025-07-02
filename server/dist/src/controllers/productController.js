@@ -34,7 +34,7 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getProducts = getProducts;
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, height, width, length, price, color, } = req.body;
+        const { name, height, width, length, price, color } = req.body;
         console.log(req.body);
         const newProduct = yield prisma.product.create({
             data: {
@@ -54,3 +54,29 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.createProduct = createProduct;
+// export const createProductInstance = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const { productId } = req.params;
+//     const { id, dateOrdered, section, row } = req.body;
+//     const newProductInstance = await prisma.product.update({
+//       // where: { productId },
+//       data: {
+//         products: {
+//           connect: {
+//             id: parseFloat(id),
+//             dateOrdered,
+//             section: parseFloat(section),
+//             row: parseFloat(row),
+//           },
+//         },
+//       },
+//     });
+//     res.status(201).json(newProductInstance);
+//   } catch (error) {
+//     console.error("Product creation error:", error);
+//     res.status(500).json({ message: "Error creating product" });
+//   }
+// };

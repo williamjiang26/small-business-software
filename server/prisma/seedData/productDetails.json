@@ -1,0 +1,41 @@
+[
+  {
+    "productId": 1,
+    "createdAt": "2025-10-26T00:00:00Z",
+    "type": "Double",
+    "color": "black",
+    "height": 96.0,
+    "width": 72.0,
+    "length": 9.0,
+    "price": 8000.0,
+    "quantity": 1,
+    "images": [],
+    "orders": [8346]
+  },
+  {
+    "productId": 2,
+    "createdAt": "2025-10-26T00:00:00Z",
+    "type": "Side Panels",
+    "color": "black",
+    "height": 96.0,
+    "width": 108.0,
+    "length": 9.0,
+    "price": 2000.0,
+    "quantity": 1,
+    "images": [],
+    "orders": [8347]
+  },
+  {
+    "productId": 3,
+    "createdAt": "2025-10-26T00:00:00Z",
+    "type": "Window\\Transom",
+    "color": "black",
+    "height": 126.0,
+    "width": 108.0,
+    "length": 9.0,
+    "price": 6900.0,
+    "quantity": 1,
+    "images": [],
+    "orders": [8348]
+  }
+]

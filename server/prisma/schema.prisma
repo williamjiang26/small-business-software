@@ -7,26 +7,81 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Product {
-  id     Int          @id @default(autoincrement())
-  createdAt     DateTime?    @default(now())
-  updatedAt     DateTime?    @updatedAt
-  name          String
-  photoUrls     String[]
-  height        Float
-  width         Float
-  length        Float
-  price         Float
-  color         String
-  products      ProductInstance[]         
+enum ProductEnum {
+  Single
+  Double
 }
 
-model ProductInstance {
-  id Int          @id @default(autoincrement())
-  dateOrdered DateTime 
-  section Int
-  row Int
-  product Product @relation(fields: [productId], references: [id])
-  productId Int
+enum ColorEnum {
+  Black
+}
+enum HeightEnum {
+  H82
+  H96
+}
+enum WidthEnum {
+  W56
+  W74
+}
+enum LengthEnum {
+  L5
+  L7
+}
+
+model ProductDetails {
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime?    @default(now())
+  updatedAt     DateTime?    @updatedAt
+
+  type          ProductEnum
+  color         ColorEnum
+  height        HeightEnum
+  width         WidthEnum
+  length        LengthEnum
+  price         Int
+  quantity      Int
+
+  images        String[]
+  orders        ProductOrder[]   
+  
+
+}
+
+model ProductOrder {
+  id            Int          @id @default(autoincrement())
+  productId     Int
+  orderNo       Int
+  orderDate     DateTime 
+  section       Int
+  row           Int
+  product       ProductDetails      @relation(fields: [productId], references: [id])
+  customerOrder CustomerOrderDetails @relation(fields: [orderNo], references: [id])
+  
+}
+enum StatusEnum {
+  CREATEORDER
+  ORDERPLACED
+  ORDERSHIPPED
+  ORDERRECEIVED
+  ORDERDELIVERED
+}
+model CustomerOrderDetails {
+  id            Int          @id @default(autoincrement())
+  createdAt     DateTime?    @default(now())
+  dateOrdered   DateTime?
+
+  address       String
+  name          String
+  phone         String
+  email         String
+
+  status        StatusEnum @default(CREATEORDER)
+
+  orderSummary  ProductOrder[]
+
+  customerNotes String[]
+  customerCopy  String
+  measurement   String
+  additionalFiles  String?
 }
 
