@@ -56,8 +56,8 @@ model ProductOrder {
   row           Int
   product       ProductDetails      @relation(fields: [productId], references: [id])
   customerOrder CustomerOrderDetails @relation(fields: [orderNo], references: [id])
-  
 }
+
 enum StatusEnum {
   CREATEORDER
   ORDERPLACED

@@ -1,93 +1,81 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface CustomerOrder {
+  id: number;
+  createdAt: string;
+  dateOrdered: string;
+
+  address: string;
+  name: string;
+  phone: string;
+  email: string;
+
+  status: string;
+
+  customerNotes: string;
+  customerCopy: string;
+  measurement: string;
+  additionalFiles: string;
+}
+export interface NewCustomerOrder {
   invoiceNo: number;
-  name: string;
-  price: number;
-}
-export interface NewProduct {
-  productId: number;
-  name: string;
-  photoUrls: string[];
-  height: number;
-  width: number;
-  length: number;
-  price: number;
-  color: string;
-}
-export interface ProductInstance {
-  id: number;
   dateOrdered: string;
-  section: string;
-  row: string;
-  productId: number;
-}
-export interface NewProductInstance {
-  id: number;
-  dateOrdered: string;
-  section: string;
-  row: string;
-  productId: number;
+
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+
+  status: string;
+  price: number;
 }
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000" }),
   reducerPath: "api",
-  tagTypes: ["Products", "Customers"],
+  tagTypes: ["CustomerOrders"],
   endpoints: (build) => ({
     getCustomerOrders: build.query<CustomerOrder[], string | void>({
       query: (search) => ({
-        url: "/products",
+        url: "/customerOrders",
         params: search ? { search } : {},
       }),
-      providesTags: ["Products"],
+      providesTags: ["CustomerOrders"],
     }),
-    createProduct: build.mutation<Product, NewProduct>({
-      query: (newProduct) => ({
-        url: "/products",
+    createCustomerOrder: build.mutation<CustomerOrder[], NewCustomerOrder>({
+      query: (newCustomerOrder) => ({
+        url: "/customerOrders",
         method: "POST",
-        body: newProduct,
+        body: newCustomerOrder,
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: ["CustomerOrders"],
     }),
-    deleteProduct: build.mutation<Product[], string | void>({
-      query: (productId) => ({
-        url: "/products",
+    updateCustomerOrder: build.mutation<
+      Product,
+      { invoiceNo: string; data: Partial<Product> }
+    >({
+      query: ({ invoiceNo, data }) => ({
+        url: `/customerOrders/${invoiceNo}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["CustomerOrders"],
+    }),
+
+    deleteCustomerOrder: build.mutation<Product[], string | void>({
+      query: (invoiceNo) => ({
+        url: "/customerOrders",
         method: "DELETE",
-        params: productId ? { productId } : {},
+        params: invoiceNo ? { invoiceNo } : {},
       }),
-      providesTags: ["Products"],
-    }),
-    createProductInstance: build.mutation<Product, NewProductInstance>({
-      query: (newProductInstance) => ({
-        url: "/products/${productId}/",
-        method: "POST",
-        body: newProductInstance,
-      }),
-      invalidatesTags: ["Products"],
-    }),
-    getCustomerOrder: build.mutation<Product, NewProductInstance>({
-      query: (newProductInstance) => ({
-        url: "/products/${productId}/",
-        method: "POST",
-        body: newProductInstance,
-      }),
-      invalidatesTags: ["Products"],
-    }),
-    createProductInstance: build.mutation<Product, NewProductInstance>({
-      query: (newProductInstance) => ({
-        url: "/products/${productId}/",
-        method: "POST",
-        body: newProductInstance,
-      }),
-      invalidatesTags: ["Products"],
+      providesTags: ["CustomerOrders"],
     }),
   }),
 });
 
 export const {
-  useGetProductsQuery,
-  useCreateProductMutation,
-  useDeleteProductMutation,
-  useCreateProductInstanceMutation,
+  useGetCustomerOrdersQuery,
+  useCreateCustomerOrdersMutation,
+  useUpdateCustomerOrderMutation,
+  useDeleteCustomerOrderMutation,
 } = api;

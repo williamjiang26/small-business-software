@@ -27,8 +27,8 @@ async function main() {
 
   const orderedFileNames = [
     "customerOrderDetails.json",
-    "productDetails.json",
-    "productOrders.json",
+    // "productDetails.json",
+    // "productOrders.json",
   ];
 
   await deleteAllData(orderedFileNames);

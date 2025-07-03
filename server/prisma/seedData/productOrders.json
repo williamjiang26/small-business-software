@@ -5,7 +5,9 @@
     "orderNo": 15765,
     "orderDate": "2025-10-26T00:00:00Z",
     "section": 1,
-    "row": 10
+    "row": 10,
+    "product": 1,
+    "customerOrder": 8346
   },
   {
     "id": 8347,

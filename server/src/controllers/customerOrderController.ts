@@ -11,14 +11,6 @@ export const getCustomerOrders = async (
   try {
     const search = req.query.search?.toString();
     const customerOrders = await prisma.customerOrderDetails.findMany({
-      where: search
-        ? {
-            id: {
-              contains: search,
-              mode: "insensitive",
-            },
-          }
-        : undefined, // returns all if no search
     });
     res.json(customerOrders);
   } catch (error) {
