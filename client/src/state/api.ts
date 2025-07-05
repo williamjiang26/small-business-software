@@ -11,11 +11,6 @@ export interface CustomerOrder {
   email: string;
 
   status: string;
-
-  customerNotes: string;
-  customerCopy: string;
-  measurement: string;
-  additionalFiles: string;
 }
 export interface NewCustomerOrder {
   invoiceNo: number;
@@ -29,11 +24,24 @@ export interface NewCustomerOrder {
   status: string;
   price: number;
 }
+export interface Product {
+  id: number;
+  type: string;
+  size: string;
+  price: string;
+}
+export interface Customer {
+  id: number;
+  address: string;
+  name: string;
+  phone: string;
+  email: string;
+}
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000" }),
   reducerPath: "api",
-  tagTypes: ["CustomerOrders"],
+  tagTypes: ["CustomerOrders", "Products", "Customers"],
   endpoints: (build) => ({
     getCustomerOrders: build.query<CustomerOrder[], string | void>({
       query: (search) => ({
@@ -51,7 +59,7 @@ export const api = createApi({
       invalidatesTags: ["CustomerOrders"],
     }),
     updateCustomerOrder: build.mutation<
-      Product,
+      CustomerOrder[],
       { invoiceNo: string; data: Partial<Product> }
     >({
       query: ({ invoiceNo, data }) => ({
@@ -61,7 +69,6 @@ export const api = createApi({
       }),
       invalidatesTags: ["CustomerOrders"],
     }),
-
     deleteCustomerOrder: build.mutation<Product[], string | void>({
       query: (invoiceNo) => ({
         url: "/customerOrders",
@@ -69,6 +76,49 @@ export const api = createApi({
         params: invoiceNo ? { invoiceNo } : {},
       }),
       providesTags: ["CustomerOrders"],
+    }),
+
+    getProducts: build.query<Product[], string | void>({
+      query: (search) => ({
+        url: "/products",
+        params: search ? { search } : {},
+      }),
+      providesTags: ["Products"],
+    }),
+
+    createProduct: build.mutation<Product[], NewCustomerOrder>({
+      query: (newProduct) => ({
+        url: "/products",
+        method: "POST",
+        body: newProduct,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    updateProduct: build.mutation<
+      Product,
+      { invoiceNo: string; data: Partial<Product> }
+    >({
+      query: ({ id, data }) => ({
+        url: `/products/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    deleteProduct: build.mutation<Product[], string | void>({
+      query: (id) => ({
+        url: "/products",
+        method: "DELETE",
+        params: id ? { id } : {},
+      }),
+      providesTags: ["Products"],
+    }),
+    getCustomers: build.query<Customer[], string | void>({
+      query: (search) => ({
+        url: "/customers",
+        params: search ? { search } : {},
+      }),
+      providesTags: ["Customers"],
     }),
   }),
 });
@@ -78,4 +128,9 @@ export const {
   useCreateCustomerOrdersMutation,
   useUpdateCustomerOrderMutation,
   useDeleteCustomerOrderMutation,
+  useGetProductsQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+  useGetCustomersQuery,
 } = api;

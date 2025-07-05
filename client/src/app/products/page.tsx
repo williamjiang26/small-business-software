@@ -1,86 +1,68 @@
 "use client";
 import { useGetProductsQuery } from "@/state/api";
-import Product from "./ProductCard";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import AddProducts from "./AddProducts";
-import ProductDetails from "./ProductDetails";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
-const Products = () => {
-  const { data: products, isLoading, isError } = useGetProductsQuery();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCardOpen, setIsCardOpen] = useState(false);
-  const [product, setProduct] = useState();
+const columns: GridColDef[] = [
+  { field: "productId", headerName: "ID", width: 90 },
+  { field: "name", headerName: "Product Name", width: 200 },
+  {
+    field: "price",
+    headerName: "Price",
+    width: 110,
+    type: "number",
+    valueGetter: (value, row) => `$${row.price}`,
+  },
+  {
+    field: "rating",
+    headerName: "Rating",
+    width: 110,
+    type: "number",
+    valueGetter: (value, row) => (row.rating ? row.rating : "N/A"),
+  },
+  {
+    field: "stockQuantity",
+    headerName: "Stock Quantity",
+    width: 150,
+    type: "number",
+  },
+  {
+    field: "section",
+    headerName: "Section",
+    width: 100,
+    type: "text",
+  },
+  {
+    field: "row",
+    headerName: "Row",
+    width: 100,
+    type: "text",
+  },
+  
+];
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const openCard = () => {
-    setIsCardOpen(true);
-  };
-
-  const closeCard = () => {
-    setIsCardOpen(false);
-  };
+const Inventory = () => {
+  const { data: products, isError, isLoading } = useGetProductsQuery();
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
+
   if (isError || !products) {
     return (
       <div className="text-center text-red-500 py-4">
-        Failed to Fetch Products
+        Failed to fetch products
       </div>
     );
   }
-
-  return isModalOpen ? (
-    <AddProducts onClose={closeModal} />
-  ) : isCardOpen ? (
-    <ProductDetails onClose={closeCard} product={product} />
-  ) : (
-    <div className="mx-auto pb-5 w-full m-6">
-      <div className="flex justify-between items-center mb-6">
-        <div className="text-2xl font-semibold text-gray-700">Products</div>
-        {/* Add Product */}
-        <Button onClick={openModal}>Add</Button>
+  return (
+    // card
+    <div>
+    {products?.map((product) => (
+      <div>
+        {product.id} | {product.type} | {product.size} | {product.price}
       </div>
-      <div className="text-m font-semibold text-gray-700 bg-white width-full shadow-md rounded-lg p-2 mb-3 flex flex-col sm:flex-row items-center sm:items-start justify-between space-y-4 sm:space-y-0 sm:space-x-4">
-        {/* Header Bar*/}
-        <div>Id</div>
-        <div>Image</div>
-        <div>Type</div>
-        <div>Color</div>
-            <div>Height</div>
-            <div>Width</div>
-            <div>Length</div>
-        <div>Price</div>
-        <div>Qty</div>
-      </div>
-
-      {/* Body Products List */}
-      <div className="grid grid-cols-1  gap-6">
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : (
-          products?.map((product) => (
-            <div
-              onClick={() => {
-                setProduct(product);
-                openCard();
-              }}
-            >
-              <Product key={product.productId} product={product} />
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+    ))}
+  </div>
   );
 };
-export default Products;
+export default Inventory;

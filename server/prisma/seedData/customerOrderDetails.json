@@ -1,15 +1,9 @@
 [
   {
-
+    "customerId": 3,
+    "invoiceNo": 15765,
+    "createdAt": "2025-10-26T00:00:00Z",
     "dateOrdered": "2025-10-26T00:00:00Z",
-    "address": "44 rutledge rd, Marlboro",
-    "name": "Stan",
-    "phone": "347-217-7450",
-    "email": "stan@gmail.com",
-    "status": "CREATEORDER", 
-    "customerCopy": "",
-    "measurement": "t"
-  
- 
+    "status": "CREATEORDER"
   }
 ]

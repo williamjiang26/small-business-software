@@ -9,19 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = void 0;
+exports.getCustomers = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
-const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCustomers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const search = (_a = req.query.search) === null || _a === void 0 ? void 0 : _a.toString();
-        const products = yield prisma.productDetails.findMany({});
-        res.json(products);
+        const customers = yield prisma.customer.findMany({});
+        res.json(customers);
     }
     catch (error) {
-        res.status(500).json({ message: "Error retrieving products", error });
+        res.status(500).json({ message: "Error retrieving customers", error });
     }
 });
-exports.getProducts = getProducts;
+exports.getCustomers = getCustomers;

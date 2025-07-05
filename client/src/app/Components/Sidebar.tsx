@@ -18,8 +18,8 @@ import { Package, SquareUser, ReceiptText } from "lucide-react";
 // menu items
 const items = [
   {
-    title: "Invoices",
-    url: "/invoices",
+    title: "Orders",
+    url: "/customerOrders",
     icon: ReceiptText,
   },
   {
@@ -32,11 +32,11 @@ const items = [
   //   url: "/",
   //   icon: ReceiptText,
   // },
-  // {
-  //   title: "Customers",
-  //   url: "/customers",
-  //   icon: SquareUser,
-  // },
+  {
+    title: "Customers",
+    url: "/customers",
+    icon: SquareUser,
+  },
 ];
 
 const AppSidebar = () => {

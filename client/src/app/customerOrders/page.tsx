@@ -16,23 +16,32 @@ type InvoiceFormData = {
   products: string;
 };
 
-const Invoices = () => {
+const CustomerOrders = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
-  
-  // const [createInvoice] = useCreateCustomerOrdersMutation()
-  // const [deleteInvoice] = useDeleteCustomerOrderMutation()
+
+  // first page
+  const { data: orders, isLoading, isError } = useGetCustomerOrdersQuery();
+  // const [createInvoice] = useCreateCustomerOrdersMutation();
+
+  // get customer info from customerId
+
+  // second page details
   // const [updateInvoice] = useUpdateCustomerOrderMutation()
-  const { data: orders, isLoading, isError } = useGetCustomerOrdersQuery()
+  // const [deleteInvoice] = useDeleteCustomerOrderMutation()
 
   return (
     // Header
-    
+
     // List of Orders
     <div>
-      {orders?.map((order) => (order.status))}
+      {orders?.map((order) => (
+        <div>
+          {order.customerId} | {order.invoiceNo} | {order.dateOrdered} | {order.status}
+        </div>
+      ))}
     </div>
   );
 };
 
-export default Invoices;
+export default CustomerOrders;

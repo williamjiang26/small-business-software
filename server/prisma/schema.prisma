@@ -7,56 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ProductEnum {
-  Single
-  Double
-}
-
-enum ColorEnum {
-  Black
-}
-enum HeightEnum {
-  H82
-  H96
-}
-enum WidthEnum {
-  W56
-  W74
-}
-enum LengthEnum {
-  L5
-  L7
-}
-
-model ProductDetails {
-  id            Int          @id @default(autoincrement())
-  createdAt     DateTime?    @default(now())
-  updatedAt     DateTime?    @updatedAt
-
-  type          ProductEnum
-  color         ColorEnum
-  height        HeightEnum
-  width         WidthEnum
-  length        LengthEnum
-  price         Int
-  quantity      Int
-
-  images        String[]
-  orders        ProductOrder[]   
-  
-
-}
-
-model ProductOrder {
-  id            Int          @id @default(autoincrement())
-  productId     Int
-  orderNo       Int
-  orderDate     DateTime 
-  section       Int
-  row           Int
-  product       ProductDetails      @relation(fields: [productId], references: [id])
-  customerOrder CustomerOrderDetails @relation(fields: [orderNo], references: [id])
-}
 
 enum StatusEnum {
   CREATEORDER
@@ -65,23 +15,56 @@ enum StatusEnum {
   ORDERRECEIVED
   ORDERDELIVERED
 }
+
 model CustomerOrderDetails {
-  id            Int          @id @default(autoincrement())
-  createdAt     DateTime?    @default(now())
+  invoiceNo     Int           @unique
+  createdAt     DateTime?     @default(now())
   dateOrdered   DateTime?
 
+  customerId    Int   
+  customer      Customer       @relation(fields: [customerId], references: [id])
+
+  status        StatusEnum     @default(CREATEORDER)
+  orderSummary  ProductOrder[]
+}
+
+model Customer {
+  id            Int             @id @default(autoincrement()) 
+    
   address       String
   name          String
   phone         String
   email         String
 
-  status        StatusEnum @default(CREATEORDER)
+  orderHistory  CustomerOrderDetails[]
 
-  orderSummary  ProductOrder[]
-
-  customerNotes String[]
-  customerCopy  String
-  measurement   String
-  additionalFiles  String?
 }
+
+enum ProductEnum {
+  Single
+  Double
+}
+
+model ProductDetails {
+  id      Int             @unique
+  type    ProductEnum
+  size    String
+  price   Float
+
+  orders   ProductOrder[]
+
+} 
+
+model ProductOrder {
+  orderNo       Int      @unique
+  productId     Int
+  
+  orderDate     DateTime
+  section       Int
+  row           Int
+
+  product       ProductDetails      @relation(fields: [productId], references: [id])
+  customerOrder   CustomerOrderDetails      @relation(fields: [orderNo], references: [invoiceNo])       
+}
+
 

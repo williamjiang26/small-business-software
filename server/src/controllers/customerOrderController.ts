@@ -35,34 +35,34 @@ export const createCustomerOrder = async (
 };
 
 // UPDATE
-export const updateCustomerOrder = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { id, ...updateData } = req.body;
-    const updatedOrder = await prisma.customerOrderDetails.update({
-      where: { id },
-      data: updateData,
-    });
-    res.json(updatedOrder);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating customer order", error });
-  }
-};
+// export const updateCustomerOrder = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const { id, ...updateData } = req.body;
+//     const updatedOrder = await prisma.customerOrderDetails.update({
+//       where: { id },
+//       data: updateData,
+//     });
+//     res.json(updatedOrder);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error updating customer order", error });
+//   }
+// };
 
 // DELETE
-export const deleteCustomerOrder = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { id } = req.body;
-    const deletedOrder = await prisma.customerOrderDetails.delete({
-      where: { id },
-    });
-    res.json(deletedOrder);
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting customer order", error });
-  }
-};
+// export const deleteCustomerOrder = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const { id } = req.body;
+//     const deletedOrder = await prisma.customerOrderDetails.delete({
+//       where: { id: id },
+//     });
+//     res.json(deletedOrder);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error deleting customer order", error });
+//   }
+// };
