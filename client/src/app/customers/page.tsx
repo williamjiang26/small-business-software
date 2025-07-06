@@ -38,6 +38,7 @@ const Customers = () => {
 
   return (
     <div className="mx-auto pb-5 w-full m-6">
+      <Button>Create</Button>
       {customers?.map((customer) => (
         <div>
           {customer.id} | {customer.address} | {customer.name} | {customer.phone} | {customer.email}

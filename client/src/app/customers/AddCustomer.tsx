@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateCustomerMutation } from "@/state/api";
 import { z } from "zod";
-import { CustomFormField } from "../Components/FormField";
+import { CustomFormField } from "../Components/forms/FormField";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),

@@ -8,6 +8,7 @@ import {
   useCreateCustomerOrdersMutation,
 } from "@/state/api";
 import CreateInvoiceModal from "./CreateInvoiceModal";
+import { Button } from "@/components/ui/button";
 
 type InvoiceFormData = {
   invoiceNo: string;
@@ -31,13 +32,20 @@ const CustomerOrders = () => {
   // const [deleteInvoice] = useDeleteCustomerOrderMutation()
 
   return (
-    // Header
-
-    // List of Orders
     <div>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="">
+          Customer | Invoice No. | Date Ordered | Status
+        </div>
+        <Button>Create</Button>
+      </div>
+
+      {/* List of Orders */}
       {orders?.map((order) => (
         <div>
-          {order.customerId} | {order.invoiceNo} | {order.dateOrdered} | {order.status}
+          {order.customerId} | {order.invoiceNo} |{" "}
+          {new Date(order.dateOrdered).toLocaleDateString()} | {order.status}
         </div>
       ))}
     </div>
