@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -36,6 +37,7 @@ const Items = ({ id, type, size, price }) => {
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}
         title="Delete"
+        description=""
       >
         <DeleteForm cardId={id} setIsOpen={setIsDeleteOpen} />
       </ResponsiveDialog>
@@ -43,36 +45,51 @@ const Items = ({ id, type, size, price }) => {
       {/* Card */}
       <Card className="w-full p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
         {/* Card Content */}
-        {id} | {type} | {size} | {price} |{/* Dropdown Actions */}
-        <div className="">
+        <Link href={`/products/${id}`} className="h-full">
+          <div className="flex flex-col items-start justify-between flex-1 h-full">
+            {id} | {type} | {size} | {price}
+          </div>
+        </Link>
+
+        {/* Dropdown Actions */}
+        <div className="absolute right-4 top-4 z-10">
           <span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost">
+                <Button
+                  variant="ghost"
+                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                >
                   <MoreVertical classname="w-4 h-4" />
                   <span className="sr-only">Open Menu</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem classname="">
+              <DropdownMenuContent align="end" className="w-[160px] z-50">
+                <DropdownMenuItem className="group flex w-full items-center justify-between  text-left p-0 text-sm font-base text-neutral-500 ">
                   <button
                     onClick={() => {
                       setIsEditOpen(true);
                     }}
-                    className=""
+                    className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
                   >
-                    <IconMenu text="Edit" icon={<SquarePen />} />
+                    <IconMenu
+                      text="Edit"
+                      icon={<SquarePen className="h-4 w-4" />}
+                    />
                   </button>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem classname="">
+                <DropdownMenuItem className="group flex w-full items-center justify-between  text-left p-0 text-sm font-base text-neutral-500 ">
                   <button
                     onClick={() => {
                       setIsDeleteOpen(true);
                     }}
-                    className=""
+                    className="w-full justify-start flex text-red-500 rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
                   >
-                    <IconMenu text="Delete" icon={<Trash2 />} />
+                    <IconMenu
+                      text="Delete"
+                      icon={<Trash2 className="h-4 w-4" />}
+                    />
                   </button>
                 </DropdownMenuItem>
               </DropdownMenuContent>

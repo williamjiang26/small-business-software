@@ -35,30 +35,20 @@ const ResponsiveDialog = ({
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
-  description: string;
+  description?: string;
 }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   if (isDesktop) {
     return (
       // dialog
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px]  bg-white">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             {description && (
               <DialogDescription>{description}</DialogDescription>
             )}
           </DialogHeader>
-          <DialogClose asChild>
-            <button
-              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              aria-label="Close"
-              onClick={() => setIsOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </DialogClose>
-
           {children}
         </DialogContent>
       </Dialog>
@@ -67,7 +57,7 @@ const ResponsiveDialog = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerContent>
+      <DrawerContent className="bg-white">
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

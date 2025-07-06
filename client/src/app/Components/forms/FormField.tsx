@@ -147,7 +147,11 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
           <Input
             type="number"
             placeholder={placeholder}
-            {...field}
+            value={field.value}
+            onChange={(e) => {
+              const value = e.target.value;
+              field.onChange(value === "" ? "" : +value); // convert to number or keep empty
+            }}
             className={`border-gray-200 p-4 ${inputClassName}`}
             disabled={disabled}
           />

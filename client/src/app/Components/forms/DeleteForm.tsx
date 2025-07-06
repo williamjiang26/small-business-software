@@ -1,13 +1,13 @@
 "use client";
 
 import React, { Dispatch, SetStateAction } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useDeleteProductMutation } from "@/state/api";
 
 const formSchema = z.object({
   cardId: z.string(),
@@ -19,25 +19,45 @@ export default function DeleteForm({
 }: {
   cardId: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  }) {
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      cardId: cardId,
-    },
-  });
+}) {
+  const [deleteProduct, { isLoading }] = useDeleteProductMutation();
 
-  const isLoading = form.formState.isSubmitting;
-
-  const onSubmit = async () => {
+  const handleDelete = async () => {
     try {
+      await deleteProduct(Number(cardId)).unwrap();
       setIsOpen(false);
     } catch (error) {
-      console.log(error);
+      console.error("Delete failed:", error);
     }
   };
 
-  return <div>Delete Form</div>;
-
+  return (
+    <div className="w-full flex justify-center sm:space-x-6">
+      <Button
+        size="lg"
+        variant="outline"
+        disabled={isLoading}
+        className="w-full hidden sm:block"
+        type="button"
+        onClick={() => setIsOpen(false)}
+      >
+        Cancel
+      </Button>
+      <Button
+        size="lg"
+        onClick={handleDelete}
+        disabled={isLoading}
+        className="w-full bg-red-500 hover:bg-red-400"
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Deleting
+          </>
+        ) : (
+          <span>Delete</span>
+        )}
+      </Button>
+    </div>
+  );
 }

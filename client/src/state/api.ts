@@ -85,7 +85,9 @@ export const api = createApi({
       }),
       providesTags: ["Products"],
     }),
-
+    getProductById: build.query<Product, string>({
+      query: (id) => `/products/${id}`,
+    }),
     createProduct: build.mutation<Product[], NewCustomerOrder>({
       query: (newProduct) => ({
         url: "/products",
@@ -96,22 +98,21 @@ export const api = createApi({
     }),
     updateProduct: build.mutation<
       Product,
-      { invoiceNo: string; data: Partial<Product> }
+      { id: number; data: Partial<Product> }
     >({
       query: ({ id, data }) => ({
         url: `/products/${id}`,
-        method: "PATCH",
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: ["Products"],
     }),
-    deleteProduct: build.mutation<Product[], string | void>({
+    deleteProduct: build.mutation<Product, number>({
       query: (id) => ({
-        url: "/products",
+        url: `/products/${id}`, // RESTful path parameter
         method: "DELETE",
-        params: id ? { id } : {},
       }),
-      providesTags: ["Products"],
+      invalidatesTags: ["Products"],
     }),
     getCustomers: build.query<Customer[], string | void>({
       query: (search) => ({
@@ -129,6 +130,7 @@ export const {
   useUpdateCustomerOrderMutation,
   useDeleteCustomerOrderMutation,
   useGetProductsQuery,
+  useGetProductByIdQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

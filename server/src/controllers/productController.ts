@@ -9,11 +9,68 @@ export const getProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const search = req.query.search?.toString();
-    const products = await prisma.productDetails.findMany({
-    });
+    const products = await prisma.productDetails.findMany({});
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving products", error });
+  }
+};
+export const getProductById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id, 10);
+
+    if (isNaN(id)) {
+      res.status(400).json({ message: "Invalid product ID" });
+      return;
+    }
+
+    const product = await prisma.productDetails.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving product", error });
+  }
+};
+
+export const updateProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { type, size, price } = req.body;
+
+    const updateProduct = await prisma.productDetails.update({
+      where: { id },
+      data: { type, size, price },
+    });
+    res.json(updateProduct);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update product", error });
+  }
+};
+
+export const deleteProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const deleteProduct = await prisma.productDetails.delete({
+      where: { id },
+    });
+    res.json(deleteProduct);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete product", error });
   }
 };
