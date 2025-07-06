@@ -9,13 +9,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetProductsQuery } from "@/state/api";
+import { useCreateProductMutation, useGetProductsQuery } from "@/state/api";
 import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
 import { useState } from "react";
 import IconMenu from "../Components/ui/IconMenu";
 import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
 import EditForm from "../Components/forms/EditForm";
 import DeleteForm from "../Components/forms/DeleteForm";
+import CreateForm from "../Components/forms/CreateForm";
 
 const Items = ({ id, type, size, price }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -60,37 +61,29 @@ const Items = ({ id, type, size, price }) => {
                   variant="ghost"
                   className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
                 >
-                  <MoreVertical classname="w-4 h-4" />
+                  <MoreVertical className="w-4 h-4" />
                   <span className="sr-only">Open Menu</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[160px] z-50">
-                <DropdownMenuItem className="group flex w-full items-center justify-between  text-left p-0 text-sm font-base text-neutral-500 ">
-                  <button
-                    onClick={() => {
-                      setIsEditOpen(true);
-                    }}
-                    className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  >
-                    <IconMenu
-                      text="Edit"
-                      icon={<SquarePen className="h-4 w-4" />}
-                    />
-                  </button>
+                <DropdownMenuItem
+                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                  onClick={() => setIsEditOpen(true)}
+                >
+                  <IconMenu
+                    text="Edit"
+                    icon={<SquarePen className="h-4 w-4" />}
+                  />
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="group flex w-full items-center justify-between  text-left p-0 text-sm font-base text-neutral-500 ">
-                  <button
-                    onClick={() => {
-                      setIsDeleteOpen(true);
-                    }}
-                    className="w-full justify-start flex text-red-500 rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  >
-                    <IconMenu
-                      text="Delete"
-                      icon={<Trash2 className="h-4 w-4" />}
-                    />
-                  </button>
+                <DropdownMenuItem
+                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  <IconMenu
+                    text="Delete"
+                    icon={<Trash2 className="h-4 w-4" />}
+                  />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -103,6 +96,7 @@ const Items = ({ id, type, size, price }) => {
 
 const ProductsPage = () => {
   const { data: products, isError, isLoading } = useGetProductsQuery();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
@@ -115,13 +109,31 @@ const ProductsPage = () => {
       </div>
     );
   }
+
   return (
-    <div>
-      {/* card */}
-      {products?.map((product) => (
-        <Items key={product.id} {...product} />
-      ))}
-    </div>
+    <>
+      <ResponsiveDialog
+        isOpen={isCreateOpen}
+        setIsOpen={setIsCreateOpen}
+        title="Create"
+        description=""
+      >
+        <CreateForm setIsOpen={setIsCreateOpen} />
+      </ResponsiveDialog>
+      <div>
+        <Button
+          onClick={() => {
+            setIsCreateOpen(true);
+          }}
+        >
+          Create
+        </Button>
+        {/* card */}
+        {products?.map((product) => (
+          <Items key={product.id} {...product} />
+        ))}
+      </div>
+    </>
   );
 };
 

@@ -2,16 +2,10 @@
 
 import React, { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { useDeleteProductMutation } from "@/state/api";
 
-const formSchema = z.object({
-  cardId: z.string(),
-});
+import { Loader2 } from "lucide-react";
+
+import { useDeleteProductMutation } from "@/state/api";
 
 export default function DeleteForm({
   cardId,

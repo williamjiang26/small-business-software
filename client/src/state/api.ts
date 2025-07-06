@@ -88,7 +88,7 @@ export const api = createApi({
     getProductById: build.query<Product, string>({
       query: (id) => `/products/${id}`,
     }),
-    createProduct: build.mutation<Product[], NewCustomerOrder>({
+    createProduct: build.mutation<Product, Product>({
       query: (newProduct) => ({
         url: "/products",
         method: "POST",

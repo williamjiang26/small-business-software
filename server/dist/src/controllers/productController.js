@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.getProducts = void 0;
+exports.createProduct = exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.getProducts = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
@@ -72,3 +72,16 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProduct = deleteProduct;
+const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id, type, size, price } = req.body;
+        const newProduct = yield prisma.productDetails.create({
+            data: { id, type, size, price },
+        });
+        res.status(201).json(newProduct); // return single product
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to create product", error });
+    }
+});
+exports.createProduct = createProduct;

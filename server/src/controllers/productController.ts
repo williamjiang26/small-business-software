@@ -74,3 +74,15 @@ export const deleteProduct = async (
     res.status(500).json({ message: "Failed to delete product", error });
   }
 };
+
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    const { id, type, size, price } = req.body;
+    const newProduct = await prisma.productDetails.create({
+      data: { id, type, size, price },
+    });
+    res.status(201).json(newProduct); // return single product
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create product", error });
+  }
+};

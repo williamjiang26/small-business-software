@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { getProducts, getProductById, updateProduct, deleteProduct } from "../controllers/productController";
+import {
+  getProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+  createProduct,
+} from "../controllers/productController";
 import multer from "multer";
 
 const storage = multer.memoryStorage();
@@ -10,7 +16,7 @@ const router = Router();
 router.get("/", getProducts);
 router.get("/:id", getProductById);
 router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct)
-
+router.delete("/:id", deleteProduct);
+router.post("/", createProduct);
 
 export default router;
