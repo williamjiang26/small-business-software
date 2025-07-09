@@ -1,40 +1,12 @@
-import {
-  Wifi,
-  Waves,
-  Dumbbell,
-  Car,
-  PawPrint,
-  Tv,
-  Thermometer,
-  Cigarette,
-  Cable,
-  Maximize,
-  Bath,
-  Phone,
-  Sprout,
-  Hammer,
-  Bus,
-  Mountain,
-  VolumeX,
-  Home,
-  Warehouse,
-  Building,
-  Castle,
-  Trees,
-  LucideIcon,
-} from "lucide-react";
+import { Wifi, Waves, Thermometer, LucideIcon } from "lucide-react";
 
 export enum ProductEnum {
-  SingleDoor = "SingleDoor",
-  DoubleDoor = "DoubleDoor",
-  Canopy = "Canopy",
-  Railing = "Railing",
+  Single = "Single",
+  Double = "Double",
 }
 export const ProductIcons: Record<ProductEnum, LucideIcon> = {
-  SingleDoor: Waves,
-  DoubleDoor: Thermometer,
-  Canopy: Waves,
-  Railing: Wifi,
+  Single: Waves,
+  Double: Thermometer,
 };
 export enum ProductColorEnum {
   Black = "Black",
@@ -50,3 +22,10 @@ export const ProductColorIcons: Record<ProductEnum, LucideIcon> = {
   HeavyCopper: Wifi,
   White: Wifi,
 };
+export enum OrderStatusEnum {
+  CREATEORDER = "CREATEORDER",
+  ORDERPLACED = "ORDERPLACED",
+  ORDERSHIPPED = "ORDERSHIPPED",
+  ORDERRECEIVED = "ORDERRECEIVED",
+  ORDERDELIVERED = "ORDERDELIVERED"
+}

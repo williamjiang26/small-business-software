@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "url": "https://images.unsplash.com/photo-1606813902776-01ed9a4b4ee8",
+    "productId": 1
+  },
+  {
+    "id": 2,
+    "url": "https://images.unsplash.com/photo-1581291519195-ef11498d1cf5",
+    "productId": 1
+  },
+  {
+    "id": 3,
+    "url": "https://images.unsplash.com/photo-1556911220-e15b29be8cce",
+    "productId": 1
+  }
+]

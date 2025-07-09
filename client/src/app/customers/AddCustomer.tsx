@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateCustomerMutation } from "@/state/api";
 import { z } from "zod";
-import { CustomFormField } from "../Components/forms/FormField";
+import { CustomFormField } from "../Components/FormField";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -49,7 +49,7 @@ const AddCustomer = ({ onClose }) => {
     for (const [key, value] of formData.entries()) {
       console.log(key, value);
     }
-    console.log(data)
+    console.log(data);
     await createCustomer(formData);
   };
 

@@ -42,6 +42,7 @@ function main() {
             "customerOrderDetails.json",
             "productDetails.json",
             "productOrder.json",
+            "productPhoto.json",
         ];
         yield deleteAllData(orderedFileNames);
         for (const fileName of orderedFileNames) {

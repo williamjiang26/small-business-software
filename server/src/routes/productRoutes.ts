@@ -17,6 +17,6 @@ router.get("/", getProducts);
 router.get("/:id", getProductById);
 router.put("/:id", updateProduct);
 router.delete("/:id", deleteProduct);
-router.post("/", createProduct);
+router.post("/", upload.array("photos"), createProduct);
 
 export default router;

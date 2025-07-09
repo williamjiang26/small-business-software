@@ -8,12 +8,17 @@ import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { CustomFormField } from "./FormField";
+import { CustomFormField } from "../../Components/FormField";
 import { useGetProductByIdQuery, useUpdateProductMutation } from "@/state/api";
+import { ProductEnum, ProductColorEnum } from "@/lib/constants";
 
 const formSchema = z.object({
+  id: z.coerce.number(),
   type: z.string().min(1),
-  size: z.string().min(1),
+  color: z.string().min(1),
+  height: z.coerce.number(),
+  width: z.coerce.number(),
+  length: z.coerce.number(),
   price: z.coerce.number(),
 });
 
@@ -31,8 +36,12 @@ export default function EditForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: 0,
       type: "",
-      size: "",
+      color: "",
+      height: 0,
+      width: 0,
+      length: 0,
       price: 0,
     },
   });
@@ -41,8 +50,12 @@ export default function EditForm({
   useEffect(() => {
     if (product) {
       form.reset({
+        id: product.id,
         type: product.type,
-        size: product.size,
+        color: product.color,
+        height: product.height,
+        width: product.width,
+        length: product.length,
         price: product.price,
       });
     }
@@ -70,8 +83,28 @@ export default function EditForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col space-y-2 sm:px-0 px-4"
       >
-        <CustomFormField name="type" label="Type" />
-        <CustomFormField name="size" label="Size" />
+        <CustomFormField name="id" label="Id" type="number" />
+        <CustomFormField
+          name="type"
+          label="Type"
+          type="select"
+          options={Object.keys(ProductEnum).map((type) => ({
+            value: type,
+            label: type,
+          }))}
+        />
+        <CustomFormField
+          name="color"
+          label="Color"
+          type="select"
+          options={Object.keys(ProductColorEnum).map((type) => ({
+            value: type,
+            label: type,
+          }))}
+        />
+        <CustomFormField name="height" label="Height" type="number" />
+        <CustomFormField name="width" label="Width" type="number" />
+        <CustomFormField name="length" label="Length" type="number" />
         <CustomFormField name="price" label="Price" type="number" />
 
         <div className="flex w-full sm:justify-end mt-4">

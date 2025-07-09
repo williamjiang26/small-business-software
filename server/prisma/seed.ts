@@ -30,6 +30,7 @@ async function main() {
     "customerOrderDetails.json",
     "productDetails.json",
     "productOrder.json",
+    "productPhoto.json",
   ];
 
   await deleteAllData(orderedFileNames);

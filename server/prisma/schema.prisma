@@ -46,14 +46,29 @@ enum ProductEnum {
 }
 
 model ProductDetails {
-  id      Int             @unique
-  type    ProductEnum
-  size    String
-  price   Float
+  id        Int             @unique
+  type      ProductEnum
 
-  orders   ProductOrder[]
+  dateOrdered       DateTime?
+  color     String
+
+  height    Int
+  width     Int
+  length    Int
+
+  price     Float
+
+  orders    ProductOrder[]
+  photos    String[]
 
 } 
+
+// model ProductPhoto {
+//   id        Int             @id @default(autoincrement())
+//   url       String
+//   product   ProductDetails  @relation(fields: [productId], references: [id])
+//   productId Int
+// }
 
 model ProductOrder {
   orderNo       Int      @unique
@@ -63,7 +78,7 @@ model ProductOrder {
   section       Int
   row           Int
 
-  product       ProductDetails      @relation(fields: [productId], references: [id])
+  product         ProductDetails      @relation(fields: [productId], references: [id])
   customerOrder   CustomerOrderDetails      @relation(fields: [orderNo], references: [invoiceNo])       
 }
 

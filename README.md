@@ -1,15 +1,7 @@
+## 🚀 Why This Exists
 
-i have everything i need
-all the opportunity if i work hard enough
-resources if i know where to look
+this is a project i built to reliably store and organize customer orders and inventory in a small business. typical small businesses is not technology heavy driven. the tools are out there is a barrier between non-technical business owners and the integration and discovery of these tools that exist. the goal is to create a intuitive, logical organization workflow with seamless integration to any business.
 
-technical skills business sense, interpersonal, strategy, wisdom, 
+this tool is one of many for small business tools. some of which will include books, supply chain management and more. they are designed similar to google's products, robust, reliable and therefore we choose those products over other options. (maps, calendar, docs, sheets, etc.)
 
-
-move out to the city
-move out to better neighborhood
-give back to my community
-
-only the paranoid survive
-
-1. store and display individual images + work on add product form, drop down components for more consistent data, update fields for more accuracy
+a set of tools for small businesses which are deeply integrated, linked together and logical

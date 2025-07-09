@@ -4,31 +4,16 @@ export interface CustomerOrder {
   id: number;
   createdAt: string;
   dateOrdered: string;
-
-  address: string;
-  name: string;
-  phone: string;
-  email: string;
-
   status: string;
-}
-export interface NewCustomerOrder {
-  invoiceNo: number;
-  dateOrdered: string;
-
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-
-  status: string;
-  price: number;
 }
 export interface Product {
   id: number;
   type: string;
-  size: string;
-  price: string;
+  height: number;
+  width: number;
+  length: number;
+  price: number;
+  photos: string[];
 }
 export interface Customer {
   id: number;
@@ -50,7 +35,10 @@ export const api = createApi({
       }),
       providesTags: ["CustomerOrders"],
     }),
-    createCustomerOrder: build.mutation<CustomerOrder[], NewCustomerOrder>({
+    getCustomerOrderById: build.query<CustomerOrder, string>({
+      query: (invoiceNo) => `/customerOrders/${invoiceNo}`,
+    }),
+    createCustomerOrder: build.mutation<CustomerOrder, CustomerOrder>({
       query: (newCustomerOrder) => ({
         url: "/customerOrders",
         method: "POST",
@@ -126,7 +114,8 @@ export const api = createApi({
 
 export const {
   useGetCustomerOrdersQuery,
-  useCreateCustomerOrdersMutation,
+  useGetCustomerOrderByIdQuery,
+  useCreateCustomerOrderMutation,
   useUpdateCustomerOrderMutation,
   useDeleteCustomerOrderMutation,
   useGetProductsQuery,

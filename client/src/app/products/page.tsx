@@ -9,16 +9,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useCreateProductMutation, useGetProductsQuery } from "@/state/api";
-import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import { useGetProductsQuery } from "@/state/api";
+import { MoreVertical, SquarePen, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 import IconMenu from "../Components/ui/IconMenu";
 import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
-import EditForm from "../Components/forms/EditForm";
-import DeleteForm from "../Components/forms/DeleteForm";
-import CreateForm from "../Components/forms/CreateForm";
+import EditForm from "./productForms/EditForm";
+import DeleteForm from "./productForms/DeleteForm";
+import CreateForm from "./productForms/CreateForm";
 
-const Items = ({ id, type, size, price }) => {
+const Items = ({
+  id,
+  type,
+  dateOrdered,
+  color,
+  height,
+  width,
+  length,
+  price,
+}) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -44,50 +53,59 @@ const Items = ({ id, type, size, price }) => {
       </ResponsiveDialog>
 
       {/* Card */}
-      <Card className="w-full p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
-        {/* Card Content */}
-        <Link href={`/products/${id}`} className="h-full">
-          <div className="flex flex-col items-start justify-between flex-1 h-full">
-            {id} | {type} | {size} | {price}
+
+      <Card className="mb-2 p-4 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
+        <Link href={`/products/${id}`}>
+          {/* Row Content */}
+          <div className="flex items-center space-x-2 overflow-x-auto">
+            <span className="min-w-[30px] text-sm">{id}</span>
+
+            <div className="w-12 h-12 bg-black overflow-hidden rounded">
+              <img src="" alt="item" className="w-full h-full object-cover" />
+            </div>
+
+            <span className="whitespace-nowrap text-sm">
+              {new Date(dateOrdered).toLocaleDateString()}
+            </span>
+            <span className="whitespace-nowrap text-sm">{type}</span>
+            <span className="whitespace-nowrap text-sm">{color}</span>
+            <span className="whitespace-nowrap text-sm">{height}</span>
+            <span className="whitespace-nowrap text-sm">{width}</span>
+            <span className="whitespace-nowrap text-sm">{length}</span>
+            <span className="whitespace-nowrap text-sm">{price}</span>
           </div>
         </Link>
-
         {/* Dropdown Actions */}
-        <div className="absolute right-4 top-4 z-10">
-          <span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                  <span className="sr-only">Open Menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px] z-50">
-                <DropdownMenuItem
-                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  onClick={() => setIsEditOpen(true)}
-                >
-                  <IconMenu
-                    text="Edit"
-                    icon={<SquarePen className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  onClick={() => setIsDeleteOpen(true)}
-                >
-                  <IconMenu
-                    text="Delete"
-                    icon={<Trash2 className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </span>
+        <div className="absolute right-2 top-2 z-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+              >
+                <MoreVertical className="w-4 h-4" />
+                <span className="sr-only">Open Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px] z-50">
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                onClick={() => setIsEditOpen(true)}
+              >
+                <IconMenu
+                  text="Edit"
+                  icon={<SquarePen className="h-4 w-4" />}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </Card>
     </>
@@ -96,6 +114,7 @@ const Items = ({ id, type, size, price }) => {
 
 const ProductsPage = () => {
   const { data: products, isError, isLoading } = useGetProductsQuery();
+  console.log("🚀 ~ ProductsPage ~ products:", products);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   if (isLoading) {
@@ -121,13 +140,17 @@ const ProductsPage = () => {
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
       <div>
-        <Button
-          onClick={() => {
-            setIsCreateOpen(true);
-          }}
-        >
-          Create
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            className=""
+            onClick={() => {
+              setIsCreateOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+
         {/* card */}
         {products?.map((product) => (
           <Items key={product.id} {...product} />

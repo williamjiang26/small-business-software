@@ -10,11 +10,34 @@ export const getCustomerOrders = async (
 ): Promise<void> => {
   try {
     const search = req.query.search?.toString();
-    const customerOrders = await prisma.customerOrderDetails.findMany({
-    });
+    const customerOrders = await prisma.customerOrderDetails.findMany({});
     res.json(customerOrders);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving customer orders", error });
+    res
+      .status(500)
+      .json({ message: "Error retrieving customer orders", error });
+  }
+};
+export const getCustomerOrderById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const invoiceNo = parseInt(req.params.invoiceNo, 10);
+    if (isNaN(invoiceNo)) {
+      res.status(400).json({ message: "Invalid customer order ID" });
+      return;
+    }
+    const customerOrder = await prisma.customerOrderDetails.findUnique({
+      where: { invoiceNo },
+    });
+    if (!customerOrder) {
+      res.status(404).json({ message: "Customer order not found" });
+      return;
+    }
+    res.json(customerOrder);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving customer order", error });
   }
 };
 
@@ -24,9 +47,28 @@ export const createCustomerOrder = async (
   res: Response
 ): Promise<void> => {
   try {
-    const data = req.body;
+    const { invoiceNo, customerId, dateOrdered, status } = req.body;
+
+    // ✅ Basic validation (optional but recommended)
+    if (!invoiceNo || !customerId || !dateOrdered || !status) {
+      res.status(400).json({ message: "Missing required fields" });
+      return;
+    }
+
+    // ✅ Ensure dateOrdered is a valid Date
+    const parsedDate = new Date(dateOrdered);
+    if (isNaN(parsedDate.getTime())) {
+      res.status(400).json({ message: "Invalid dateOrdered format" });
+      return;
+    }
+
     const newCustomerOrder = await prisma.customerOrderDetails.create({
-      data,
+      data: {
+        invoiceNo: Number(invoiceNo),
+        customerId: Number(customerId),
+        dateOrdered: parsedDate,
+        status,
+      },
     });
     res.status(201).json(newCustomerOrder);
   } catch (error) {
@@ -34,22 +76,22 @@ export const createCustomerOrder = async (
   }
 };
 
-// UPDATE
-// export const updateCustomerOrder = async (
-//   req: Request,
-//   res: Response
-// ): Promise<void> => {
-//   try {
-//     const { id, ...updateData } = req.body;
-//     const updatedOrder = await prisma.customerOrderDetails.update({
-//       where: { id },
-//       data: updateData,
-//     });
-//     res.json(updatedOrder);
-//   } catch (error) {
-//     res.status(500).json({ message: "Error updating customer order", error });
-//   }
-// };
+// UPDATE;
+export const updateCustomerOrder = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { invoiceNo, ...updateData } = req.body;
+    const updatedOrder = await prisma.customerOrderDetails.update({
+      where: { invoiceNo },
+      data: updateData,
+    });
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating customer order", error });
+  }
+};
 
 // DELETE
 // export const deleteCustomerOrder = async (

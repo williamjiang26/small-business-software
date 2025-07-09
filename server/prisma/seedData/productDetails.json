@@ -2,23 +2,31 @@
   {
     "id": 1,
     "type": "Double",
-    "size": "large",
-
+    "dateOrdered": "2025-10-26T00:00:00Z",
+    "color": "Black",
+    "height": 82,
+    "width": 56,
+    "length": 5,
     "price": 8000.0
   },
   {
     "id": 2,
     "type": "Double",
-    "size": "large",
-
+    "dateOrdered": "2025-10-26T00:00:00Z",
+    "color": "Black",
+    "height": 82,
+    "width": 56,
+    "length": 5,
     "price": 8000.0
   },
   {
     "id": 3,
-
     "type": "Double",
-    "size": "large",
-
+    "dateOrdered": "2025-10-26T00:00:00Z",
+    "color": "Black",
+    "height": 82,
+    "width": 56,
+    "length": 5,
     "price": 8000.0
   }
 ]

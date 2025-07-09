@@ -2,7 +2,8 @@ import { Router } from "express";
 import {
   getCustomerOrders,
   createCustomerOrder,
-  // updateCustomerOrder,
+  getCustomerOrderById,
+  updateCustomerOrder,
   // deleteCustomerOrder,
 } from "../controllers/customerOrderController";
 import multer from "multer";
@@ -13,8 +14,9 @@ const upload = multer({ storage: storage });
 const router = Router();
 
 router.get("/", getCustomerOrders);
+router.get("/:invoiceNo", getCustomerOrderById);
 router.post("/", createCustomerOrder);
-// router.put("/", updateCustomerOrder);
+router.put("/:invoiceNo", updateCustomerOrder);
 // router.delete("/", deleteCustomerOrder);
 
 export default router;

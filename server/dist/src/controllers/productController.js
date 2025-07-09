@@ -47,10 +47,10 @@ exports.getProductById = getProductById;
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id, 10);
-        const { type, size, price } = req.body;
+        const { color, height, width, length, type, price } = req.body;
         const updateProduct = yield prisma.productDetails.update({
             where: { id },
-            data: { type, size, price },
+            data: { color, height, width, length, type, price },
         });
         res.json(updateProduct);
     }
@@ -74,9 +74,9 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.deleteProduct = deleteProduct;
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id, type, size, price } = req.body;
+        const { id, color, height, width, length, type, price, photos } = req.body;
         const newProduct = yield prisma.productDetails.create({
-            data: { id, type, size, price },
+            data: { id, color, height, width, length, type, price, photos },
         });
         res.status(201).json(newProduct); // return single product
     }
