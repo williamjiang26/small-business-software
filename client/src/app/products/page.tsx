@@ -114,7 +114,6 @@ const Items = ({
 
 const ProductsPage = () => {
   const { data: products, isError, isLoading } = useGetProductsQuery();
-  console.log("🚀 ~ ProductsPage ~ products:", products);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   if (isLoading) {

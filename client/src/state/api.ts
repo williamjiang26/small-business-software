@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface CustomerOrder {
-  id: number;
-  createdAt: string;
+  invoiceNo: number;
+  customerId: number;
   dateOrdered: string;
   status: string;
 }
@@ -47,21 +47,20 @@ export const api = createApi({
       invalidatesTags: ["CustomerOrders"],
     }),
     updateCustomerOrder: build.mutation<
-      CustomerOrder[],
-      { invoiceNo: string; data: Partial<Product> }
+      CustomerOrder,
+      { invoiceNo: string; data: Partial<CustomerOrder> }
     >({
       query: ({ invoiceNo, data }) => ({
         url: `/customerOrders/${invoiceNo}`,
-        method: "PATCH",
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: ["CustomerOrders"],
     }),
-    deleteCustomerOrder: build.mutation<Product[], string | void>({
+    deleteCustomerOrder: build.mutation<CustomerOrder, number | void>({
       query: (invoiceNo) => ({
-        url: "/customerOrders",
+        url: `/customerOrders/${invoiceNo}`,
         method: "DELETE",
-        params: invoiceNo ? { invoiceNo } : {},
       }),
       providesTags: ["CustomerOrders"],
     }),

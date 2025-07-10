@@ -4,6 +4,7 @@ import {
   FieldValues,
   useFormContext,
   useFieldArray,
+  Controller,
 } from "react-hook-form";
 import {
   FormControl,
@@ -91,29 +92,32 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
         );
       case "select":
         return (
-          <Select
-            value={field.value || (initialValue as string)}
-            defaultValue={field.value || (initialValue as string)}
-            onValueChange={field.onChange}
-          >
-            <SelectTrigger
-              className={`w-full border-gray-200 p-4 ${inputClassName}`}
-            >
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent className="w-full border-gray-200 shadow">
-              {options?.map((option) => (
-                <SelectItem
-                  key={option.value}
-                  value={option.value}
-                  className={`cursor-pointer hover:!bg-gray-100 hover:!text-customgreys-darkGrey`}
+          <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value ?? ""} onValueChange={field.onChange}>
+                <SelectTrigger
+                  className={`w-full border-gray-200 p-4 ${inputClassName}`}
                 >
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                  <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+                <SelectContent className="w-full border-gray-200 shadow">
+                  {options?.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className="cursor-pointer hover:!bg-gray-100 hover:!text-customgreys-darkGrey"
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
         );
+
       case "switch":
         return (
           <div className="flex items-center space-x-2">

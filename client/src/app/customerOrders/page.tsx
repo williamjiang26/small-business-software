@@ -24,7 +24,7 @@ import { Card } from "@/components/ui/card";
 import EditForm from "./customerOrderForms/EditForm";
 import DeleteForm from "./customerOrderForms/DeleteForm";
 
-const Items = ({ customerId, invoiceNo, dateOrdered, status }) => {
+const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   return (
@@ -47,7 +47,10 @@ const Items = ({ customerId, invoiceNo, dateOrdered, status }) => {
       >
         <DeleteForm cardId={invoiceNo} setIsOpen={setIsDeleteOpen} />
       </ResponsiveDialog>
+
+      {/* Card */}
       <Card className="w-full mb-2 p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
+        {/* Row content */}
         {customerId} | {invoiceNo} |{" "}
         {new Date(dateOrdered).toLocaleDateString()} | {status}
         {/* Dropdown Actions */}

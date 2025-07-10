@@ -13,5 +13,5 @@ router.get("/", customerOrderController_1.getCustomerOrders);
 router.get("/:invoiceNo", customerOrderController_1.getCustomerOrderById);
 router.post("/", customerOrderController_1.createCustomerOrder);
 router.put("/:invoiceNo", customerOrderController_1.updateCustomerOrder);
-// router.delete("/", deleteCustomerOrder);
+router.delete("/:invoiceNo", customerOrderController_1.deleteCustomerOrder);
 exports.default = router;

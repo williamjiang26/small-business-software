@@ -1,17 +1,18 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect } from "react";
+
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Loader2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { CustomFormField } from "../../Components/FormField";
 import {
-  useCreateCustomerOrderMutation,
   useGetCustomerOrderByIdQuery,
   useUpdateCustomerOrderMutation,
 } from "@/state/api";
-import { CustomFormField } from "@/app/Components/FormField";
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { OrderStatusEnum } from "@/lib/constants";
 
 const formSchema = z.object({
@@ -21,16 +22,16 @@ const formSchema = z.object({
   status: z.string().min(1),
 });
 
-const EditForm = ({
+export default function EditForm({
   cardId,
   setIsOpen,
 }: {
-  cardId: number;
+  cardId: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
-
+}) {
   const { data: customerOrder, isLoading: isCustomerOrderLoading } =
     useGetCustomerOrderByIdQuery(Number(cardId));
+  console.log(customerOrder);
   const [updateCustomerOrder] = useUpdateCustomerOrderMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,44 +39,62 @@ const EditForm = ({
       invoiceNo: 0,
       dateOrdered: "",
       customerId: 0,
-      status: "CREATEORDER",
+      status: "",
     },
   });
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      console.log("Form values changed:", values);
+    });
+
+    return () => subscription.unsubscribe(); // Cleanup
+  }, [form]);
 
   useEffect(() => {
     if (customerOrder) {
       form.reset({
+        invoiceNo: customerOrder.invoiceNo,
+        dateOrdered: customerOrder.dateOrdered,
+        customerId: customerOrder.customerId,
         status: customerOrder.status,
       });
     }
   }, [customerOrder, form]);
 
   const isLoading = form.formState.isSubmitting;
+  if (isCustomerOrderLoading || !customerOrder)
+    return <div>Loading product...</div>;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const payload = {
-        ...values,
-        dateOrdered: new Date(values.dateOrdered).toISOString(), // Convert to ISO
-      };
-      await updateCustomerOrder(payload).unwrap();
+      console.log("submitted", values);
+      await updateCustomerOrder({
+        invoiceNo: customerOrder.invoiceNo,
+        data: values,
+      });
       setIsOpen(false);
     } catch (error) {
-      console.error("Failed to update customer order", error);
+      console.error(error);
     }
   };
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col space-y-2 sm:px-0 px-4"
+      >
         <CustomFormField
           name="status"
-          label="Order Status"
+          label="Status"
           type="select"
+          control={form.control}
+          placeholder="Select a status"
           options={Object.keys(OrderStatusEnum).map((type) => ({
             value: type,
             label: type,
           }))}
         />
+
         <div className="flex w-full sm:justify-end mt-4">
           <Button
             type="submit"
@@ -95,6 +114,4 @@ const EditForm = ({
       </form>
     </Form>
   );
-};
-
-export default EditForm;
+}

@@ -9,7 +9,6 @@ export const getCustomerOrders = async (
   res: Response
 ): Promise<void> => {
   try {
-    const search = req.query.search?.toString();
     const customerOrders = await prisma.customerOrderDetails.findMany({});
     res.json(customerOrders);
   } catch (error) {
@@ -82,29 +81,44 @@ export const updateCustomerOrder = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { invoiceNo, ...updateData } = req.body;
+    const invoiceNo = parseInt(req.params.invoiceNo, 10);
+    const { customerId, status, dateOrdered } = req.body;
+
+    if (isNaN(invoiceNo)) {
+      res.status(400).json({ message: "Invalid invoice number" });
+      return;
+    }
+
     const updatedOrder = await prisma.customerOrderDetails.update({
       where: { invoiceNo },
-      data: updateData,
+      data: {
+        customerId,
+        status,
+        dateOrdered,
+      },
     });
+
     res.json(updatedOrder);
   } catch (error) {
-    res.status(500).json({ message: "Error updating customer order", error });
+    res.status(500).json({
+      message: "Error updating customer order",
+      error: error instanceof Error ? error.message : error,
+    });
   }
 };
 
-// DELETE
-// export const deleteCustomerOrder = async (
-//   req: Request,
-//   res: Response
-// ): Promise<void> => {
-//   try {
-//     const { id } = req.body;
-//     const deletedOrder = await prisma.customerOrderDetails.delete({
-//       where: { id: id },
-//     });
-//     res.json(deletedOrder);
-//   } catch (error) {
-//     res.status(500).json({ message: "Error deleting customer order", error });
-//   }
-// };
+// DELETE;
+export const deleteCustomerOrder = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const invoiceNo = parseInt(req.params.invoiceNo, 10);
+    const deletedOrder = await prisma.customerOrderDetails.delete({
+      where: { invoiceNo },
+    });
+    res.json(deletedOrder);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting customer order", error });
+  }
+};

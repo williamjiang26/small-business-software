@@ -8,26 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCustomerOrder = exports.createCustomerOrder = exports.getCustomerOrderById = exports.getCustomerOrders = void 0;
+exports.deleteCustomerOrder = exports.updateCustomerOrder = exports.createCustomerOrder = exports.getCustomerOrderById = exports.getCustomerOrders = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
 const getCustomerOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
-        const search = (_a = req.query.search) === null || _a === void 0 ? void 0 : _a.toString();
         const customerOrders = yield prisma.customerOrderDetails.findMany({});
         res.json(customerOrders);
     }
@@ -92,30 +79,41 @@ exports.createCustomerOrder = createCustomerOrder;
 // UPDATE;
 const updateCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const _a = req.body, { invoiceNo } = _a, updateData = __rest(_a, ["invoiceNo"]);
+        const invoiceNo = parseInt(req.params.invoiceNo, 10);
+        const { customerId, status, dateOrdered } = req.body;
+        if (isNaN(invoiceNo)) {
+            res.status(400).json({ message: "Invalid invoice number" });
+            return;
+        }
         const updatedOrder = yield prisma.customerOrderDetails.update({
             where: { invoiceNo },
-            data: updateData,
+            data: {
+                customerId,
+                status,
+                dateOrdered,
+            },
         });
         res.json(updatedOrder);
     }
     catch (error) {
-        res.status(500).json({ message: "Error updating customer order", error });
+        res.status(500).json({
+            message: "Error updating customer order",
+            error: error instanceof Error ? error.message : error,
+        });
     }
 });
 exports.updateCustomerOrder = updateCustomerOrder;
-// DELETE
-// export const deleteCustomerOrder = async (
-//   req: Request,
-//   res: Response
-// ): Promise<void> => {
-//   try {
-//     const { id } = req.body;
-//     const deletedOrder = await prisma.customerOrderDetails.delete({
-//       where: { id: id },
-//     });
-//     res.json(deletedOrder);
-//   } catch (error) {
-//     res.status(500).json({ message: "Error deleting customer order", error });
-//   }
-// };
+// DELETE;
+const deleteCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const invoiceNo = parseInt(req.params.invoiceNo, 10);
+        const deletedOrder = yield prisma.customerOrderDetails.delete({
+            where: { invoiceNo },
+        });
+        res.json(deletedOrder);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error deleting customer order", error });
+    }
+});
+exports.deleteCustomerOrder = deleteCustomerOrder;

@@ -4,7 +4,7 @@ import {
   createCustomerOrder,
   getCustomerOrderById,
   updateCustomerOrder,
-  // deleteCustomerOrder,
+  deleteCustomerOrder,
 } from "../controllers/customerOrderController";
 import multer from "multer";
 
@@ -17,6 +17,6 @@ router.get("/", getCustomerOrders);
 router.get("/:invoiceNo", getCustomerOrderById);
 router.post("/", createCustomerOrder);
 router.put("/:invoiceNo", updateCustomerOrder);
-// router.delete("/", deleteCustomerOrder);
+router.delete("/:invoiceNo", deleteCustomerOrder);
 
 export default router;
