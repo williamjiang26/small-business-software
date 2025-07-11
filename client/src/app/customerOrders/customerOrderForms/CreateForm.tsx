@@ -62,7 +62,7 @@ const CreateForm = ({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="">
         <CustomFormField name="invoiceNo" label="Invoice No." type="number" />
-        <CustomFormField name="dateOrdered" label="Order Date" />
+        <CustomFormField name="dateOrdered" label="Order Date" placeholder="MM/D/YY"/>
         <CustomFormField name="customerId" label="customerID" />
         <CustomFormField
           name="status"

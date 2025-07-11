@@ -7,20 +7,85 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useGetCustomersQuery } from "@/state/api";
-import CreateCustomerModal from "./AddCustomer";
-import Image from "next/image";
-import Profile from "../../../../server/assets/profile-icon.png";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import AddCustomer from "./AddCustomer";
+import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
+import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import IconMenu from "../Components/ui/IconMenu";
+
+const Items = ({ customerId, address, name, phone, email }) => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  return (
+    <>
+      {/* Edit and Delete Dialogs */}
+      <ResponsiveDialog
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        title="Edit"
+        description="edit customer details"
+      >
+        <EditForm cardId={customerId} setIsOpen={setIsEditOpen} />
+      </ResponsiveDialog>
+
+      <ResponsiveDialog
+        isOpen={isDeleteOpen}
+        setIsOpen={setIsDeleteOpen}
+        title="Delete"
+        description=""
+      >
+        <DeleteForm cardId={customerId} setIsOpen={setIsDeleteOpen} />
+      </ResponsiveDialog>
+
+      {/* Card */}
+      <Card className="w-full mb-2 p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
+        {/* Row content */}
+        <Link href={`/customers/${customerId}`}>
+          {/* get customer by id, replace customer id with customer details */}
+          {customerId} | {address} |{name}| {phone}| {email}
+        </Link>
+        {/* Dropdown Actions */}
+        <div className="absolute right-4 top-4 z-10">
+          <span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                  <span className="sr-only">Open Menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[160px] z-50">
+                <DropdownMenuItem
+                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                  onClick={() => setIsEditOpen(true)}
+                >
+                  <IconMenu
+                    text="Edit"
+                    icon={<SquarePen className="h-4 w-4" />}
+                  />
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  <IconMenu
+                    text="Delete"
+                    icon={<Trash2 className="h-4 w-4" />}
+                  />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </span>
+        </div>
+      </Card>
+    </>
+  );
+};
 
 const Customers = () => {
   const { data: customers, isError, isLoading } = useGetCustomersQuery();
@@ -40,9 +105,7 @@ const Customers = () => {
     <div className="mx-auto pb-5 w-full m-6">
       <Button>Create</Button>
       {customers?.map((customer) => (
-        <div>
-          {customer.id} | {customer.address} | {customer.name} | {customer.phone} | {customer.email}
-        </div>
+        <Items key={customer.id} {...customer}></Items>
       ))}
     </div>
   );

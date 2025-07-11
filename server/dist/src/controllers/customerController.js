@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCustomers = void 0;
+exports.createCustomer = exports.getCustomers = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
@@ -25,3 +25,23 @@ const getCustomers = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getCustomers = getCustomers;
+// CREATE
+const createCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { customerId, name, address, phone, email } = req.body;
+        const newCustomers = yield prisma.customer.create({
+            data: {
+                id: customerId,
+                name: name,
+                address: address,
+                phone: phone,
+                email: email,
+            },
+        });
+        res.status(201).json(newCustomers);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error retrieving customers", error });
+    }
+});
+exports.createCustomer = createCustomer;

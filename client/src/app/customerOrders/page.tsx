@@ -23,6 +23,7 @@ import CreateForm from "./customerOrderForms/CreateForm";
 import { Card } from "@/components/ui/card";
 import EditForm from "./customerOrderForms/EditForm";
 import DeleteForm from "./customerOrderForms/DeleteForm";
+import Link from "next/link";
 
 const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -51,8 +52,11 @@ const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
       {/* Card */}
       <Card className="w-full mb-2 p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
         {/* Row content */}
-        {customerId} | {invoiceNo} |{" "}
-        {new Date(dateOrdered).toLocaleDateString()} | {status}
+        <Link href={`/customerOrders/${invoiceNo}`}>
+          {/* get customer by id, replace customer id with customer details */}
+          {customerId} | {invoiceNo} |{" "}
+          {new Date(dateOrdered).toLocaleDateString()} | {status}
+        </Link>
         {/* Dropdown Actions */}
         <div className="absolute right-4 top-4 z-10">
           <span>

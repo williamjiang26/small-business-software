@@ -16,7 +16,7 @@ export interface Product {
   photos: string[];
 }
 export interface Customer {
-  id: number;
+  customerId: number;
   address: string;
   name: string;
   phone: string;
@@ -108,6 +108,14 @@ export const api = createApi({
       }),
       providesTags: ["Customers"],
     }),
+    createCustomer: build.mutation<Customer, Customer>({
+      query: (customer) => ({
+        url: "/customers",
+        method: "POST",
+        body: customer,
+      }),
+      invalidatesTags: ["Customers"],
+    }),
   }),
 });
 
@@ -123,4 +131,5 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useGetCustomersQuery,
+  useCreateCustomerMutation,
 } = api;
