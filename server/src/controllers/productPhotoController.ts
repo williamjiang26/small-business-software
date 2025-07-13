@@ -3,18 +3,18 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const getProductPhotoById = async (
+export const getProductPhotoByProductId = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id, 10);
-    if (isNaN(id)) {
+    const productId = parseInt(req.params.productId, 10);
+    if (isNaN(productId)) {
       res.status(400).json({ message: "Invalid product photo ID" });
       return;
     }
-    const product = await prisma.productPhoto.findUnique({
-      where: { id },
+    const product = await prisma.productPhoto.findMany({
+      where: { productId: productId },
     });
     if (!product) {
       res.status(404).json({ message: "Product photos not found" });

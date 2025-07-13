@@ -22,6 +22,7 @@ export interface Product {
   height: number;
   width: number;
   length: number;
+  price: number;
 }
 
 export interface ProductPhoto {
@@ -146,8 +147,8 @@ export const api = createApi({
       }),
       invalidatesTags: ["Customers"],
     }),
-    getProductPhotoById: build.query<ProductPhoto, string>({
-      query: (id) => `/productPhotos/${id}`,
+    getProductPhotoByProductId: build.query<ProductPhoto, string>({
+      query: (productId) => `/productPhotos/${productId}`,
       invalidatesTags: ["ProductPhotos"],
     }),
   }),
@@ -169,5 +170,5 @@ export const {
   useCreateCustomerMutation,
   useDeleteCustomerMutation,
   useUpdateCustomerMutation,
-  useGetProductPhotoByIdQuery,
+  useGetProductPhotoByProductIdQuery,
 } = api;

@@ -63,40 +63,55 @@ export const updateProduct = async (
     res.status(500).json({ message: "Failed to update product", error });
   }
 };
-
-export const createProduct = async (req: Request, res: Response) => {
+export const createProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { id, color, height, width, length, type, price } = req.body;
+    console.log("🚀 ~ req.body:", req.body);
 
-    // upload image onto S3 bucket
-    const files = req.files as Express.Multer.File[];
-    const photoUrls: string[] = [];
-    for (const file of files) {
-      const s3Params = {
-        Bucket: process.env.S3_BUCKET_NAME!,
-        Key: `${Date.now()}_${file.originalname}`,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-      };
 
-      const uploadResult = await s3.upload(s3Params).promise();
-      photoUrls.push(uploadResult.Location);
-    }
-
-    // store link into prisma
     const newProduct = await prisma.productDetails.create({
       data: {
-        id,
-        color,
-        height,
-        width,
-        length,
+        id: parseInt(id, 10),
         type,
-        price,
+        color,
+        height: parseInt(height, 10),
+        width: parseInt(width, 10),
+        length: parseInt(length, 10),
+        price: parseInt(price, 10),
       },
     });
+    console.log("🚀 ~ newProduct:", newProduct);
+    res.status(201).json(newProduct);
 
-    res.status(201).json(newProduct); // return single product
+    const files = req.files as Express.Multer.File[];
+    console.log("🚀 ~ files:", files);
+
+
+    for (const file of files) {
+      const uploadResult = await s3
+        .upload({
+          Bucket: process.env.S3_BUCKET_NAME!,
+          Key: `${Date.now()}_${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          ACL: "public-read",
+        })
+        .promise();
+
+      const photoUrl = uploadResult.Location;
+      console.log("🚀 ~ photoUrl:", photoUrl)
+      
+      const newProductPhoto = await prisma.productPhoto.create({
+        data: {
+          productId: parseInt(id, 10),
+          url: photoUrl,
+        },
+      });
+      console.log("🚀 ~ newProductPhoto:", newProductPhoto);
+    }
   } catch (error) {
     res.status(500).json({ message: "Failed to create product", error });
   }
@@ -108,6 +123,9 @@ export const deleteProduct = async (
 ): Promise<void> => {
   try {
     const id = parseInt(req.params.id, 10);
+    const deleteProductPhoto = await prisma.productPhoto.deleteMany({
+      where: { productId: id },
+    });
     const deleteProduct = await prisma.productDetails.delete({
       where: { id },
     });
@@ -116,5 +134,3 @@ export const deleteProduct = async (
     res.status(500).json({ message: "Failed to delete product", error });
   }
 };
-
-

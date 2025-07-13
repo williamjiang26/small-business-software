@@ -46,30 +46,24 @@ enum ProductEnum {
 }
 
 model ProductDetails {
-  id        Int             @unique
+  id        Int               @unique
   type      ProductEnum
-
-  dateOrdered       DateTime?
+  dateOrdered  DateTime?      @default(now())
   color     String
-
   height    Int
   width     Int
   length    Int
-
   price     Float
-
   orders    ProductOrder[]
   photos    ProductPhoto[]
-
 } 
 
 model ProductPhoto {
-  id        Int             @id @default(autoincrement())
-  url       String          //s3 url
-  createdAt   DateTime @default(now())
-  altText     String?
-  product   ProductDetails  @relation(fields: [productId], references: [id])
-  productId Int
+  id          Int             @id @default(autoincrement())
+  createdAt   DateTime        @default(now())
+  url         String          //s3 url
+  productId   Int
+  product     ProductDetails  @relation(fields: [productId], references: [id])
 }
 
 model ProductOrder {
@@ -80,7 +74,7 @@ model ProductOrder {
   section       Int
   row           Int
 
-  product         ProductDetails      @relation(fields: [productId], references: [id])
+  product         ProductDetails            @relation(fields: [productId], references: [id])
   customerOrder   CustomerOrderDetails      @relation(fields: [orderNo], references: [invoiceNo])       
 }
 

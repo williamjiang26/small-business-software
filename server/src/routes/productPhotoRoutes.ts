@@ -1,12 +1,13 @@
 import { Router } from "express";
-import { getProductPhotoById } from "../controllers/productPhotoController";
+
 import multer from "multer";
+import { getProductPhotoByProductId } from "../controllers/productPhotoController";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const router = Router();
 
-router.get("/:id", getProductPhotoById);
+router.get("/:productId", getProductPhotoByProductId);
 
 export default router;

@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetProductPhotoByIdQuery, useGetProductsQuery } from "@/state/api";
+import { useGetProductPhotoByProductIdQuery, useGetProductsQuery } from "@/state/api";
 import { MoreVertical, SquarePen, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 import IconMenu from "../Components/ui/IconMenu";
@@ -31,18 +31,17 @@ const Items = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const {
-    data: productPhotoUrl,
+    data: productPhotoUrls,
     isError,
     isLoading,
-  } = useGetProductPhotoByIdQuery(Number(id));
-  console.log("🚀 ~ productPhotoUrl:", productPhotoUrl);
-  
+  } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
+
+  console.log("🚀 ~ productPhotoUrls:", productPhotoUrls);
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
-
-  if (isError || !productPhotoUrl) {
+  if (isError || !productPhotoUrls) {
     return (
       <div className="text-center text-red-500 py-4">
         Failed to fetch photoUrl
@@ -72,21 +71,25 @@ const Items = ({
       </ResponsiveDialog>
 
       {/* Card */}
-
       <Card className="mb-2 p-4 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
         <Link href={`/products/${id}`}>
           {/* Row Content */}
           <div className="flex items-center space-x-2 overflow-x-auto">
             <span className="min-w-[30px] text-sm">{id}</span>
-
-            <div className="w-12 h-12 bg-black overflow-hidden rounded">
-              <img
-                src={productPhotoUrl.url}
-                alt="item"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex gap-2 flex-wrap py-4">
+              {productPhotoUrls.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="w-12 h-12 bg-black overflow-hidden rounded"
+                >
+                  <img
+                    src={photo.url}
+                    alt="item"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
             </div>
-
             <span className="whitespace-nowrap text-sm">
               {new Date(dateOrdered).toLocaleDateString()}
             </span>
@@ -98,6 +101,7 @@ const Items = ({
             <span className="whitespace-nowrap text-sm">{price}</span>
           </div>
         </Link>
+
         {/* Dropdown Actions */}
         <div className="absolute right-2 top-2 z-10">
           <DropdownMenu>

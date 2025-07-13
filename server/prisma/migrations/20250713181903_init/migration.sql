@@ -28,7 +28,7 @@ CREATE TABLE "Customer" (
 CREATE TABLE "ProductDetails" (
     "id" INTEGER NOT NULL,
     "type" "ProductEnum" NOT NULL,
-    "dateOrdered" TIMESTAMP(3),
+    "dateOrdered" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "color" TEXT NOT NULL,
     "height" INTEGER NOT NULL,
     "width" INTEGER NOT NULL,

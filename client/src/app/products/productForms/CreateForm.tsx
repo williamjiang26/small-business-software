@@ -56,12 +56,13 @@ export default function CreateForm({
     try {
       const formData = new FormData();
 
-      formData.append("id", values.id.toString());
-      formData.append("type", values.type);
-      formData.append("height", values.height.toString());
-      formData.append("width", values.width.toString());
-      formData.append("length", values.length.toString());
-      formData.append("price", values.price.toString());
+      formData.append("id", values.id);
+      formData.append("type", values.type.toString());
+      formData.append("color", values.color.toString());
+      formData.append("height", values.height);
+      formData.append("width", values.width);
+      formData.append("length", values.length);
+      formData.append("price", values.price);
 
       for (const file of values.photos) {
         formData.append("photos", file); // name must match `upload.array("photos")`
@@ -79,7 +80,7 @@ export default function CreateForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col space-y-2 sm:px-0 px-4"
       >
-        <CustomFormField name="id" label="Id" />
+        <CustomFormField name="id" label="Id" type="number" />
         <CustomFormField
           name="photos"
           label="Images"

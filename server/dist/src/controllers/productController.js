@@ -71,32 +71,42 @@ exports.updateProduct = updateProduct;
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id, color, height, width, length, type, price } = req.body;
-        // upload image onto S3 bucket
+        console.log("🚀 ~ req.body:", req.body);
+        const newProduct = yield prisma.productDetails.create({
+            data: {
+                id: parseInt(id, 10),
+                type,
+                color,
+                height: parseInt(height, 10),
+                width: parseInt(width, 10),
+                length: parseInt(length, 10),
+                price: parseInt(price, 10),
+            },
+        });
+        console.log("🚀 ~ newProduct:", newProduct);
+        res.status(201).json(newProduct);
         const files = req.files;
-        const photoUrls = [];
+        console.log("🚀 ~ files:", files);
         for (const file of files) {
-            const s3Params = {
+            const uploadResult = yield s3
+                .upload({
                 Bucket: process.env.S3_BUCKET_NAME,
                 Key: `${Date.now()}_${file.originalname}`,
                 Body: file.buffer,
                 ContentType: file.mimetype,
-            };
-            const uploadResult = yield s3.upload(s3Params).promise();
-            photoUrls.push(uploadResult.Location);
+                ACL: "public-read",
+            })
+                .promise();
+            const photoUrl = uploadResult.Location;
+            console.log("🚀 ~ photoUrl:", photoUrl);
+            const newProductPhoto = yield prisma.productPhoto.create({
+                data: {
+                    productId: parseInt(id, 10),
+                    url: photoUrl,
+                },
+            });
+            console.log("🚀 ~ newProductPhoto:", newProductPhoto);
         }
-        // store link into prisma
-        const newProduct = yield prisma.productDetails.create({
-            data: {
-                id,
-                color,
-                height,
-                width,
-                length,
-                type,
-                price,
-            },
-        });
-        res.status(201).json(newProduct); // return single product
     }
     catch (error) {
         res.status(500).json({ message: "Failed to create product", error });
@@ -106,6 +116,9 @@ exports.createProduct = createProduct;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id, 10);
+        const deleteProductPhoto = yield prisma.productPhoto.deleteMany({
+            where: { productId: id },
+        });
         const deleteProduct = yield prisma.productDetails.delete({
             where: { id },
         });
