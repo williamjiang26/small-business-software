@@ -8,10 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createProduct = exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.getProducts = void 0;
+exports.deleteProduct = exports.createProduct = exports.updateProduct = exports.getProductById = exports.getProducts = void 0;
 const client_1 = require("@prisma/client");
+const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
+const s3 = new aws_sdk_1.default.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+});
 // GET
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,10 +56,10 @@ exports.getProductById = getProductById;
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id, 10);
-        const { color, height, width, length, type, price } = req.body;
+        const { color, height, width, length, type, price, photos } = req.body;
         const updateProduct = yield prisma.productDetails.update({
             where: { id },
-            data: { color, height, width, length, type, price },
+            data: { color, height, width, length, type, price, photos },
         });
         res.json(updateProduct);
     }
@@ -59,6 +68,41 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.updateProduct = updateProduct;
+const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id, color, height, width, length, type, price } = req.body;
+        // upload image onto S3 bucket
+        const files = req.files;
+        const photoUrls = [];
+        for (const file of files) {
+            const s3Params = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: `${Date.now()}_${file.originalname}`,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+            };
+            const uploadResult = yield s3.upload(s3Params).promise();
+            photoUrls.push(uploadResult.Location);
+        }
+        // store link into prisma
+        const newProduct = yield prisma.productDetails.create({
+            data: {
+                id,
+                color,
+                height,
+                width,
+                length,
+                type,
+                price,
+            },
+        });
+        res.status(201).json(newProduct); // return single product
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to create product", error });
+    }
+});
+exports.createProduct = createProduct;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id, 10);
@@ -72,16 +116,3 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProduct = deleteProduct;
-const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id, color, height, width, length, type, price, photos } = req.body;
-        const newProduct = yield prisma.productDetails.create({
-            data: { id, color, height, width, length, type, price, photos },
-        });
-        res.status(201).json(newProduct); // return single product
-    }
-    catch (error) {
-        res.status(500).json({ message: "Failed to create product", error });
-    }
-});
-exports.createProduct = createProduct;

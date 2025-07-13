@@ -5,18 +5,11 @@ export interface CustomerOrder {
   customerId: number;
   dateOrdered: string;
   status: string;
+
 }
-export interface Product {
-  id: number;
-  type: string;
-  height: number;
-  width: number;
-  length: number;
-  price: number;
-  photos: string[];
-}
+
 export interface Customer {
-  customerId: number;
+  id: number;
   address: string;
   name: string;
   phone: string;
@@ -37,6 +30,7 @@ export const api = createApi({
     }),
     getCustomerOrderById: build.query<CustomerOrder, string>({
       query: (invoiceNo) => `/customerOrders/${invoiceNo}`,
+      invalidatesTags: ["CustomerOrders"],
     }),
     createCustomerOrder: build.mutation<CustomerOrder, CustomerOrder>({
       query: (newCustomerOrder) => ({
@@ -64,7 +58,6 @@ export const api = createApi({
       }),
       providesTags: ["CustomerOrders"],
     }),
-
     getProducts: build.query<Product[], string | void>({
       query: (search) => ({
         url: "/products",
@@ -74,12 +67,13 @@ export const api = createApi({
     }),
     getProductById: build.query<Product, string>({
       query: (id) => `/products/${id}`,
+      invalidatesTags: ["Products"],
     }),
-    createProduct: build.mutation<Product, Product>({
-      query: (newProduct) => ({
+    createProduct: build.mutation<Product, FormData>({
+      query: (formData) => ({
         url: "/products",
         method: "POST",
-        body: newProduct,
+        body: formData,
       }),
       invalidatesTags: ["Products"],
     }),
@@ -116,6 +110,28 @@ export const api = createApi({
       }),
       invalidatesTags: ["Customers"],
     }),
+    getCustomerById: build.query<Customer, string>({
+      query: (id) => `/customers/${id}`,
+      invalidatesTags: ["Customers"],
+    }),
+    deleteCustomer: build.mutation<Customer, number>({
+      query: (id) => ({
+        url: `/customers/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Customers"],
+    }),
+    updateCustomer: build.mutation<
+      Customer,
+      { id: number; data: Partial<Customer> }
+    >({
+      query: ({ id, data }) => ({
+        url: `/customers/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Customers"],
+    }),
   }),
 });
 
@@ -131,5 +147,8 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useGetCustomersQuery,
+  useGetCustomerByIdQuery,
   useCreateCustomerMutation,
+  useDeleteCustomerMutation,
+  useUpdateCustomerMutation,
 } = api;

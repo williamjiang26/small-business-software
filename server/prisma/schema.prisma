@@ -59,16 +59,18 @@ model ProductDetails {
   price     Float
 
   orders    ProductOrder[]
-  photos    String[]
+  photos    ProductPhoto[]
 
 } 
 
-// model ProductPhoto {
-//   id        Int             @id @default(autoincrement())
-//   url       String
-//   product   ProductDetails  @relation(fields: [productId], references: [id])
-//   productId Int
-// }
+model ProductPhoto {
+  id        Int             @id @default(autoincrement())
+  url       String          //s3 url
+  createdAt   DateTime @default(now())
+  altText     String?
+  product   ProductDetails  @relation(fields: [productId], references: [id])
+  productId Int
+}
 
 model ProductOrder {
   orderNo       Int      @unique

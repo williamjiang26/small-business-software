@@ -1,11 +1,15 @@
-import React from "react";
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+"use client";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateCustomerMutation } from "@/state/api";
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import {
+  useGetCustomerByIdQuery,
+  useUpdateCustomerMutation,
+} from "@/state/api";
 import { z } from "zod";
-import { CustomFormField } from "../Components/FormField";
+import { CustomFormField } from "../../Components/FormField";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -15,8 +19,19 @@ const formSchema = z.object({
   // profile: z.array(z.instanceof(File)).min(1, "At least one photo is required"),
 });
 
-const AddCustomer = ({ onClose }) => {
-  const [createCustomer] = useCreateCustomerMutation();
+const EditForm = ({
+  cardId,
+  setIsOpen,
+}: {
+  cardId: string;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const { data: customer, isLoading: isCustomerLoading } =
+    useGetCustomerByIdQuery(Number(cardId));
+
+  console.log(customer);
+
+  const [updateCustomer] = useUpdateCustomerMutation();
   const now = new Date().toISOString();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,62 +46,58 @@ const AddCustomer = ({ onClose }) => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      // if (key === "productId") return;
-      if (key === "profile") {
-        const files = value as File[];
-        files.forEach((file: File) => {
-          formData.append("photos", file);
-        });
-      } else if (Array.isArray(value)) {
-        formData.append(key, JSON.stringify(value));
-      } else {
-        formData.append(key, String(value));
-      }
-    });
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
+  // When customer data is loaded, reset the form
+  useEffect(() => {
+    if (customer) {
+      form.reset({
+        id: customer.id,
+        name: customer.name,
+        address: customer.address,
+        phone: customer.phone,
+        email: customer.email,
+      });
     }
-    console.log(data);
-    await createCustomer(formData);
+  }, [customer, form]);
+
+  const isLoading = form.formState.isSubmitting;
+  if (isCustomerLoading || !customer) return <div>Loading customer...</div>;
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await updateCustomer({
+        id: customer.id,
+        data: values,
+      });
+      setIsOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <div>
-      <div className="flex justify-end mt-2">
-        <Button onClick={onClose}>Close</Button>
-      </div>
-
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit, (errors) => {
-            console.log("Validation failed:", errors);
-          })}
-        >
-          {/* Basic Info */}
-          <div className="m-5">
-            <h2 className="text-lg font-semibold mb-4">Customer Information</h2>
-            <div className="grid grid-cols-1 gap-4">
-              <CustomFormField name="name" label="name" />
-              <CustomFormField name="address" label="address" />
-              <CustomFormField name="email" label="email" />
-              <CustomFormField name="phone" label="phone" />
-            </div>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col space-y-2 sm:px-0 px-4"
+      >
+        {/* Basic Info */}
+        <div className="m-5">
+          <h2 className="text-lg font-semibold mb-4"> Customer Information </h2>
+          <div className="grid grid-cols-1 gap-4">
+            <CustomFormField name="name" label="name" />
+            <CustomFormField name="address" label="address" />
+            <CustomFormField name="email" label="email" />
+            <CustomFormField name="phone" label="phone" />
           </div>
+        </div>
 
-          {/* Submit */}
-          <Button
-            type="submit"
-            className="bg-primary-700 text-black w-full mt-8"
-          >
-            Add Customer
-          </Button>
-        </form>
-      </Form>
-    </div>
+        {/* Submit */}
+        <Button type="submit" className="bg-primary-700 text-black w-full mt-8">
+          Update
+        </Button>
+      </form>
+    </Form>
   );
 };
 
-export default AddCustomer;
+export default EditForm;

@@ -2,9 +2,7 @@
 
 import React, { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
-
 import { Loader2 } from "lucide-react";
-
 import { useDeleteProductMutation } from "@/state/api";
 
 export default function DeleteForm({

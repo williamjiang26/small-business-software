@@ -50,12 +50,10 @@ exports.getCustomerOrderById = getCustomerOrderById;
 const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { invoiceNo, customerId, dateOrdered, status } = req.body;
-        // ✅ Basic validation (optional but recommended)
         if (!invoiceNo || !customerId || !dateOrdered || !status) {
             res.status(400).json({ message: "Missing required fields" });
             return;
         }
-        // ✅ Ensure dateOrdered is a valid Date
         const parsedDate = new Date(dateOrdered);
         if (isNaN(parsedDate.getTime())) {
             res.status(400).json({ message: "Invalid dateOrdered format" });

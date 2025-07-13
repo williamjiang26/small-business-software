@@ -19,7 +19,7 @@ const formSchema = z.object({
   width: z.coerce.number(),
   length: z.coerce.number(),
   price: z.coerce.number(),
-  photos: z.array(z.instanceof(File)),
+  photos: z.array(z.instanceof(File)).min(1, "At lease one photo is required"),
 });
 
 export default function CreateForm({
@@ -54,14 +54,20 @@ export default function CreateForm({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const photoURLs = values.photos.map((file: File) =>
-        URL.createObjectURL(file)
-      );
+      const formData = new FormData();
 
-      await createProduct({
-        ...values,
-        photos: photoURLs, // or use URLs from actual upload
-      }).unwrap();
+      formData.append("id", values.id.toString());
+      formData.append("type", values.type);
+      formData.append("height", values.height.toString());
+      formData.append("width", values.width.toString());
+      formData.append("length", values.length.toString());
+      formData.append("price", values.price.toString());
+
+      for (const file of values.photos) {
+        formData.append("photos", file); // name must match `upload.array("photos")`
+      }
+
+      await createProduct(formData).unwrap();
     } catch (error) {
       console.error("Failed to create product", error);
     }

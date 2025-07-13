@@ -29,8 +29,8 @@ async function main() {
     "customer.json",
     "customerOrderDetails.json",
     "productDetails.json",
-    "productOrder.json",
     "productPhoto.json",
+    "productOrder.json",
   ];
 
   await deleteAllData(orderedFileNames);
@@ -45,13 +45,11 @@ async function main() {
       console.error(`No Prisma model matches the file name: ${fileName}`);
       continue;
     }
-
     for (const data of jsonData) {
       await model.create({
         data,
       });
     }
-
     console.log(`Seeded ${modelName} with data from ${fileName}`);
   }
 }

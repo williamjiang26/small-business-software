@@ -32,6 +32,9 @@ export default function EditForm({
   const { data: product, isLoading: isProductLoading } = useGetProductByIdQuery(
     Number(cardId)
   );
+  console.log(product);
+
+  
   const [updateProduct] = useUpdateProductMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,6 +65,7 @@ export default function EditForm({
   }, [product, form]);
 
   const isLoading = form.formState.isSubmitting;
+  if (isProductLoading || !product) return <div>Loading product...</div>;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -74,8 +78,6 @@ export default function EditForm({
       console.error(error);
     }
   };
-
-  if (isProductLoading || !product) return <div>Loading product...</div>;
 
   return (
     <Form {...form}>

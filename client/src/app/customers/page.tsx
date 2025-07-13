@@ -1,22 +1,27 @@
 "use client";
-import {
-  PlusCircleIcon,
-  MinusCircleIcon,
-  Trash2,
-  StickyNote,
-} from "lucide-react";
+import { MoreVertical, Trash2, SquarePen } from "lucide-react";
 import { useState } from "react";
 import { useGetCustomersQuery } from "@/state/api";
 import { Button } from "@/components/ui/button";
 import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import IconMenu from "../Components/ui/IconMenu";
+import EditForm from "./customerForms/EditForm";
+import DeleteForm from "./customerForms/DeleteForm";
+import CreateForm from "./customerForms/CreateForm";
 
-const Items = ({ customerId, address, name, phone, email }) => {
+const Items = ({ id, address, name, phone, email }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
   return (
     <>
       {/* Edit and Delete Dialogs */}
@@ -26,7 +31,7 @@ const Items = ({ customerId, address, name, phone, email }) => {
         title="Edit"
         description="edit customer details"
       >
-        <EditForm cardId={customerId} setIsOpen={setIsEditOpen} />
+        <EditForm cardId={id} setIsOpen={setIsEditOpen} />
       </ResponsiveDialog>
 
       <ResponsiveDialog
@@ -35,15 +40,15 @@ const Items = ({ customerId, address, name, phone, email }) => {
         title="Delete"
         description=""
       >
-        <DeleteForm cardId={customerId} setIsOpen={setIsDeleteOpen} />
+        <DeleteForm cardId={id} setIsOpen={setIsDeleteOpen} />
       </ResponsiveDialog>
 
       {/* Card */}
       <Card className="w-full mb-2 p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
         {/* Row content */}
-        <Link href={`/customers/${customerId}`}>
+        <Link href={`/customers/${id}`}>
           {/* get customer by id, replace customer id with customer details */}
-          {customerId} | {address} |{name}| {phone}| {email}
+          {id} | {address} | {name} | {phone} | {email}
         </Link>
         {/* Dropdown Actions */}
         <div className="absolute right-4 top-4 z-10">
@@ -88,7 +93,9 @@ const Items = ({ customerId, address, name, phone, email }) => {
 };
 
 const Customers = () => {
+
   const { data: customers, isError, isLoading } = useGetCustomersQuery();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
@@ -103,12 +110,22 @@ const Customers = () => {
 
   return (
     <div className="mx-auto pb-5 w-full m-6">
-      <Button>Create</Button>
+      <ResponsiveDialog
+        isOpen={isCreateOpen}
+        setIsOpen={setIsCreateOpen}
+        title="Delete"
+        description=""
+      >
+        <CreateForm setIsOpen={setIsCreateOpen} />
+      </ResponsiveDialog>
+
+      <Button onClick={() => setIsCreateOpen(true)}>Create</Button>
       {customers?.map((customer) => (
         <Items key={customer.id} {...customer}></Items>
       ))}
     </div>
   );
+  
 };
 
 export default Customers;

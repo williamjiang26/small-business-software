@@ -8,7 +8,10 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import { useGetCustomerOrdersQuery } from "@/state/api";
+import {
+  useGetCustomerByIdQuery,
+  useGetCustomerOrdersQuery,
+} from "@/state/api";
 import { Button } from "@/components/ui/button";
 import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
 import {
@@ -28,6 +31,23 @@ import Link from "next/link";
 const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const {
+    data: customer,
+    isError,
+    isLoading,
+  } = useGetCustomerByIdQuery(Number(customerId));
+
+  if (isLoading) {
+    return <div className="py-4">Loading...</div>;
+  }
+  if (isError || !customer) {
+    return (
+      <div className="text-center text-red-500 py-4">
+        Failed to Fetch Customer
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Edit and Delete Dialogs */}
@@ -54,7 +74,8 @@ const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
         {/* Row content */}
         <Link href={`/customerOrders/${invoiceNo}`}>
           {/* get customer by id, replace customer id with customer details */}
-          {customerId} | {invoiceNo} |{" "}
+          {customer.address} | {customer.name} | {customer.phone} |
+          {customer.email} | {invoiceNo} |
           {new Date(dateOrdered).toLocaleDateString()} | {status}
         </Link>
         {/* Dropdown Actions */}
@@ -126,7 +147,7 @@ const CustomerOrdersPage = () => {
 
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <div className="">Customer | Invoice No. | Date Ordered | Status</div>
+        <div></div>
         <Button
           onClick={() => {
             setIsCreateOpen(true);
