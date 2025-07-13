@@ -2,18 +2,26 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { useGetProductByIdQuery } from "@/state/api";
+import {
+  useGetProductByIdQuery,
+  useGetProductPhotoByIdQuery,
+} from "@/state/api";
 
 const ProductDetails = ({ params }: { params: { id: number } }) => {
   const { id } = params;
 
   const { data: product, isError, isLoading } = useGetProductByIdQuery(id);
+  const {
+    data: productPhotoUrl,
+    isError2,
+    isLoading2,
+  } = useGetProductPhotoByIdQuery(id);
 
-  if (isLoading) {
+  if (isLoading || isLoading2) {
     return <div className="py-4">Loading...</div>;
   }
 
-  if (isError || !product) {
+  if (isError || isError2 || !product) {
     return (
       <div className="text-center text-red-500 py-4">
         Failed to fetch products
@@ -39,7 +47,11 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
         <div className="flex items-start space-x-4">
           {/* Image mosaic */}
           <div className="w-32 h-32 bg-black overflow-hidden rounded">
-            <img src="" alt="item" className="w-full h-full object-cover" />
+            <img
+              src={productPhotoUrl.url}
+              alt="item"
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Product description */}

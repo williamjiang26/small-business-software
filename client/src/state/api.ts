@@ -5,7 +5,6 @@ export interface CustomerOrder {
   customerId: number;
   dateOrdered: string;
   status: string;
-
 }
 
 export interface Customer {
@@ -16,10 +15,25 @@ export interface Customer {
   email: string;
 }
 
+export interface Product {
+  id: number;
+  type: string;
+  color: string;
+  height: number;
+  width: number;
+  length: number;
+}
+
+export interface ProductPhoto {
+  id: number;
+  productId: number;
+  url: string;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000" }),
   reducerPath: "api",
-  tagTypes: ["CustomerOrders", "Products", "Customers"],
+  tagTypes: ["CustomerOrders", "Products", "ProductPhotos", "Customers"],
   endpoints: (build) => ({
     getCustomerOrders: build.query<CustomerOrder[], string | void>({
       query: (search) => ({
@@ -132,6 +146,10 @@ export const api = createApi({
       }),
       invalidatesTags: ["Customers"],
     }),
+    getProductPhotoById: build.query<ProductPhoto, string>({
+      query: (id) => `/productPhotos/${id}`,
+      invalidatesTags: ["ProductPhotos"],
+    }),
   }),
 });
 
@@ -151,4 +169,5 @@ export const {
   useCreateCustomerMutation,
   useDeleteCustomerMutation,
   useUpdateCustomerMutation,
+  useGetProductPhotoByIdQuery,
 } = api;

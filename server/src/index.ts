@@ -7,6 +7,7 @@ import morgan from "morgan";
 
 // route imports
 import productRoutes from "./routes/productRoutes";
+import productPhotoRoutes from "./routes/productPhotoRoutes";
 import customerOrderRoutes from "./routes/customerOrderRoutes";
 import customerRoutes from "./routes/customerRoutes";
 
@@ -23,6 +24,7 @@ app.use(cors());
 
 // routes
 app.use("/products", productRoutes);
+app.use("/productPhotos", productPhotoRoutes);
 app.use("/customerOrders", customerOrderRoutes);
 app.use("/customers", customerRoutes);
 

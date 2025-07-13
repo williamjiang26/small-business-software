@@ -116,3 +116,5 @@ export const deleteProduct = async (
     res.status(500).json({ message: "Failed to delete product", error });
   }
 };
+
+

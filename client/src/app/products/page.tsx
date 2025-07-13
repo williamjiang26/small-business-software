@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetProductsQuery } from "@/state/api";
+import { useGetProductPhotoByIdQuery, useGetProductsQuery } from "@/state/api";
 import { MoreVertical, SquarePen, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 import IconMenu from "../Components/ui/IconMenu";
@@ -30,6 +30,25 @@ const Items = ({
 }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const {
+    data: productPhotoUrl,
+    isError,
+    isLoading,
+  } = useGetProductPhotoByIdQuery(Number(id));
+  console.log("🚀 ~ productPhotoUrl:", productPhotoUrl);
+  
+
+  if (isLoading) {
+    return <div className="py-4">Loading...</div>;
+  }
+
+  if (isError || !productPhotoUrl) {
+    return (
+      <div className="text-center text-red-500 py-4">
+        Failed to fetch photoUrl
+      </div>
+    );
+  }
 
   return (
     <>
@@ -61,7 +80,11 @@ const Items = ({
             <span className="min-w-[30px] text-sm">{id}</span>
 
             <div className="w-12 h-12 bg-black overflow-hidden rounded">
-              <img src="" alt="item" className="w-full h-full object-cover" />
+              <img
+                src={productPhotoUrl.url}
+                alt="item"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <span className="whitespace-nowrap text-sm">
