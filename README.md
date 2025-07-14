@@ -9,3 +9,5 @@ Our business model is designed to put your business first. Inspired by the robus
 this tool is one of many for small business tools. some of which will include books, supply chain management, customer case management and more.
 
 a set of tools for small businesses which are deeply integrated, tightly coupled and logically engineered. 
+
+

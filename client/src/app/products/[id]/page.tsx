@@ -4,27 +4,33 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
   useGetProductByIdQuery,
-  useGetProductPhotoByIdQuery,
+  useGetProductPhotoByProductIdQuery,
 } from "@/state/api";
+import ImageCarousel from "@/app/Components/Carousel";
 
 const ProductDetails = ({ params }: { params: { id: number } }) => {
   const { id } = params;
 
-  const { data: product, isError, isLoading } = useGetProductByIdQuery(id);
   const {
-    data: productPhotoUrl,
+    data: product,
+    isError,
+    isLoading,
+  } = useGetProductByIdQuery(Number(id));
+  const {
+    data: productPhotoUrls,
     isError2,
     isLoading2,
-  } = useGetProductPhotoByIdQuery(id);
+  } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
+
+  console.log("🚀 ~ productPhotoUrls:", productPhotoUrls);
 
   if (isLoading || isLoading2) {
     return <div className="py-4">Loading...</div>;
   }
-
-  if (isError || isError2 || !product) {
+  if (isError || isError2 || !product || !productPhotoUrls) {
     return (
       <div className="text-center text-red-500 py-4">
-        Failed to fetch products
+        Failed to fetch product or photoUrl
       </div>
     );
   }
@@ -46,14 +52,7 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
         {/* Left side: image + description */}
         <div className="flex items-start space-x-4">
           {/* Image mosaic */}
-          <div className="w-32 h-32 bg-black overflow-hidden rounded">
-            <img
-              src={productPhotoUrl.url}
-              alt="item"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
+          <ImageCarousel images={productPhotoUrls} />
           {/* Product description */}
           <div className="flex flex-col justify-between">
             <div className="text-xl font-extrabold">{product.type}</div>

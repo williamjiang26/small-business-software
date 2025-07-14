@@ -9,7 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetProductPhotoByProductIdQuery, useGetProductsQuery } from "@/state/api";
+import {
+  useGetProductPhotoByProductIdQuery,
+  useGetProductsQuery,
+} from "@/state/api";
 import { MoreVertical, SquarePen, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 import IconMenu from "../Components/ui/IconMenu";
@@ -77,18 +80,16 @@ const Items = ({
           <div className="flex items-center space-x-2 overflow-x-auto">
             <span className="min-w-[30px] text-sm">{id}</span>
             <div className="flex gap-2 flex-wrap py-4">
-              {productPhotoUrls.map((photo) => (
-                <div
-                  key={photo.id}
-                  className="w-12 h-12 bg-black overflow-hidden rounded"
-                >
-                  <img
-                    src={photo.url}
-                    alt="item"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
+              <div
+                key={productPhotoUrls[0].id}
+                className="w-12 h-12 bg-black overflow-hidden rounded"
+              >
+                <img
+                  src={productPhotoUrls[0].url}
+                  alt="item"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
             <span className="whitespace-nowrap text-sm">
               {new Date(dateOrdered).toLocaleDateString()}

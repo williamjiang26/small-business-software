@@ -1,36 +1,34 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css"; // Core Swiper styles
-import "swiper/css/navigation"; // Optional navigation styles
-import "swiper/css/pagination"; // Optional pagination styles
+import * as React from "react";
 
-import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
-import { Navigation, Pagination } from "swiper/modules"; // Feature modules
-
-const ImageCarousel = ({ images }) => {
+export default function ImageCarousel({ images }) {
   return (
-    <Swiper
-      modules={[Navigation, Pagination]}
-      navigation
-      pagination={{ clickable: true }}
-      loop={true}
-      spaceBetween={10}
-      slidesPerView={1}
-    >
-      {images.map((image, index) => (
-        <SwiperSlide key={index}>
-          <Image
-            src={image}
-            alt={`Slide ${index}`}
-            width={300}
-            height={150}
-            className="rounded h-full object-cover"
-          />
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <Carousel className="w-full max-w-xs">
+      <CarouselContent>
+        {images.map((image) => (
+          <CarouselItem key={image.id}>
+            <Card>
+              <CardContent className="flex aspect-square items-center justify-center p-1">
+                <img
+                  src={image.url}
+                  alt="item"
+                  className="w-full h-full object-cover"
+                />
+              </CardContent>
+            </Card>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="absolute left-1 top-1/2 -translate-y-1/2 z-10" />
+      <CarouselNext className="absolute right-1 top-1/2 -translate-y-1/2 z-10" />
+    </Carousel>
   );
-};
-
-export default ImageCarousel;
+}
