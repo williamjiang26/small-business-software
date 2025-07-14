@@ -1,12 +1,22 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MoreVertical, Plus } from "lucide-react";
 import {
   useGetProductByIdQuery,
   useGetProductPhotoByProductIdQuery,
 } from "@/state/api";
 import ImageCarousel from "@/app/Components/Carousel";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 const ProductDetails = ({ params }: { params: { id: number } }) => {
   const { id } = params;
@@ -70,6 +80,42 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
           <div>{new Date(product?.dateOrdered).toLocaleDateString()}</div>
         </div>
       </div>
+      <div className="flex justify-end">
+        <Button
+          className=""
+          onClick={() => {
+            setIsCreateOpen(true);
+          }}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+      {/* product orders */}
+      <Table>
+        <TableCaption> List of orders that are in stock.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Order No.</TableHead>
+            <TableHead>Date Ordered</TableHead>
+            <TableHead>Section</TableHead>
+            <TableHead>Row</TableHead>
+            <TableHead>Customer Invoice?</TableHead>
+            <TableHead className="text-right"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="font-medium">8351</TableCell>
+            <TableCell>10/25/24</TableCell>
+            <TableCell>1</TableCell>
+            <TableCell>13</TableCell>
+            <TableCell>15675</TableCell>
+            <TableCell className="text-right">
+              <MoreVertical className="h-4 w-4" />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   );
 };

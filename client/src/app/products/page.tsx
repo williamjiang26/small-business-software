@@ -37,7 +37,6 @@ const Items = ({
     data: productPhotoUrls,
     isError,
     isLoading,
-
   } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
 
   console.log("🚀 ~ productPhotoUrls:", productPhotoUrls);
@@ -75,15 +74,19 @@ const Items = ({
       </ResponsiveDialog>
 
       {/* Card */}
-      <Card className="mb-2 p-4 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
-        <Link href={`/products/${id}`}>
-          {/* Row Content */}
-          <div className="flex items-center space-x-2 overflow-x-auto">
-            <span className="min-w-[30px] text-sm">{id}</span>
-            <div className="flex gap-2 flex-wrap py-4">
+      <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
+        <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
+          <Link href={`/products/${id}`} className="block">
+            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
+              {/* 1. ID */}
+              <span className="min-w-[40px] text-sm font-medium text-gray-800">
+                {id}
+              </span>
+
+              {/* 2. Image */}
               <div
                 key={productPhotoUrls[0].id}
-                className="w-12 h-12 bg-black overflow-hidden rounded"
+                className="w-20 h-20 rounded overflow-hidden bg-gray-200 flex-shrink-0"
               >
                 <img
                   src={productPhotoUrls[0].url}
@@ -91,50 +94,63 @@ const Items = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-            </div>
-            <span className="whitespace-nowrap text-sm">
-              {new Date(dateOrdered).toLocaleDateString()}
-            </span>
-            <span className="whitespace-nowrap text-sm">{type}</span>
-            <span className="whitespace-nowrap text-sm">{color}</span>
-            <span className="whitespace-nowrap text-sm">{height}</span>
-            <span className="whitespace-nowrap text-sm">{width}</span>
-            <span className="whitespace-nowrap text-sm">{length}</span>
-            <span className="whitespace-nowrap text-sm">{price}</span>
-          </div>
-        </Link>
 
-        {/* Dropdown Actions */}
-        <div className="absolute right-2 top-2 z-10">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
-              >
-                <MoreVertical className="w-4 h-4" />
-                <span className="sr-only">Open Menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[160px] z-50">
-              <DropdownMenuItem
-                className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                onClick={() => setIsEditOpen(true)}
-              >
-                <IconMenu
-                  text="Edit"
-                  icon={<SquarePen className="h-4 w-4" />}
-                />
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                onClick={() => setIsDeleteOpen(true)}
-              >
-                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              {/* 3. Type */}
+              <span className="text-sm text-gray-700 whitespace-nowrap">
+                {type}
+              </span>
+
+              {/* 4. Color */}
+              <span className="text-sm text-gray-700 whitespace-nowrap">
+                {color}
+              </span>
+
+              {/* 5. Size: H x W x L */}
+              <div className="text-sm text-gray-600 whitespace-nowrap">
+                {height} x {width} x {length}
+              </div>
+
+              {/* 6. Price */}
+              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                ${price}
+              </span>
+            </div>
+          </Link>
+          {/* 7. More Dropdown */}
+          <div className="absolute  right-1 top-2 z-10">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                  <span className="sr-only">Open Menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[160px] z-50">
+                <DropdownMenuItem
+                  className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                  onClick={() => setIsEditOpen(true)}
+                >
+                  <IconMenu
+                    text="Edit"
+                    icon={<SquarePen className="h-4 w-4" />}
+                  />
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  <IconMenu
+                    text="Delete"
+                    icon={<Trash2 className="h-4 w-4" />}
+                  />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </Card>
     </>
@@ -158,7 +174,6 @@ const ProductsPage = () => {
     );
   }
 
-
   return (
     <>
       <ResponsiveDialog
@@ -167,9 +182,7 @@ const ProductsPage = () => {
         title="Create"
         description=""
       >
-        <CreateForm
-          setIsOpen={setIsCreateOpen}
-        />
+        <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
       <div>
         <div className="flex justify-end">

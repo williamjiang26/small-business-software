@@ -10,4 +10,20 @@ this tool is one of many for small business tools. some of which will include bo
 
 a set of tools for small businesses which are deeply integrated, tightly coupled and logically engineered. 
 
+## Product Roadmap
+1. store, edit, delete inventory products, orders and customer info
+2. design cards and detail pages
+3. store, edit and delete secondary products in details page
+4. add ui components for visualization, ui design 
+---
+AI features
+5. invoice generation and data population (OCR)
+6. low stock notification
+7. customer pre and after sales support agent
+
+## Current Todos:
+1. 
+
+
+
 

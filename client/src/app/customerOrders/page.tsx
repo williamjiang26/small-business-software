@@ -1,11 +1,13 @@
 "use client";
 import {
-  PlusCircleIcon,
-  MinusCircleIcon,
-  FilePlus2,
+  Plus,
   SquarePen,
   MoreVertical,
   Trash2,
+  MapPin,
+  Phone,
+  User,
+  Mail,
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -74,46 +76,80 @@ const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
         {/* Row content */}
         <Link href={`/customerOrders/${invoiceNo}`}>
           {/* get customer by id, replace customer id with customer details */}
-          {customer.address} | {customer.name} | {customer.phone} |
-          {customer.email} | {invoiceNo} |
-          {new Date(dateOrdered).toLocaleDateString()} | {status}
+          <div className="relative w-full  p-4 rounded-lg bg-white">
+            {/* Card content */}
+            <div className="flex justify-between items-start w-full space-x-6">
+              {/* 1. Customer Info Section */}
+              <div className="flex flex-col space-y-1 min-w-[200px]">
+                <div className="text-2xl font-bold">{invoiceNo}</div>
+                <div className="flex items-center space-x-2 text-sm">
+                  <MapPin className="h-4 w-4" />
+                  <span>{customer.address}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm">
+                  <Phone className="h-4 w-4" />
+                  <span>{customer.phone}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm">
+                  <User className="h-4 w-4" />
+                  <span>{customer.name}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm">
+                  <Mail className="h-4 w-4" />
+                  <span>{customer.email}</span>
+                </div>
+              </div>
+
+              {/* 2. Order Summary Section (placeholder) */}
+              <div className="flex-1 text-sm">
+                <div className="font-medium mb-1">Order Summary</div>
+                <p className="text-muted-foreground">
+                  Add order summary content here
+                </p>
+              </div>
+
+              {/* 3. Status Section */}
+              <div className="flex flex-col items-end text-sm min-w-[120px]">
+                <div className="font-medium">
+                  {new Date(dateOrdered).toLocaleDateString()}
+                </div>
+                <div className="text-green-600">{status}</div>
+              </div>
+            </div>
+          </div>
         </Link>
         {/* Dropdown Actions */}
+        {/* 4. More Options Button */}
         <div className="absolute right-4 top-4 z-10">
-          <span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                  <span className="sr-only">Open Menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px] z-50">
-                <DropdownMenuItem
-                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  onClick={() => setIsEditOpen(true)}
-                >
-                  <IconMenu
-                    text="Edit"
-                    icon={<SquarePen className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  onClick={() => setIsDeleteOpen(true)}
-                >
-                  <IconMenu
-                    text="Delete"
-                    icon={<Trash2 className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              >
+                <MoreVertical className="w-4 h-4" />
+                <span className="sr-only">Open Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px] z-50">
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsEditOpen(true)}
+              >
+                <IconMenu
+                  text="Edit"
+                  icon={<SquarePen className="h-4 w-4" />}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </Card>
     </>
@@ -148,13 +184,16 @@ const CustomerOrdersPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div></div>
-        <Button
-          onClick={() => {
-            setIsCreateOpen(true);
-          }}
-        >
-          <FilePlus2 className="h-4 w-4" />
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            className=""
+            onClick={() => {
+              setIsCreateOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* List of Orders */}

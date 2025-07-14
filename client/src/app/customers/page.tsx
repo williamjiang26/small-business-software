@@ -1,5 +1,5 @@
 "use client";
-import { MoreVertical, Trash2, SquarePen } from "lucide-react";
+import { MoreVertical, Trash2, SquarePen, Plus } from "lucide-react";
 import { useState } from "react";
 import { useGetCustomersQuery } from "@/state/api";
 import { Button } from "@/components/ui/button";
@@ -93,7 +93,6 @@ const Items = ({ id, address, name, phone, email }) => {
 };
 
 const Customers = () => {
-
   const { data: customers, isError, isLoading } = useGetCustomersQuery();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
@@ -119,13 +118,26 @@ const Customers = () => {
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
 
-      <Button onClick={() => setIsCreateOpen(true)}>Create</Button>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <div></div>
+        <div className="flex justify-end">
+          <Button
+            className=""
+            onClick={() => {
+              setIsCreateOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
       {customers?.map((customer) => (
         <Items key={customer.id} {...customer}></Items>
       ))}
     </div>
   );
-  
 };
 
 export default Customers;
