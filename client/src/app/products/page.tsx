@@ -14,7 +14,7 @@ import {
   useGetProductsQuery,
 } from "@/state/api";
 import { MoreVertical, SquarePen, Trash2, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IconMenu from "../Components/ui/IconMenu";
 import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
 import EditForm from "./productForms/EditForm";
@@ -37,6 +37,7 @@ const Items = ({
     data: productPhotoUrls,
     isError,
     isLoading,
+
   } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
 
   console.log("🚀 ~ productPhotoUrls:", productPhotoUrls);
@@ -141,8 +142,9 @@ const Items = ({
 };
 
 const ProductsPage = () => {
-  const { data: products, isError, isLoading } = useGetProductsQuery();
+  const { data: products, isError, isLoading, refetch } = useGetProductsQuery();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [shouldRefetch, setShouldRefetch] = useState(false);
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
@@ -156,6 +158,7 @@ const ProductsPage = () => {
     );
   }
 
+
   return (
     <>
       <ResponsiveDialog
@@ -164,7 +167,9 @@ const ProductsPage = () => {
         title="Create"
         description=""
       >
-        <CreateForm setIsOpen={setIsCreateOpen} />
+        <CreateForm
+          setIsOpen={setIsCreateOpen}
+        />
       </ResponsiveDialog>
       <div>
         <div className="flex justify-end">

@@ -144,6 +144,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             allowMultiple={true}
             labelIdle={`Drag & Drop your images or <span class="filepond--label-action">Browse</span>`}
             credits={false}
+            stylePanelAspectRatio="4:1"
           />
         );
       case "number":

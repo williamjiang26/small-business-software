@@ -69,6 +69,7 @@ export default function CreateForm({
       }
 
       await createProduct(formData).unwrap();
+      setIsOpen(false);
     } catch (error) {
       console.error("Failed to create product", error);
     }
@@ -87,6 +88,7 @@ export default function CreateForm({
           type="file"
           accept="image/*"
         />
+
         <CustomFormField
           name="type"
           label="Type"
@@ -96,6 +98,7 @@ export default function CreateForm({
             label: type,
           }))}
         />
+
         <CustomFormField
           name="color"
           label="Color"
@@ -105,6 +108,7 @@ export default function CreateForm({
             label: type,
           }))}
         />
+
         <CustomFormField name="height" label="Height" type="number" />
         <CustomFormField name="width" label="Width" type="number" />
         <CustomFormField name="length" label="Length" type="number" />
