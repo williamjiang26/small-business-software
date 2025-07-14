@@ -1,6 +1,6 @@
 ## 🚀 Why This Exists
 
-this is a project i built to reliably store and organize customer orders and inventory in a small business. typical a small businesses is not technology heavy driven. the tools are out are out there but there is a big barrier between non-technical business owners and the integration and discovery of these tools that exist. Tools like these require a paywall or free trial and each tool requires time to learn its unique workflow. Not all businesses have the time to invest on learning a new platform or test out enough platforms to find the one that suits there needs. 
+this is a project i built to reliably store and organize customer orders and inventory in a small business. typical a small businesses is not technology heavy driven. the tools are out there but there is a big barrier between non-technical business owners and the integration and discovery of these tools that exist. Tools like these require a paywall or free trial and each tool requires time to learn its unique workflow. Not all businesses have the time to invest on learning a new platform or test out enough platforms to find the one that suits there needs. 
 
 this project places emphasis on user experience and design and the goal is to make managing your small business as easy as scrolling tiktok. 
 
