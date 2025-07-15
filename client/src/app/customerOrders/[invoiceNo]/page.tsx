@@ -70,11 +70,6 @@ const CustomerOrderDetails = ({
       </Link>
       <div className="flex justify-between items-start w-full">
         <div>
-          <div>{customerOrder.invoiceNo}</div>
-          <div>{new Date(customerOrder?.dateOrdered).toLocaleDateString()}</div>
-          <div>{customerOrder.status}</div>
-        </div>
-        <div>
           <div className="text-xl font-bold">{invoiceNo}</div>
           <div className="flex items-center space-x-5 text-sm">
             <MapPin className="h-4 w-4" /> {customer.address}
@@ -91,6 +86,10 @@ const CustomerOrderDetails = ({
             <Mail className="w-4 h-4" />
             {customer.email}
           </div>
+        </div>
+        <div>
+          <div>{new Date(customerOrder?.dateOrdered).toLocaleDateString()}</div>
+          <div className="text-green-500">{customerOrder.status}</div>
         </div>
       </div>
 
