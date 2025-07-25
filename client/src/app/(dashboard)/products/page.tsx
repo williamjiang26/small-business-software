@@ -15,8 +15,8 @@ import {
 } from "@/state/api";
 import { MoreVertical, SquarePen, Trash2, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import IconMenu from "../Components/ui/IconMenu";
-import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
+import IconMenu from "../../Components/ui/IconMenu";
+import ResponsiveDialog from "../../Components/ui/ResponsiveDialog";
 import EditForm from "./productForms/EditForm";
 import DeleteForm from "./productForms/DeleteForm";
 import CreateForm from "./productForms/CreateForm";

@@ -5,11 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { CustomFormField } from "../../Components/FormField";
-import { useGetProductByIdQuery, useUpdateProductMutation } from "@/state/api";
+import { CustomFormField } from "../../../Components/FormField";
+import { useCreateProductMutation } from "@/state/api";
 import { ProductEnum, ProductColorEnum } from "@/lib/constants";
 
 const formSchema = z.object({
@@ -20,22 +19,16 @@ const formSchema = z.object({
   width: z.coerce.number(),
   length: z.coerce.number(),
   price: z.coerce.number(),
+  photos: z.array(z.instanceof(File)).min(1, "At lease one photo is required"),
 });
 
-export default function EditForm({
-  cardId,
+export default function CreateForm({
   setIsOpen,
 }: {
-  cardId: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data: product, isLoading: isProductLoading } = useGetProductByIdQuery(
-    Number(cardId)
-  );
-  console.log(product);
+  const [createProduct] = useCreateProductMutation();
 
-  
-  const [updateProduct] = useUpdateProductMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,36 +39,39 @@ export default function EditForm({
       width: 0,
       length: 0,
       price: 0,
+      photos: [],
     },
   });
 
-  // When product data is loaded, reset the form
-  useEffect(() => {
-    if (product) {
-      form.reset({
-        id: product.id,
-        type: product.type,
-        color: product.color,
-        height: product.height,
-        width: product.width,
-        length: product.length,
-        price: product.price,
-      });
-    }
-  }, [product, form]);
-
   const isLoading = form.formState.isSubmitting;
-  if (isProductLoading || !product) return <div>Loading product...</div>;
+
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      console.log("Current form values:", value);
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await updateProduct({
-        id: product.id,
-        data: values,
-      });
+      const formData = new FormData();
+
+      formData.append("id", values.id);
+      formData.append("type", values.type.toString());
+      formData.append("color", values.color.toString());
+      formData.append("height", values.height);
+      formData.append("width", values.width);
+      formData.append("length", values.length);
+      formData.append("price", values.price);
+
+      for (const file of values.photos) {
+        formData.append("photos", file); // name must match `upload.array("photos")`
+      }
+
+      await createProduct(formData).unwrap();
       setIsOpen(false);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to create product", error);
     }
   };
 
@@ -87,6 +83,13 @@ export default function EditForm({
       >
         <CustomFormField name="id" label="Id" type="number" />
         <CustomFormField
+          name="photos"
+          label="Images"
+          type="file"
+          accept="image/*"
+        />
+
+        <CustomFormField
           name="type"
           label="Type"
           type="select"
@@ -95,6 +98,7 @@ export default function EditForm({
             label: type,
           }))}
         />
+
         <CustomFormField
           name="color"
           label="Color"
@@ -104,6 +108,7 @@ export default function EditForm({
             label: type,
           }))}
         />
+
         <CustomFormField name="height" label="Height" type="number" />
         <CustomFormField name="width" label="Width" type="number" />
         <CustomFormField name="length" label="Length" type="number" />
@@ -118,10 +123,10 @@ export default function EditForm({
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
+                Creating...
               </>
             ) : (
-              "Update"
+              "Create"
             )}
           </Button>
         </div>

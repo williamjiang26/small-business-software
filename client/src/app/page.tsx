@@ -1,4 +1,16 @@
 import Landing from "@/app/(nondashboard)/landing/page";
+import Navbar from "./Components/Navbar";
 export default function Home() {
-  return <Landing />;
+  return (
+    <div className="h-full w-full ">
+      <Navbar />
+
+      <main
+        className={`h-full flex w-full flex-col`}
+        style={{ paddingTop: `1px` }}
+      >
+        <Landing />
+      </main>
+    </div>
+  );
 }
