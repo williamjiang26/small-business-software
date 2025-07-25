@@ -15,7 +15,7 @@ import {
   useGetCustomerOrdersQuery,
 } from "@/state/api";
 import { Button } from "@/components/ui/button";
-import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
+import ResponsiveDialog from "../../Components/ui/ResponsiveDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IconMenu from "../Components/ui/IconMenu";
+import IconMenu from "../../Components/ui/IconMenu";
 import CreateForm from "./customerOrderForms/CreateForm";
 import { Card } from "@/components/ui/card";
 import EditForm from "./customerOrderForms/EditForm";

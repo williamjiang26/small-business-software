@@ -3,7 +3,7 @@ import { MoreVertical, Trash2, SquarePen, Plus } from "lucide-react";
 import { useState } from "react";
 import { useGetCustomersQuery } from "@/state/api";
 import { Button } from "@/components/ui/button";
-import ResponsiveDialog from "../Components/ui/ResponsiveDialog";
+import ResponsiveDialog from "../../Components/ui/ResponsiveDialog";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import {
@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IconMenu from "../Components/ui/IconMenu";
+import IconMenu from "../../Components/ui/IconMenu";
 import EditForm from "./customerForms/EditForm";
 import DeleteForm from "./customerForms/DeleteForm";
 import CreateForm from "./customerForms/CreateForm";
