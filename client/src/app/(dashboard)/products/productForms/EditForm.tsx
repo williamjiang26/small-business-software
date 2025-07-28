@@ -40,6 +40,7 @@ export default function EditForm({
     defaultValues: {
       id: 0,
       type: "",
+      name: "",
       color: "",
       height: 0,
       width: 0,
@@ -54,6 +55,7 @@ export default function EditForm({
       form.reset({
         id: product.id,
         type: product.type,
+        name: product.name,
         color: product.color,
         height: product.height,
         width: product.width,
@@ -94,6 +96,7 @@ export default function EditForm({
             label: type,
           }))}
         />
+        <CustomFormField name="name" label="Name" />
         <CustomFormField
           name="color"
           label="Color"

@@ -24,6 +24,7 @@ import CreateForm from "./productForms/CreateForm";
 const Items = ({
   id,
   type,
+  name,
   dateOrdered,
   color,
   height,
@@ -38,9 +39,7 @@ const Items = ({
     isError,
     isLoading,
   } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
-
-  console.log("🚀 ~ productPhotoUrls:", productPhotoUrls);
-
+  
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
@@ -78,12 +77,16 @@ const Items = ({
         <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
           <Link href={`/products/${id}`} className="block">
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
-              {/* 1. ID */}
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                {id}
+                {id }  {name}
               </span>
 
-              {/* 2. Image */}
+              <span className="min-w-[40px] text-sm font-medium text-gray-800">
+                {new Date(dateOrdered).toLocaleDateString()}
+              </span>
+
+
+              {/* carousel here */}
               <div
                 key={productPhotoUrls[0].id}
                 className="w-20 h-20 rounded overflow-hidden bg-gray-200 flex-shrink-0"
@@ -94,29 +97,21 @@ const Items = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-
-              {/* 3. Type */}
               <span className="text-sm text-gray-700 whitespace-nowrap">
                 {type}
               </span>
-
-              {/* 4. Color */}
               <span className="text-sm text-gray-700 whitespace-nowrap">
                 {color}
               </span>
-
-              {/* 5. Size: H x W x L */}
               <div className="text-sm text-gray-600 whitespace-nowrap">
                 {height} x {width} x {length}
               </div>
-
-              {/* 6. Price */}
               <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 ${price}
               </span>
             </div>
           </Link>
-          {/* 7. More Dropdown */}
+
           <div className="absolute  right-1 top-2 z-10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -158,9 +153,8 @@ const Items = ({
 };
 
 const ProductsPage = () => {
-  const { data: products, isError, isLoading, refetch } = useGetProductsQuery();
+  const { data: products, isError, isLoading } = useGetProductsQuery();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [shouldRefetch, setShouldRefetch] = useState(false);
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;

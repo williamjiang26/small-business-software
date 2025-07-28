@@ -56,10 +56,10 @@ exports.getProductById = getProductById;
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id, 10);
-        const { color, height, width, length, type, price, photos } = req.body;
+        const { color, name, height, width, length, type, price, photos } = req.body;
         const updateProduct = yield prisma.productDetails.update({
             where: { id },
-            data: { color, height, width, length, type, price, photos },
+            data: { color, name, height, width, length, type, price, photos },
         });
         res.json(updateProduct);
     }
@@ -70,11 +70,11 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.updateProduct = updateProduct;
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id, color, height, width, length, type, price } = req.body;
-        console.log("🚀 ~ req.body:", req.body);
+        const { id, name, color, height, width, length, type, price } = req.body;
         const newProduct = yield prisma.productDetails.create({
             data: {
                 id: parseInt(id, 10),
+                name: name,
                 type,
                 color,
                 height: parseInt(height, 10),
@@ -83,10 +83,8 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 price: parseInt(price, 10),
             },
         });
-        console.log("🚀 ~ newProduct:", newProduct);
         res.status(201).json(newProduct);
         const files = req.files;
-        console.log("🚀 ~ files:", files);
         for (const file of files) {
             const uploadResult = yield s3
                 .upload({
@@ -98,14 +96,12 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             })
                 .promise();
             const photoUrl = uploadResult.Location;
-            console.log("🚀 ~ photoUrl:", photoUrl);
             const newProductPhoto = yield prisma.productPhoto.create({
                 data: {
                     productId: parseInt(id, 10),
                     url: photoUrl,
                 },
             });
-            console.log("🚀 ~ newProductPhoto:", newProductPhoto);
         }
     }
     catch (error) {

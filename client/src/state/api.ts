@@ -17,6 +17,7 @@ export interface Customer {
 
 export interface Product {
   id: number;
+  name: string;
   type: string;
   color: string;
   height: number;
@@ -31,10 +32,27 @@ export interface ProductPhoto {
   url: string;
 }
 
+export interface ProductOrder {
+  orderNo: number;
+  productId: number;
+  dateOrdered: string;
+  section: number;
+  row: number;
+  dateStocked: string;
+  dateSold: string;
+  customerInvoice: number;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000" }),
   reducerPath: "api",
-  tagTypes: ["CustomerOrders", "Products", "ProductPhotos", "Customers"],
+  tagTypes: [
+    "CustomerOrders",
+    "Products",
+    "ProductPhotos",
+    "Customers",
+    "ProductOrders",
+  ],
   endpoints: (build) => ({
     getCustomerOrders: build.query<CustomerOrder[], string | void>({
       query: (search) => ({
@@ -151,6 +169,21 @@ export const api = createApi({
       query: (productId) => `/productPhotos/${productId}`,
       invalidatesTags: ["ProductPhotos"],
     }),
+    getProductOrdersByProductId: build.query<ProductOrder, string>({
+      query: (productId) => `/productOrders/${productId}`,
+      invalidatesTags: ["ProductOrders"],
+    }),
+    createProductOrder: build.mutation<
+      ProductOrder,
+      { productId: number; formData: FormData }
+    >({
+      query: ({ productId, formData }) => ({
+        url: `/productOrders/${productId}`,
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["ProductOrders"],
+    }),
   }),
 });
 
@@ -171,4 +204,6 @@ export const {
   useDeleteCustomerMutation,
   useUpdateCustomerMutation,
   useGetProductPhotoByProductIdQuery,
+  useGetProductOrdersByProductIdQuery,
+  useCreateProductOrderMutation,
 } = api;

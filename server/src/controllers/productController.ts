@@ -53,28 +53,28 @@ export const updateProduct = async (
 ): Promise<void> => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { color, height, width, length, type, price, photos } = req.body;
+    const { color, name, height, width, length, type, price, photos } = req.body;
     const updateProduct = await prisma.productDetails.update({
       where: { id },
-      data: { color, height, width, length, type, price, photos },
+      data: { color, name, height, width, length, type, price, photos },
     });
     res.json(updateProduct);
   } catch (error) {
     res.status(500).json({ message: "Failed to update product", error });
   }
 };
+
 export const createProduct = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { id, color, height, width, length, type, price } = req.body;
-    console.log("🚀 ~ req.body:", req.body);
-
+    const { id, name, color, height, width, length, type, price } = req.body;
 
     const newProduct = await prisma.productDetails.create({
       data: {
         id: parseInt(id, 10),
+        name: name,
         type,
         color,
         height: parseInt(height, 10),
@@ -83,12 +83,9 @@ export const createProduct = async (
         price: parseInt(price, 10),
       },
     });
-    console.log("🚀 ~ newProduct:", newProduct);
     res.status(201).json(newProduct);
 
     const files = req.files as Express.Multer.File[];
-    console.log("🚀 ~ files:", files);
-
 
     for (const file of files) {
       const uploadResult = await s3
@@ -102,7 +99,7 @@ export const createProduct = async (
         .promise();
 
       const photoUrl = uploadResult.Location;
-      console.log("🚀 ~ photoUrl:", photoUrl)
+
       
       const newProductPhoto = await prisma.productPhoto.create({
         data: {
@@ -110,7 +107,6 @@ export const createProduct = async (
           url: photoUrl,
         },
       });
-      console.log("🚀 ~ newProductPhoto:", newProductPhoto);
     }
   } catch (error) {
     res.status(500).json({ message: "Failed to create product", error });

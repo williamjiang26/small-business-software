@@ -7,7 +7,7 @@ export default function Home() {
 
       <main
         className={`h-full flex w-full flex-col`}
-        style={{ paddingTop: `1px` }}
+        style={{ paddingTop: `58px` }}
       >
         <Landing />
       </main>

@@ -13,13 +13,14 @@ import { ProductEnum, ProductColorEnum } from "@/lib/constants";
 
 const formSchema = z.object({
   id: z.coerce.number(),
+  name: z.string().min(1),
   type: z.string().min(1),
   color: z.string().min(1),
   height: z.coerce.number(),
   width: z.coerce.number(),
   length: z.coerce.number(),
   price: z.coerce.number(),
-  photos: z.array(z.instanceof(File)).min(1, "At lease one photo is required"),
+  photos: z.array(z.instanceof(File)).min(1, "At least two photos are required"),
 });
 
 export default function CreateForm({
@@ -33,6 +34,7 @@ export default function CreateForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: 0,
+      name: "",
       type: "",
       color: "",
       height: 0,
@@ -57,6 +59,7 @@ export default function CreateForm({
       const formData = new FormData();
 
       formData.append("id", values.id);
+      formData.append("name", values.name.toString());
       formData.append("type", values.type.toString());
       formData.append("color", values.color.toString());
       formData.append("height", values.height);
@@ -98,6 +101,7 @@ export default function CreateForm({
             label: type,
           }))}
         />
+        <CustomFormField name="name" label="Name" />
 
         <CustomFormField
           name="color"

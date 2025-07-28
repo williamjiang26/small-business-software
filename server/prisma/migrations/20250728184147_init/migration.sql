@@ -27,6 +27,7 @@ CREATE TABLE "Customer" (
 -- CreateTable
 CREATE TABLE "ProductDetails" (
     "id" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
     "type" "ProductEnum" NOT NULL,
     "dateOrdered" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "color" TEXT NOT NULL,
@@ -39,9 +40,8 @@ CREATE TABLE "ProductDetails" (
 -- CreateTable
 CREATE TABLE "ProductPhoto" (
     "id" SERIAL NOT NULL,
-    "url" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "altText" TEXT,
+    "url" TEXT NOT NULL,
     "productId" INTEGER NOT NULL,
 
     CONSTRAINT "ProductPhoto_pkey" PRIMARY KEY ("id")
@@ -51,9 +51,12 @@ CREATE TABLE "ProductPhoto" (
 CREATE TABLE "ProductOrder" (
     "orderNo" INTEGER NOT NULL,
     "productId" INTEGER NOT NULL,
-    "orderDate" TIMESTAMP(3) NOT NULL,
+    "customerInvoice" INTEGER,
+    "dateOrdered" TIMESTAMP(3) NOT NULL,
     "section" INTEGER NOT NULL,
-    "row" INTEGER NOT NULL
+    "row" INTEGER NOT NULL,
+    "dateStocked" TIMESTAMP(3),
+    "dateSold" TIMESTAMP(3)
 );
 
 -- CreateIndex
@@ -75,4 +78,4 @@ ALTER TABLE "ProductPhoto" ADD CONSTRAINT "ProductPhoto_productId_fkey" FOREIGN 
 ALTER TABLE "ProductOrder" ADD CONSTRAINT "ProductOrder_productId_fkey" FOREIGN KEY ("productId") REFERENCES "ProductDetails"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProductOrder" ADD CONSTRAINT "ProductOrder_orderNo_fkey" FOREIGN KEY ("orderNo") REFERENCES "CustomerOrderDetails"("invoiceNo") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProductOrder" ADD CONSTRAINT "ProductOrder_customerInvoice_fkey" FOREIGN KEY ("customerInvoice") REFERENCES "CustomerOrderDetails"("invoiceNo") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -47,6 +47,7 @@ enum ProductEnum {
 
 model ProductDetails {
   id        Int               @unique
+  name      String
   type      ProductEnum
   dateOrdered  DateTime?      @default(now())
   color     String
@@ -69,13 +70,17 @@ model ProductPhoto {
 model ProductOrder {
   orderNo       Int      @unique
   productId     Int
-  
-  orderDate     DateTime
+  customerInvoice Int?
+  dateOrdered     DateTime
+
   section       Int
   row           Int
 
+  dateStocked   DateTime?
+  dateSold      DateTime?
+
   product         ProductDetails            @relation(fields: [productId], references: [id])
-  customerOrder   CustomerOrderDetails      @relation(fields: [orderNo], references: [invoiceNo])       
+  customerOrder   CustomerOrderDetails?      @relation(fields: [customerInvoice], references: [invoiceNo])       
 }
 
 

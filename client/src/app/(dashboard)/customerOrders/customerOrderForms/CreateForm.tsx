@@ -50,7 +50,6 @@ const CreateForm = ({
         dateOrdered: date,
       };
 
-      console.log(payload);
       await createCustomerOrder(payload).unwrap();
       setIsOpen(false);
     } catch (error) {

@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, MoreVertical, Plus } from "lucide-react";
 import {
   useGetProductByIdQuery,
+  useGetProductOrdersByProductIdQuery,
   useGetProductPhotoByProductIdQuery,
 } from "@/state/api";
 import ImageCarousel from "@/app/Components/Carousel";
@@ -17,6 +18,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import ResponsiveDialog from "@/app/Components/ui/ResponsiveDialog";
+import CreateForm from "../productOrderForms/CreateForm";
 
 const ProductDetails = ({ params }: { params: { id: number } }) => {
   const { id } = params;
@@ -31,8 +34,13 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
     isError2,
     isLoading2,
   } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
-
-  console.log("🚀 ~ productPhotoUrls:", productPhotoUrls);
+  const {
+    data: productOrders,
+    // isError2,
+    // isLoading2,
+  } = useGetProductOrdersByProductIdQuery(Number(id)); // this returns a list of s3 urls
+  
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   if (isLoading || isLoading2) {
     return <div className="py-4">Loading...</div>;
@@ -47,6 +55,7 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
 
   return (
     <div>
+
       <Link
         href="/products"
         className="mb-6 flex flex-row items-center space-x-1 group"
@@ -80,6 +89,14 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
           <div>{new Date(product?.dateOrdered).toLocaleDateString()}</div>
         </div>
       </div>
+      <ResponsiveDialog
+        isOpen={isCreateOpen}
+        setIsOpen={setIsCreateOpen}
+        title="Create"
+        description=""
+      >
+        <CreateForm setIsOpen={setIsCreateOpen} productId={product.id} />
+      </ResponsiveDialog>
       <div className="flex justify-end">
         <Button
           className=""
@@ -99,21 +116,29 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
             <TableHead>Date Ordered</TableHead>
             <TableHead>Section</TableHead>
             <TableHead>Row</TableHead>
+            <TableHead>Date Stocked</TableHead>
+            <TableHead>Date Sold</TableHead>
             <TableHead>Customer Invoice?</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">8351</TableCell>
-            <TableCell>10/25/24</TableCell>
-            <TableCell>1</TableCell>
-            <TableCell>13</TableCell>
-            <TableCell>15675</TableCell>
-            <TableCell className="text-right">
-              <MoreVertical className="h-4 w-4" />
-            </TableCell>
-          </TableRow>
+          {productOrders?.map((productOrder) => (
+            <TableRow>
+              <TableCell className="font-medium">
+                {productOrder.orderNo}
+              </TableCell>
+              <TableCell>{new Date(productOrder?.dateOrdered).toLocaleDateString()}</TableCell>
+              <TableCell>{productOrder.section}</TableCell>
+              <TableCell>{productOrder.row}</TableCell>
+              <TableCell>{new Date(productOrder?.dateStocked).toLocaleDateString()}</TableCell>
+              <TableCell>{new Date(productOrder?.dateSold).toLocaleDateString()}</TableCell>
+              <TableCell>{productOrder.customerInvoice}</TableCell>
+              <TableCell className="text-right">
+                <MoreVertical className="h-4 w-4" />
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
