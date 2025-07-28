@@ -1,21 +1,15 @@
 ## The Problem
-Managing a business is difficult. There are a lot of parts to running a successful business, from operations to finances to sales. It is difficult to manage each department and determine what are success metrics for each. Additionally there are repetitive processes to fulfilling each customer order where attention to detail and organization is crucial. 
-
+Managing a business is difficult. There are many parts to running a successful business from operations to finances and sales and what success looks like in each part is different. There is a lot of context switching and figuring out the what the problems and bottlenecks are in a business. Some businesses operate like a bottled mess and dont know where to start. There are lots of repetitive processes for each customer order and remembering all the details about each order as well as updates throughout the fulfillment is difficult. 
 
 ## Jobs to be done
 organize products in inventory, product location, types and sizes, stock levels, re-stocking info
-update customer order details, track customer orders
-identify our margins, month to month sales, revenue and profitability, costs 
-
+update customer order details, track status of customer orders, store customer info
 
 ## Product Solution
-a organization tool to manage every aspect of your business
+a tool to manage the fulfillment of orders in a small business
 
-AI features 5. invoice generation and data population (OCR) 6. low stock notification 7. customer pre and after sales support agent
-## Engineering Roadmap
+## Engineering Roadmap]
+crud for inventory products => improve UI for inventory managment => crud customer orders => improve UI for customer order and case manaement
 
-1. store, edit, delete inventory products, orders and customer info
-2. design cards and detail pages
-3. store, edit and delete secondary products in details page
-4. add ui components for visualization, ui design
-## Current Todo: 
+## Currently: 
+Crud for inventory products
