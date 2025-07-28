@@ -9,7 +9,7 @@ update customer order details, track status of customer orders, store customer i
 a tool to manage the fulfillment of orders in a small business
 
 ## Engineering Roadmap]
-crud for inventory products => improve UI for inventory managment => crud customer orders => improve UI for customer order and case manaement
+crud for inventory products => improve UI for inventory managment => crud customer orders => improve UI for customer order and case manaement => deploy
 
 ## Currently: 
 Crud for inventory products
