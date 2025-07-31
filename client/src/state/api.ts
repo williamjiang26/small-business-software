@@ -124,7 +124,7 @@ export const api = createApi({
     }),
     deleteProduct: build.mutation<Product, number>({
       query: (id) => ({
-        url: `/products/${id}`, 
+        url: `/products/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Products"],
@@ -187,8 +187,23 @@ export const api = createApi({
     }),
     deleteProductOrder: build.mutation<ProductOrder, number>({
       query: (orderNo) => ({
-        url: `/productOrders/${orderNo}`, 
+        url: `/productOrders/${orderNo}`,
         method: "DELETE",
+      }),
+      invalidatesTags: ["ProductOrders"],
+    }),
+    getProductOrderByOrderNo: build.query<ProductOrder, number>({
+      query: (orderNo) => `/productOrders/order/${orderNo}`,
+      providesTags: ["ProductOrders"],
+    }),
+    updateProductOrder: build.mutation<
+      ProductOrder,
+      { orderNo: number; data: Partial<ProductOrder> }
+    >({
+      query: ({ orderNo, data }) => ({
+        url: `/productOrders/order/${orderNo}`,
+        method: "PUT",
+        body: data,
       }),
       invalidatesTags: ["ProductOrders"],
     }),
@@ -215,4 +230,6 @@ export const {
   useGetProductOrdersByProductIdQuery,
   useCreateProductOrderMutation,
   useDeleteProductOrderMutation,
+  useGetProductOrderByOrderNoQuery,
+  useUpdateProductOrderMutation,
 } = api;

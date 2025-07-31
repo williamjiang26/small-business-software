@@ -53,10 +53,17 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  if (isLoading ) {
+  const [activeEditOrderNo, setActiveEditOrderNo] = useState<number | null>(
+    null
+  );
+  const [activeDeleteOrderNo, setActiveDeleteOrderNo] = useState<number | null>(
+    null
+  );
+
+  if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
-  if (isError  || !product || !productPhotoUrls) {
+  if (isError || !product || !productPhotoUrls) {
     return (
       <div className="text-center text-red-500 py-4">
         Failed to fetch product or photoUrl
@@ -107,15 +114,6 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
         <CreateForm setIsOpen={setIsCreateOpen} productId={product.id} />
       </ResponsiveDialog>
 
-      {/* <ResponsiveDialog
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        title="Edit"
-        description=""
-      >
-        <EditForm setIsOpen={setIsEditOpen} cardId={product.id} />
-      </ResponsiveDialog> */}
-
       <div className="flex justify-end">
         <Button
           className=""
@@ -142,33 +140,49 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {productOrders?.map((productOrder) => (
+          {activeEditOrderNo !== null && (
+            <ResponsiveDialog
+              isOpen={true}
+              setIsOpen={() => setActiveEditOrderNo(null)}
+              title="Edit"
+              description=""
+            >
+              <EditForm
+                setIsOpen={() => setActiveEditOrderNo(null)}
+                orderNo={activeEditOrderNo}
+              />
+            </ResponsiveDialog>
+          )}
 
+          {activeDeleteOrderNo !== null && (
+            <ResponsiveDialog
+              isOpen={true}
+              setIsOpen={() => setActiveDeleteOrderNo(null)}
+              title="Delete"
+              description=""
+            >
+              <DeleteForm
+                setIsOpen={() => setActiveDeleteOrderNo(null)}
+                cardId={activeDeleteOrderNo}
+              />
+            </ResponsiveDialog>
+          )}
+
+          {productOrders?.map((productOrder) => (
             <TableRow key={productOrder.orderNo}>
-              <ResponsiveDialog
-                isOpen={isDeleteOpen}
-                setIsOpen={setIsDeleteOpen}
-                title="Delete"
-                description=""
-              >
-                <DeleteForm
-                  setIsOpen={setIsDeleteOpen}
-                  cardId={productOrder.orderNo}
-                />
-              </ResponsiveDialog>
               <TableCell className="font-medium">
                 {productOrder.orderNo}
               </TableCell>
               <TableCell>
-                {new Date(productOrder?.dateOrdered).toLocaleDateString()}
+                {new Date(productOrder.dateOrdered).toLocaleDateString()}
               </TableCell>
               <TableCell>{productOrder.section}</TableCell>
               <TableCell>{productOrder.row}</TableCell>
               <TableCell>
-                {new Date(productOrder?.dateStocked).toLocaleDateString()}
+                {new Date(productOrder.dateStocked).toLocaleDateString()}
               </TableCell>
               <TableCell>
-                {new Date(productOrder?.dateSold).toLocaleDateString()}
+                {new Date(productOrder.dateSold).toLocaleDateString()}
               </TableCell>
               <TableCell>{productOrder.customerInvoice}</TableCell>
               <TableCell className="text-right">
@@ -185,7 +199,7 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
                   <DropdownMenuContent align="end" className="w-[160px] z-50">
                     <DropdownMenuItem
                       className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
-                      onClick={() => setIsEditOpen(true)}
+                      onClick={() => setActiveEditOrderNo(productOrder.orderNo)}
                     >
                       <IconMenu
                         text="Edit"
@@ -195,7 +209,9 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
-                      onClick={() => setIsDeleteOpen(true)}
+                      onClick={() =>
+                        setActiveDeleteOrderNo(productOrder.orderNo)
+                      }
                     >
                       <IconMenu
                         text="Delete"

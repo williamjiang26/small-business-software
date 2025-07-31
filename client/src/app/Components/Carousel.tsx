@@ -22,6 +22,8 @@ export default function ImageCarousel({ images }) {
                   src={image.url}
                   alt="item"
                   className="w-full h-full object-cover"
+                  width={500}
+                  height={500}
                 />
               </CardContent>
             </Card>

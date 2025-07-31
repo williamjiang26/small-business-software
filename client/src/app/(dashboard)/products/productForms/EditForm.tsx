@@ -27,7 +27,7 @@ export default function EditForm({
   cardId,
   setIsOpen,
 }: {
-  cardId: string;
+  cardId: number;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data: product, isLoading: isProductLoading } = useGetProductByIdQuery(

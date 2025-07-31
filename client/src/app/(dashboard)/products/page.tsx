@@ -21,6 +21,8 @@ import ResponsiveDialog from "../../Components/ui/ResponsiveDialog";
 import EditForm from "./productForms/EditForm";
 import DeleteForm from "./productForms/DeleteForm";
 import CreateForm from "./productForms/CreateForm";
+import Image from "../../../../node_modules/next/image";
+import ImageCarousel from "@/app/Components/Carousel";
 
 const Items = ({
   id,
@@ -80,8 +82,8 @@ const Items = ({
       </ResponsiveDialog>
 
       {/* Card */}
-      <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
-        <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
+      <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
+        <div className="relative w-full p-1 flex justify-between rounded-lg space-x-23 bg-white hover:bg-gray-50 transition">
           <Link href={`/products/${id}`} className="block">
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
@@ -93,11 +95,14 @@ const Items = ({
               </span>
 
               {/* carousel here */}
-              <div
-                // key={productPhotoUrls[0].id}
-                className="w-20 h-20 rounded overflow-hidden bg-gray-200 flex-shrink-0"
-              >
-                {/* <img src={} alt="item" className="w-full h-full object-cover" /> */}
+              <div className="w-20 h-20 rounded overflow-hidden bg-gray-200 flex-shrink-0">
+                {productPhotoUrls?.length ? (
+                  <ImageCarousel images={productPhotoUrls} />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500 text-sm">No image</span>
+                  </div>
+                )}
               </div>
               <span className="text-sm text-gray-700 whitespace-nowrap">
                 {type}
@@ -184,18 +189,7 @@ const ProductsPage = () => {
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
       <div>
-        <div className="flex justify-end">
-          <Button
-            className=""
-            onClick={() => {
-              setIsCreateOpen(true);
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Header */}
+        {/* Filters Bar */}
         <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
           <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
@@ -223,9 +217,16 @@ const ProductsPage = () => {
               <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 QTY
               </span>
-              <div className="absolute  right-1 top-2 z-10">
-                <MoreVertical className="w-4 h-4" />
-              </div>
+
+              <Button
+                variant="ghost"
+                className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+                onClick={() => {
+                  setIsCreateOpen(true);
+                }}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </Card>
