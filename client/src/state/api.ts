@@ -123,7 +123,7 @@ export const api = createApi({
     }),
     deleteProduct: build.mutation<Product, number>({
       query: (id) => ({
-        url: `/products/${id}`, // RESTful path parameter
+        url: `/products/${id}`, 
         method: "DELETE",
       }),
       invalidatesTags: ["Products"],
@@ -184,6 +184,13 @@ export const api = createApi({
       }),
       invalidatesTags: ["ProductOrders"],
     }),
+    deleteProductOrder: build.mutation<ProductOrder, number>({
+      query: (orderNo) => ({
+        url: `/productOrders/${orderNo}`, 
+        method: "DELETE",
+      }),
+      invalidatesTags: ["ProductOrders"],
+    }),
   }),
 });
 
@@ -206,4 +213,5 @@ export const {
   useGetProductPhotoByProductIdQuery,
   useGetProductOrdersByProductIdQuery,
   useCreateProductOrderMutation,
+  useDeleteProductOrderMutation,
 } = api;

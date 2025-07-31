@@ -11,4 +11,5 @@ const upload = (0, multer_1.default)({ storage: storage });
 const router = (0, express_1.Router)();
 router.get("/:productId", productOrderController_1.getProductOrdersByProductId);
 router.post("/:productId", upload.none(), productOrderController_1.createProductOrder);
+router.delete("/:orderNo", productOrderController_1.deleteProductOrder);
 exports.default = router;

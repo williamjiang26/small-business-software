@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, MoreVertical, Plus } from "lucide-react";
+import { ArrowLeft, MoreVertical, Plus, SquarePen, Trash2 } from "lucide-react";
 import {
   useGetProductByIdQuery,
   useGetProductOrdersByProductIdQuery,
@@ -19,11 +19,20 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import ResponsiveDialog from "@/app/Components/ui/ResponsiveDialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import IconMenu from "@/app/Components/ui/IconMenu";
 import CreateForm from "../productOrderForms/CreateForm";
+import DeleteForm from "../productOrderForms/DeleteForm";
+import EditForm from "../productOrderForms/EditForm";
 
 const ProductDetails = ({ params }: { params: { id: number } }) => {
   const { id } = params;
-
   const {
     data: product,
     isError,
@@ -39,8 +48,10 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
     // isError2,
     // isLoading2,
   } = useGetProductOrdersByProductIdQuery(Number(id)); // this returns a list of s3 urls
-  
+
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   if (isLoading || isLoading2) {
     return <div className="py-4">Loading...</div>;
@@ -52,10 +63,8 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
       </div>
     );
   }
-
   return (
     <div>
-
       <Link
         href="/products"
         className="mb-6 flex flex-row items-center space-x-1 group"
@@ -97,6 +106,16 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
       >
         <CreateForm setIsOpen={setIsCreateOpen} productId={product.id} />
       </ResponsiveDialog>
+
+      {/* <ResponsiveDialog
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        title="Edit"
+        description=""
+      >
+        <EditForm setIsOpen={setIsEditOpen} cardId={product.id} />
+      </ResponsiveDialog> */}
+
       <div className="flex justify-end">
         <Button
           className=""
@@ -125,17 +144,65 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
         <TableBody>
           {productOrders?.map((productOrder) => (
             <TableRow>
+              <ResponsiveDialog
+                isOpen={isDeleteOpen}
+                setIsOpen={setIsDeleteOpen}
+                title="Delete"
+                description=""
+              >
+                <DeleteForm
+                  setIsOpen={setIsDeleteOpen}
+                  cardId={productOrder.orderNo}
+                />
+              </ResponsiveDialog>
               <TableCell className="font-medium">
                 {productOrder.orderNo}
               </TableCell>
-              <TableCell>{new Date(productOrder?.dateOrdered).toLocaleDateString()}</TableCell>
+              <TableCell>
+                {new Date(productOrder?.dateOrdered).toLocaleDateString()}
+              </TableCell>
               <TableCell>{productOrder.section}</TableCell>
               <TableCell>{productOrder.row}</TableCell>
-              <TableCell>{new Date(productOrder?.dateStocked).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(productOrder?.dateSold).toLocaleDateString()}</TableCell>
+              <TableCell>
+                {new Date(productOrder?.dateStocked).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                {new Date(productOrder?.dateSold).toLocaleDateString()}
+              </TableCell>
               <TableCell>{productOrder.customerInvoice}</TableCell>
               <TableCell className="text-right">
-                <MoreVertical className="h-4 w-4" />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+                    >
+                      <MoreVertical className="w-4 h-4" />
+                      <span className="sr-only">Open Menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px] z-50">
+                    <DropdownMenuItem
+                      className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                      onClick={() => setIsEditOpen(true)}
+                    >
+                      <IconMenu
+                        text="Edit"
+                        icon={<SquarePen className="h-4 w-4" />}
+                      />
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                      onClick={() => setIsDeleteOpen(true)}
+                    >
+                      <IconMenu
+                        text="Delete"
+                        icon={<Trash2 className="h-4 w-4" />}
+                      />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

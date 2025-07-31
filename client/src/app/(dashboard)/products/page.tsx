@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  useGetProductOrdersByProductIdQuery,
   useGetProductPhotoByProductIdQuery,
   useGetProductsQuery,
 } from "@/state/api";
@@ -38,8 +39,15 @@ const Items = ({
     data: productPhotoUrls,
     isError,
     isLoading,
-  } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
-  
+  } = useGetProductPhotoByProductIdQuery(Number(id));
+  const {
+    data: productOrders,
+    // isError2,
+    // isLoading2,
+  } = useGetProductOrdersByProductIdQuery(Number(id));
+
+  console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls);
+
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
@@ -53,7 +61,6 @@ const Items = ({
 
   return (
     <>
-      {/* Edit and Delete Dialogs */}
       <ResponsiveDialog
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
@@ -78,24 +85,19 @@ const Items = ({
           <Link href={`/products/${id}`} className="block">
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                {id }  {name}
+                {id} {name}
               </span>
 
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
                 {new Date(dateOrdered).toLocaleDateString()}
               </span>
 
-
               {/* carousel here */}
               <div
-                key={productPhotoUrls[0].id}
+                // key={productPhotoUrls[0].id}
                 className="w-20 h-20 rounded overflow-hidden bg-gray-200 flex-shrink-0"
               >
-                <img
-                  src={productPhotoUrls[0].url}
-                  alt="item"
-                  className="w-full h-full object-cover"
-                />
+                {/* <img src={} alt="item" className="w-full h-full object-cover" /> */}
               </div>
               <span className="text-sm text-gray-700 whitespace-nowrap">
                 {type}
@@ -108,6 +110,9 @@ const Items = ({
               </div>
               <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 ${price}
+              </span>
+              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                {productOrders.length} pcs
               </span>
             </div>
           </Link>
@@ -190,10 +195,46 @@ const ProductsPage = () => {
           </Button>
         </div>
 
-        {/* card */}
-        {products?.map((product) => (
-          <Items key={product.id} {...product} />
-        ))}
+        {/* Header */}
+        <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
+          <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
+            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
+              <span className="min-w-[40px] text-sm font-medium text-gray-800">
+                ID SKU
+              </span>
+              <span className="min-w-[40px] text-sm font-medium text-gray-800">
+                Date Ordered
+              </span>
+              <span className="min-w-[40px] text-sm font-medium text-gray-800">
+                Photos
+              </span>
+              <span className="text-sm text-gray-700 whitespace-nowrap">
+                Type
+              </span>
+              <span className="text-sm text-gray-700 whitespace-nowrap">
+                Color
+              </span>
+              <div className="text-sm text-gray-600 whitespace-nowrap">
+                Height x Width x Length
+              </div>
+              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                Price
+              </span>
+              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                QTY
+              </span>
+              <div className="absolute  right-1 top-2 z-10">
+                <MoreVertical className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* cards */}
+        {products?.map((product) => {
+          console.log("🚀 ~ product:", product);
+          return <Items key={product.id} {...product} />;
+        })}
       </div>
     </>
   );

@@ -20,7 +20,9 @@ const formSchema = z.object({
   width: z.coerce.number(),
   length: z.coerce.number(),
   price: z.coerce.number(),
-  photos: z.array(z.instanceof(File)).min(1, "At least two photos are required"),
+  photos: z
+    .array(z.instanceof(File))
+    .min(1, "At least two photos are required"),
 });
 
 export default function CreateForm({
@@ -82,43 +84,55 @@ export default function CreateForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-2 sm:px-0 px-4"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:px-0 px-4"
       >
-        <CustomFormField name="id" label="Id" type="number" />
-        <CustomFormField
-          name="photos"
-          label="Images"
-          type="file"
-          accept="image/*"
-        />
+        {/* LEFT COLUMN */}
+        <div className="flex flex-col gap-4">
+          <CustomFormField name="id" label="Id" type="number" />
 
-        <CustomFormField
-          name="type"
-          label="Type"
-          type="select"
-          options={Object.keys(ProductEnum).map((type) => ({
-            value: type,
-            label: type,
-          }))}
-        />
-        <CustomFormField name="name" label="Name" />
+          <CustomFormField
+            name="type"
+            label="Type"
+            type="select"
+            options={Object.keys(ProductEnum).map((type) => ({
+              value: type,
+              label: type,
+            }))}
+          />
 
-        <CustomFormField
-          name="color"
-          label="Color"
-          type="select"
-          options={Object.keys(ProductColorEnum).map((type) => ({
-            value: type,
-            label: type,
-          }))}
-        />
+          <CustomFormField name="name" label="Name" />
 
-        <CustomFormField name="height" label="Height" type="number" />
-        <CustomFormField name="width" label="Width" type="number" />
-        <CustomFormField name="length" label="Length" type="number" />
-        <CustomFormField name="price" label="Price" type="number" />
+          <CustomFormField
+            name="color"
+            label="Color"
+            type="select"
+            options={Object.keys(ProductColorEnum).map((type) => ({
+              value: type,
+              label: type,
+            }))}
+          />
+        </div>
 
-        <div className="flex w-full sm:justify-end mt-4">
+        {/* RIGHT COLUMN */}
+        <div className="flex flex-col gap-4">
+          <CustomFormField name="height" label="Height" type="number" />
+          <CustomFormField name="width" label="Width" type="number" />
+          <CustomFormField name="length" label="Length" type="number" />
+          <CustomFormField name="price" label="Price" type="number" />
+        </div>
+
+        {/* FULL WIDTH (bottom row) */}
+        <div className="sm:col-span-2">
+          <CustomFormField
+            name="photos"
+            label="Images"
+            type="file"
+            accept="image/*"
+          />
+        </div>
+
+        {/* SUBMIT BUTTON - aligned right on larger screens */}
+        <div className="sm:col-span-2 flex sm:justify-end">
           <Button
             type="submit"
             disabled={isLoading}

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createProductOrder = exports.getProductOrdersByProductId = void 0;
+exports.deleteProductOrder = exports.createProductOrder = exports.getProductOrdersByProductId = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
@@ -62,3 +62,17 @@ const createProductOrder = (req, res) => __awaiter(void 0, void 0, void 0, funct
     res.status(201).json(newProductOrder);
 });
 exports.createProductOrder = createProductOrder;
+const deleteProductOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const orderNo = parseInt(req.params.orderNo, 10);
+        console.log("🚀 ~ deleteProductOrder ~ orderNo:", orderNo);
+        const deleteProductOrder = yield prisma.productOrder.delete({
+            where: { orderNo },
+        });
+        res.json(deleteProductOrder);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to delete product order", error });
+    }
+});
+exports.deleteProductOrder = deleteProductOrder;

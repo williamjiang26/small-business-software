@@ -3,7 +3,7 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useDeleteProductMutation } from "@/state/api";
+import { useDeleteProductOrderMutation } from "@/state/api";
 
 export default function DeleteForm({
   cardId,
@@ -12,12 +12,12 @@ export default function DeleteForm({
   cardId: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [deleteProduct, { isLoading }] = useDeleteProductMutation();
-
+  const [deleteProductOrder, { isLoading }] = useDeleteProductOrderMutation();
   const handleDelete = async () => {
     try {
-      console.log(cardId)
-      await deleteProduct(Number(cardId)).unwrap();
+      console.log("🚀 ~ handleDelete ~ cardId:", cardId)
+      await deleteProductOrder(Number(cardId)).unwrap();
+
       setIsOpen(false);
     } catch (error) {
       console.error("Delete failed:", error);

@@ -84,7 +84,7 @@ export default function CreateForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-2 sm:px-0 px-4"
+        className="flex flex-col space-y-2 sm:px-0 px-4 max-h-fit"
       >
         <CustomFormField name="orderNo" label="Order No" type="number" />
         <CustomFormField name="dateOrdered" label="Date Ordered" />

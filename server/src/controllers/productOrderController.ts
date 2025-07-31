@@ -70,3 +70,20 @@ export const createProductOrder = async (
   });
   res.status(201).json(newProductOrder);
 };
+
+export const deleteProductOrder = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const orderNo = parseInt(req.params.orderNo, 10);
+    console.log("🚀 ~ deleteProductOrder ~ orderNo:", orderNo)
+    
+    const deleteProductOrder = await prisma.productOrder.delete({
+      where: { orderNo },
+    });
+    res.json(deleteProductOrder);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete product order", error });
+  }
+};
