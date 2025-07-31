@@ -40,11 +40,11 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
   } = useGetProductByIdQuery(Number(id));
   const {
     data: productPhotoUrls,
-    isError2,
-    isLoading2,
+    // isError2,
+    // isLoading2,
   } = useGetProductPhotoByProductIdQuery(Number(id)); // this returns a list of s3 urls
   const {
-    data: productOrders,
+    data: productOrders = [],
     // isError2,
     // isLoading2,
   } = useGetProductOrdersByProductIdQuery(Number(id)); // this returns a list of s3 urls
@@ -53,10 +53,10 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  if (isLoading || isLoading2) {
+  if (isLoading ) {
     return <div className="py-4">Loading...</div>;
   }
-  if (isError || isError2 || !product || !productPhotoUrls) {
+  if (isError  || !product || !productPhotoUrls) {
     return (
       <div className="text-center text-red-500 py-4">
         Failed to fetch product or photoUrl
@@ -143,7 +143,8 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
         </TableHeader>
         <TableBody>
           {productOrders?.map((productOrder) => (
-            <TableRow>
+
+            <TableRow key={productOrder.orderNo}>
               <ResponsiveDialog
                 isOpen={isDeleteOpen}
                 setIsOpen={setIsDeleteOpen}

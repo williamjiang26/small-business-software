@@ -40,7 +40,7 @@ const FeaturesSection = () => {
           {[0, 1, 2].map((index) => (
             <motion.div key={index} variants={itemVariants}>
               <FeatureCard
-                // imageSrc={}
+                imageSrc={""}
                 title={
                   [
                     "Customer Order Management",

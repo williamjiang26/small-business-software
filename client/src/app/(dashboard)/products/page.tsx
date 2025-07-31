@@ -37,24 +37,24 @@ const Items = ({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const {
     data: productPhotoUrls,
-    isError,
-    isLoading,
+    isError: isPhotoError,
+    isLoading: isPhotoLoading,
   } = useGetProductPhotoByProductIdQuery(Number(id));
+
   const {
     data: productOrders,
-    // isError2,
-    // isLoading2,
+    isError: isOrdersError,
+    isLoading: isOrdersLoading,
   } = useGetProductOrdersByProductIdQuery(Number(id));
 
-  console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls);
-
-  if (isLoading) {
+  if (isPhotoLoading || isOrdersLoading) {
     return <div className="py-4">Loading...</div>;
   }
-  if (isError || !productPhotoUrls) {
+
+  if (isPhotoError || isOrdersError || !productPhotoUrls || !productOrders) {
     return (
       <div className="text-center text-red-500 py-4">
-        Failed to fetch photoUrl
+        Failed to fetch product data
       </div>
     );
   }
@@ -112,7 +112,7 @@ const Items = ({
                 ${price}
               </span>
               <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                {productOrders.length} pcs
+                {productOrders?.length ?? 0} pcs
               </span>
             </div>
           </Link>

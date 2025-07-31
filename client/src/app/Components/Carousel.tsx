@@ -8,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import Image from "../../../node_modules/next/image";
 
 export default function ImageCarousel({ images }) {
   return (
@@ -17,7 +18,7 @@ export default function ImageCarousel({ images }) {
           <CarouselItem key={image.id}>
             <Card>
               <CardContent className="flex aspect-square items-center justify-center p-1">
-                <img
+                <Image
                   src={image.url}
                   alt="item"
                   className="w-full h-full object-cover"

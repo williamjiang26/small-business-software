@@ -14,7 +14,6 @@ const Navbar = () => {
     >
       <div className="flex justify-between items-center w-full py-3 px-8  text-white">
         <div className="flex items-center gap-4 md:gap-6">
-
           <Link
             href="/"
             className="cursor-pointer hover:!text-primary-300"
@@ -41,29 +40,25 @@ const Navbar = () => {
             </Button>
           )}
         </div>
-        {!isDashboardPage && (
-          <p className="text-primary-200 hidden md:block"></p>
-        )}
         <div className="flex items-center gap-5">
-            <>
-              <Link href="/signin">
-                <Button
-                  variant="outline"
-                  className="text-white border-white bg-transparent hover:bg-white hover:text-primary-700 rounded-lg "
-                >
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button
-                  variant="secondary"
-                  className="text-white bg-secondary-600 hover:bg-white hover:text-primary-700 rounded-lg "
-                >
-                  Sign Up
-                </Button>
-              </Link>
-            </>
-          )}
+          <>
+            <Link href="/signin">
+              <Button
+                variant="outline"
+                className="text-white border-white bg-transparent hover:bg-white hover:text-primary-700 rounded-lg "
+              >
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button
+                variant="secondary"
+                className="text-white bg-secondary-600 hover:bg-white hover:text-primary-700 rounded-lg "
+              >
+                Sign Up
+              </Button>
+            </Link>
+          </>
         </div>
       </div>
     </div>

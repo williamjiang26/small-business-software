@@ -60,14 +60,14 @@ export default function CreateForm({
     try {
       const formData = new FormData();
 
-      formData.append("id", values.id);
+      formData.append("id", values.id.toString());
       formData.append("name", values.name.toString());
       formData.append("type", values.type.toString());
       formData.append("color", values.color.toString());
-      formData.append("height", values.height);
-      formData.append("width", values.width);
-      formData.append("length", values.length);
-      formData.append("price", values.price);
+      formData.append("height", values.height.toString());
+      formData.append("width", values.width.toString());
+      formData.append("length", values.length.toString());
+      formData.append("price", values.price.toString());
 
       for (const file of values.photos) {
         formData.append("photos", file); // name must match `upload.array("photos")`

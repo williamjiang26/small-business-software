@@ -87,7 +87,6 @@ export default function EditForm({
           name="status"
           label="Status"
           type="select"
-          control={form.control}
           placeholder="Select a status"
           options={Object.keys(OrderStatusEnum).map((type) => ({
             value: type,

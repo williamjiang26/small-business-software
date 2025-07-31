@@ -24,6 +24,7 @@ export interface Product {
   width: number;
   length: number;
   price: number;
+  dateOrdered: string;
 }
 
 export interface ProductPhoto {
@@ -61,7 +62,7 @@ export const api = createApi({
       }),
       providesTags: ["CustomerOrders"],
     }),
-    getCustomerOrderById: build.query<CustomerOrder, string>({
+    getCustomerOrderById: build.query<CustomerOrder, number>({
       query: (invoiceNo) => `/customerOrders/${invoiceNo}`,
       invalidatesTags: ["CustomerOrders"],
     }),
@@ -75,7 +76,7 @@ export const api = createApi({
     }),
     updateCustomerOrder: build.mutation<
       CustomerOrder,
-      { invoiceNo: string; data: Partial<CustomerOrder> }
+      { invoiceNo: number; data: Partial<CustomerOrder> }
     >({
       query: ({ invoiceNo, data }) => ({
         url: `/customerOrders/${invoiceNo}`,
@@ -98,7 +99,7 @@ export const api = createApi({
       }),
       providesTags: ["Products"],
     }),
-    getProductById: build.query<Product, string>({
+    getProductById: build.query<Product, number>({
       query: (id) => `/products/${id}`,
       invalidatesTags: ["Products"],
     }),
@@ -143,7 +144,7 @@ export const api = createApi({
       }),
       invalidatesTags: ["Customers"],
     }),
-    getCustomerById: build.query<Customer, string>({
+    getCustomerById: build.query<Customer, number>({
       query: (id) => `/customers/${id}`,
       invalidatesTags: ["Customers"],
     }),
@@ -165,11 +166,11 @@ export const api = createApi({
       }),
       invalidatesTags: ["Customers"],
     }),
-    getProductPhotoByProductId: build.query<ProductPhoto, string>({
+    getProductPhotoByProductId: build.query<ProductPhoto, number>({
       query: (productId) => `/productPhotos/${productId}`,
       invalidatesTags: ["ProductPhotos"],
     }),
-    getProductOrdersByProductId: build.query<ProductOrder, string>({
+    getProductOrdersByProductId: build.query<ProductOrder[], number>({
       query: (productId) => `/productOrders/${productId}`,
       invalidatesTags: ["ProductOrders"],
     }),

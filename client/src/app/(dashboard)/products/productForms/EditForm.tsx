@@ -14,6 +14,7 @@ import { ProductEnum, ProductColorEnum } from "@/lib/constants";
 
 const formSchema = z.object({
   id: z.coerce.number(),
+  name: z.string().min(1),
   type: z.string().min(1),
   color: z.string().min(1),
   height: z.coerce.number(),

@@ -32,17 +32,14 @@ const EditForm = ({
   console.log(customer);
 
   const [updateCustomer] = useUpdateCustomerMutation();
-  const now = new Date().toISOString();
+  // const now = new Date().toISOString();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      createdAt: now,
-      updatedAt: now,
       name: "",
       address: "",
       phone: "",
       email: "",
-      profile: [],
     },
   });
 
@@ -50,7 +47,6 @@ const EditForm = ({
   useEffect(() => {
     if (customer) {
       form.reset({
-        id: customer.id,
         name: customer.name,
         address: customer.address,
         phone: customer.phone,

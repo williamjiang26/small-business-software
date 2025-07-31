@@ -9,7 +9,7 @@ export default function DeleteForm({
   cardId,
   setIsOpen,
 }: {
-  cardId: string;
+  cardId: number;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const [deleteProductOrder, { isLoading }] = useDeleteProductOrderMutation();
