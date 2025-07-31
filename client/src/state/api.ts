@@ -64,7 +64,7 @@ export const api = createApi({
     }),
     getCustomerOrderById: build.query<CustomerOrder, number>({
       query: (invoiceNo) => `/customerOrders/${invoiceNo}`,
-      invalidatesTags: ["CustomerOrders"],
+      providesTags: ["CustomerOrders"],
     }),
     createCustomerOrder: build.mutation<CustomerOrder, CustomerOrder>({
       query: (newCustomerOrder) => ({
@@ -90,7 +90,7 @@ export const api = createApi({
         url: `/customerOrders/${invoiceNo}`,
         method: "DELETE",
       }),
-      providesTags: ["CustomerOrders"],
+      invalidatesTags: ["CustomerOrders"],
     }),
     getProducts: build.query<Product[], string | void>({
       query: (search) => ({
@@ -101,7 +101,7 @@ export const api = createApi({
     }),
     getProductById: build.query<Product, number>({
       query: (id) => `/products/${id}`,
-      invalidatesTags: ["Products"],
+      providesTags: ["Products"],
     }),
     createProduct: build.mutation<Product, FormData>({
       query: (formData) => ({
@@ -146,7 +146,7 @@ export const api = createApi({
     }),
     getCustomerById: build.query<Customer, number>({
       query: (id) => `/customers/${id}`,
-      invalidatesTags: ["Customers"],
+      providesTags: ["Customers"],
     }),
     deleteCustomer: build.mutation<Customer, number>({
       query: (id) => ({
@@ -168,11 +168,11 @@ export const api = createApi({
     }),
     getProductPhotoByProductId: build.query<ProductPhoto, number>({
       query: (productId) => `/productPhotos/${productId}`,
-      invalidatesTags: ["ProductPhotos"],
+      providesTags: ["ProductPhotos"],
     }),
     getProductOrdersByProductId: build.query<ProductOrder[], number>({
       query: (productId) => `/productOrders/${productId}`,
-      invalidatesTags: ["ProductOrders"],
+      providesTags: ["ProductOrders"],
     }),
     createProductOrder: build.mutation<
       ProductOrder,
