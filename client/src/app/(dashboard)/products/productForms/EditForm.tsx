@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,7 +9,11 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { CustomFormField } from "../../../Components/FormField";
-import { useGetProductByIdQuery, useUpdateProductMutation } from "@/state/api";
+import {
+  useGetProductByIdQuery,
+  useGetProductPhotoByProductIdQuery,
+  useUpdateProductMutation,
+} from "@/state/api";
 import { ProductEnum, ProductColorEnum } from "@/lib/constants";
 
 const formSchema = z.object({
@@ -21,6 +25,9 @@ const formSchema = z.object({
   width: z.coerce.number(),
   length: z.coerce.number(),
   price: z.coerce.number(),
+  photos: z
+    .array(z.instanceof(File))
+    .min(1, "At least two photos are required"),
 });
 
 export default function EditForm({
@@ -33,9 +40,13 @@ export default function EditForm({
   const { data: product, isLoading: isProductLoading } = useGetProductByIdQuery(
     Number(cardId)
   );
-  console.log(product);
-
+  const { data: productPhotoUrls } = useGetProductPhotoByProductIdQuery(
+    Number(cardId)
+  );
+  const photoUrls = productPhotoUrls.map((p) => p.url);
+  console.log("🚀 ~ EditForm ~ productPhotoUrls:", photoUrls);
   const [updateProduct] = useUpdateProductMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,6 +58,7 @@ export default function EditForm({
       width: 0,
       length: 0,
       price: 0,
+      photos: [],
     },
   });
 
@@ -63,6 +75,7 @@ export default function EditForm({
         length: product.length,
         price: product.price,
       });
+
     }
   }, [product, form]);
 
@@ -85,34 +98,49 @@ export default function EditForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-2 sm:px-0 px-4"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:px-0 px-4"
       >
-        <CustomFormField name="id" label="Id" type="number" />
-        <CustomFormField
-          name="type"
-          label="Type"
-          type="select"
-          options={Object.keys(ProductEnum).map((type) => ({
-            value: type,
-            label: type,
-          }))}
-        />
-        <CustomFormField name="name" label="Name" />
-        <CustomFormField
-          name="color"
-          label="Color"
-          type="select"
-          options={Object.keys(ProductColorEnum).map((type) => ({
-            value: type,
-            label: type,
-          }))}
-        />
-        <CustomFormField name="height" label="Height" type="number" />
-        <CustomFormField name="width" label="Width" type="number" />
-        <CustomFormField name="length" label="Length" type="number" />
-        <CustomFormField name="price" label="Price" type="number" />
+        {/* LEFT COLUMN */}
+        <div className="flex flex-col gap-4">
+          <CustomFormField name="id" label="Id" type="number" />
+          <CustomFormField
+            name="type"
+            label="Type"
+            type="select"
+            options={Object.keys(ProductEnum).map((type) => ({
+              value: type,
+              label: type,
+            }))}
+          />
+          <CustomFormField name="name" label="Name" />
+          <CustomFormField
+            name="color"
+            label="Color"
+            type="select"
+            options={Object.keys(ProductColorEnum).map((type) => ({
+              value: type,
+              label: type,
+            }))}
+          />
+        </div>
 
-        <div className="flex w-full sm:justify-end mt-4">
+        {/* RIGHT COLUMN */}
+        <div className="flex flex-col gap-4">
+          <CustomFormField name="height" label="Height" type="number" />
+          <CustomFormField name="width" label="Width" type="number" />
+          <CustomFormField name="length" label="Length" type="number" />
+          <CustomFormField name="price" label="Price" type="number" />
+        </div>
+
+        <CustomFormField
+          name="photos"
+          label="Images"
+          type="file"
+          accept="image/*"
+        />
+
+        {/* SUBMIT BUTTON - aligned right on larger screens */}
+        <div className="sm:col-span-2 flex sm:justify-end">
           <Button
             type="submit"
             disabled={isLoading}
@@ -124,7 +152,7 @@ export default function EditForm({
                 Saving...
               </>
             ) : (
-              "Update"
+              "Save"
             )}
           </Button>
         </div>

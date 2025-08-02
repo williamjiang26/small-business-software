@@ -75,7 +75,6 @@ export default function EditForm({
   if (isProductLoading || !productOrder) return <div>Loading product...</div>;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
       await updateProductOrder({
         orderNo: orderNo,

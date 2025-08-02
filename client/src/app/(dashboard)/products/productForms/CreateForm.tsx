@@ -88,8 +88,7 @@ export default function CreateForm({
       >
         {/* LEFT COLUMN */}
         <div className="flex flex-col gap-4">
-          <CustomFormField name="id" label="Id" type="number" />
-
+          <CustomFormField name="id" label="ID" type="number" />
           <CustomFormField
             name="type"
             label="Type"
@@ -99,7 +98,6 @@ export default function CreateForm({
               label: type,
             }))}
           />
-
           <CustomFormField name="name" label="Name" />
 
           <CustomFormField

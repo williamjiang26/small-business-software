@@ -74,6 +74,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
   multiple = false,
   isIcon = false,
   initialValue,
+  preloadedImages,
 }) => {
   const { control } = useFormContext();
 
@@ -136,15 +137,15 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
         return (
           <FilePond
             className={`${inputClassName}`}
+            allowMultiple={true}
+            labelIdle='Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+            credits={false}
+            stylePanelAspectRatio="4:1"
             onupdatefiles={(fileItems) => {
               const files = fileItems.map((fileItem) => fileItem.file);
               field.onChange(files);
               field.onBlur();
             }}
-            allowMultiple={true}
-            labelIdle={`Drag & Drop your images or <span class="filepond--label-action">Browse</span>`}
-            credits={false}
-            stylePanelAspectRatio="4:1"
           />
         );
       case "number":

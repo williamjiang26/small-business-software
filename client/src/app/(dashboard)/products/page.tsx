@@ -21,7 +21,6 @@ import ResponsiveDialog from "../../Components/ui/ResponsiveDialog";
 import EditForm from "./productForms/EditForm";
 import DeleteForm from "./productForms/DeleteForm";
 import CreateForm from "./productForms/CreateForm";
-import Image from "../../../../node_modules/next/image";
 import ImageCarousel from "@/app/Components/Carousel";
 
 const Items = ({
@@ -38,10 +37,11 @@ const Items = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const {
-    data: productPhotoUrls,
+    data: productPhotoUrls = [],
     isError: isPhotoError,
     isLoading: isPhotoLoading,
   } = useGetProductPhotoByProductIdQuery(Number(id));
+  console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls);
 
   const {
     data: productOrders,
@@ -66,7 +66,7 @@ const Items = ({
       <ResponsiveDialog
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
-        title="Edit"
+        title="Edit Product"
         description="edit product details"
       >
         <EditForm cardId={id} setIsOpen={setIsEditOpen} />
@@ -82,28 +82,30 @@ const Items = ({
       </ResponsiveDialog>
 
       {/* Card */}
-      <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
-        <div className="relative w-full p-1 flex justify-between rounded-lg space-x-23 bg-white hover:bg-gray-50 transition">
+      <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
+        <div className="relative w-full  flex justify-between rounded-lg space-x-23 bg-white hover:bg-gray-50 transition">
           <Link href={`/products/${id}`} className="block">
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
                 {id} {name}
               </span>
-
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
                 {new Date(dateOrdered).toLocaleDateString()}
               </span>
-
-              {/* carousel here */}
-              <div className="w-20 h-20 rounded overflow-hidden bg-gray-200 flex-shrink-0">
-                {productPhotoUrls?.length ? (
-                  <ImageCarousel images={productPhotoUrls} />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500 text-sm">No image</span>
-                  </div>
-                )}
+            </div>
+          </Link>
+          {/* carousel here */}
+          <div className=" w-20 h-20 max-w-screen-lg max-h-screen">
+            {productPhotoUrls ? (
+              <ImageCarousel images={productPhotoUrls} />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-500 text-sm">No image</span>
               </div>
+            )}
+          </div>
+          <Link href={`/products/${id}`} className="block">
+            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
               <span className="text-sm text-gray-700 whitespace-nowrap">
                 {type}
               </span>
@@ -118,7 +120,7 @@ const Items = ({
               </span>
               <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 {productOrders?.length ?? 0} pcs
-              </span>
+              </span>{" "}
             </div>
           </Link>
 

@@ -8,10 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductPhotoByProductId = void 0;
+exports.createProductPhotobyProductId = exports.getProductPhotoByProductId = void 0;
 const client_1 = require("@prisma/client");
+const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
+const s3 = new aws_sdk_1.default.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+});
+// GET
 const getProductPhotoByProductId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productId = parseInt(req.params.productId, 10);
@@ -33,3 +43,29 @@ const getProductPhotoByProductId = (req, res) => __awaiter(void 0, void 0, void 
     }
 });
 exports.getProductPhotoByProductId = getProductPhotoByProductId;
+// CREATE
+const createProductPhotobyProductId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const productId = parseInt(req.params.productId, 10);
+    const files = req.files;
+    for (const file of files) {
+        const uploadResult = yield s3
+            .upload({
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: `${Date.now()}_${file.originalname}`,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+            ACL: "public-read",
+        })
+            .promise();
+        const photoUrl = uploadResult.Location;
+        const newProductPhoto = yield prisma.productPhoto.create({
+            data: {
+                productId,
+                url: photoUrl,
+            },
+        });
+        res.status(201).json(newProductPhoto);
+    }
+});
+exports.createProductPhotobyProductId = createProductPhotobyProductId;
+// Delete

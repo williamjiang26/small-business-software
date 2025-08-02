@@ -17,7 +17,7 @@ export default function ImageCarousel({ images }) {
         {images.map((image) => (
           <CarouselItem key={image.id}>
             <Card>
-              <CardContent className="flex aspect-square items-center justify-center p-1">
+              <CardContent className="flex aspect-square items-center justify-center p-0">
                 <Image
                   src={image.url}
                   alt="item"

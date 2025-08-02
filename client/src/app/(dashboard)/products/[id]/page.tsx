@@ -90,7 +90,8 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
           <ImageCarousel images={productPhotoUrls} />
           {/* Product description */}
           <div className="flex flex-col justify-between">
-            <div className="text-xl font-extrabold">{product.type}</div>
+          <div className="text-xl font-extrabold">{product.name}</div>
+            <div className="text-xl ">{product.type}</div>
             <div>{product.color}</div>
             <div>
               {product.height}x{product.width}x{product.length}
