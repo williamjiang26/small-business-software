@@ -52,6 +52,30 @@ export const getProductOrderByOrderNo = async (
   }
 };
 
+// GET
+export const getProductOrderByInvoiceNo = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const customerInvoice = parseInt(req.params.invoiceNo, 10);
+    if (isNaN(customerInvoice)) {
+      res.status(400).json({ message: "Invalid Customer Invoice No" });
+      return;
+    }
+    const productOrders = await prisma.productOrder.findMany({
+      where: { customerInvoice },
+    });
+    if (!productOrders) {
+      res.status(404).json({ message: "Orders not found" });
+      return;
+    }
+    res.json(productOrders);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving product orders", error });
+  }
+};
+
 // CREATE
 export const createProductOrder = async (
   req: Request,
@@ -123,14 +147,14 @@ export const updateProductOrder = async (
       section,
       row,
     } = req.body;
-    console.log("🚀 ~ updateProductOrder ~ req.body:", req.body)
+    console.log("🚀 ~ updateProductOrder ~ req.body:", req.body);
 
     const updatedProductOrder = await prisma.productOrder.update({
       where: { orderNo },
       data: {
         customerInvoice,
         productId,
-        dateOrdered: new Date(dateOrdered), 
+        dateOrdered: new Date(dateOrdered),
         dateSold: new Date(dateSold),
         dateStocked: new Date(dateStocked),
         section,

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProductOrder = exports.deleteProductOrder = exports.createProductOrder = exports.getProductOrderByOrderNo = exports.getProductOrdersByProductId = void 0;
+exports.updateProductOrder = exports.deleteProductOrder = exports.createProductOrder = exports.getProductOrderByInvoiceNo = exports.getProductOrderByOrderNo = exports.getProductOrdersByProductId = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
@@ -56,6 +56,28 @@ const getProductOrderByOrderNo = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.getProductOrderByOrderNo = getProductOrderByOrderNo;
+// GET
+const getProductOrderByInvoiceNo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const customerInvoice = parseInt(req.params.invoiceNo, 10);
+        if (isNaN(customerInvoice)) {
+            res.status(400).json({ message: "Invalid Customer Invoice No" });
+            return;
+        }
+        const productOrders = yield prisma.productOrder.findMany({
+            where: { customerInvoice },
+        });
+        if (!productOrders) {
+            res.status(404).json({ message: "Orders not found" });
+            return;
+        }
+        res.json(productOrders);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error retrieving product orders", error });
+    }
+});
+exports.getProductOrderByInvoiceNo = getProductOrderByInvoiceNo;
 // CREATE
 const createProductOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const productId = parseInt(req.params.productId, 10);

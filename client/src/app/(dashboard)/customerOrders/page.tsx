@@ -181,20 +181,18 @@ const CustomerOrdersPage = () => {
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
 
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <div></div>
-        <div className="flex justify-end">
-          <Button
-            className=""
-            onClick={() => {
-              setIsCreateOpen(true);
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+      {/* Filters Bar */}
+      {/* <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all"> */}
+      <div className="relative w-full p-1 flex justify-end rounded-lg hover:bg-gray-50 transition">
+        <Button
+          variant="ghost"
+          className="h-8 w-8 p-0 flex items-center justify-center rounded-md bg-white shadow-md hover:bg-gray-100"
+          onClick={() => setIsCreateOpen(true)}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
       </div>
+      {/* </Card> */}
 
       {/* List of Orders */}
       {orders?.map((order) => (

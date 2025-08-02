@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,6 +15,10 @@ const formSchema = z.object({
   dateOrdered: z.string().min(1),
   customerId: z.coerce.number(),
   status: z.string().min(1),
+  address: z.string().min(1),
+  name: z.string().min(1),
+  phone: z.string().min(1),
+  email: z.string().min(1),
 });
 const CreateForm = ({
   setIsOpen,
@@ -27,11 +31,24 @@ const CreateForm = ({
     defaultValues: {
       invoiceNo: 0,
       dateOrdered: "",
-      customerId: 0,
       status: "CREATEORDER",
+      customerId: 0,
+      address: "",
+      name: "",
+      phone: "",
+      email: "",
     },
   });
   const isLoading = form.formState.isSubmitting;
+
+  // logs forms values as it updates
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      console.log("Current form values:", value);
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (!values.dateOrdered) {
@@ -49,7 +66,8 @@ const CreateForm = ({
         ...values,
         dateOrdered: date,
       };
-
+      console.log("🚀 ~ onSubmit ~ payload:", payload)
+      
       await createCustomerOrder(payload).unwrap();
       setIsOpen(false);
     } catch (error) {
@@ -59,20 +77,38 @@ const CreateForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="">
-        <CustomFormField name="invoiceNo" label="Invoice No." type="number" />
-        <CustomFormField name="dateOrdered" label="Order Date" placeholder="MM/D/YY"/>
-        <CustomFormField name="customerId" label="customerID" />
-        <CustomFormField
-          name="status"
-          label="Order Status"
-          type="select"
-          options={Object.keys(OrderStatusEnum).map((type) => ({
-            value: type,
-            label: type,
-          }))}
-        />
-        <div className="flex w-full sm:justify-end mt-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:px-0 px-4"
+      >
+        {/* LEFT COLUMN */}
+        <div className="flex flex-col gap-4">
+          <CustomFormField name="invoiceNo" label="Invoice No." type="number" />
+          <CustomFormField
+            name="dateOrdered"
+            label="Order Date"
+            placeholder="MM/D/YY"
+          />
+          <CustomFormField
+            name="status"
+            label="Order Status"
+            type="select"
+            options={Object.keys(OrderStatusEnum).map((type) => ({
+              value: type,
+              label: type,
+            }))}
+          />
+        </div>
+        {/* RIGHT COLUMN */}
+        <div className="flex flex-col gap-4">
+          <CustomFormField name="customerId" label="CustomerID" />
+          <CustomFormField name="address" label="Address" />
+          <CustomFormField name="name" label="Name" />
+          <CustomFormField name="phone" label="Phone" />
+          <CustomFormField name="email" label="Email" />
+        </div>
+
+        <div className="flex w-full sm:col-span-2 sm:justify-end">
           <Button
             type="submit"
             disabled={isLoading}

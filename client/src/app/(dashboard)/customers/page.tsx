@@ -17,80 +17,15 @@ import IconMenu from "../../Components/ui/IconMenu";
 import EditForm from "./customerForms/EditForm";
 import DeleteForm from "./customerForms/DeleteForm";
 import CreateForm from "./customerForms/CreateForm";
-
-const Items = ({ id, address, name, phone, email }) => {
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  return (
-    <>
-      {/* Edit and Delete Dialogs */}
-      <ResponsiveDialog
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        title="Edit"
-        description="edit customer details"
-      >
-        <EditForm cardId={id} setIsOpen={setIsEditOpen} />
-      </ResponsiveDialog>
-
-      <ResponsiveDialog
-        isOpen={isDeleteOpen}
-        setIsOpen={setIsDeleteOpen}
-        title="Delete"
-        description=""
-      >
-        <DeleteForm cardId={id} setIsOpen={setIsDeleteOpen} />
-      </ResponsiveDialog>
-
-      {/* Card */}
-      <Card className="w-full mb-2 p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
-        {/* Row content */}
-        <Link href={`/customers/${id}`}>
-          {/* get customer by id, replace customer id with customer details */}
-          {id} | {address} | {name} | {phone} | {email}
-        </Link>
-        {/* Dropdown Actions */}
-        <div className="absolute right-4 top-4 z-10">
-          <span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                  <span className="sr-only">Open Menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px] z-50">
-                <DropdownMenuItem
-                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  onClick={() => setIsEditOpen(true)}
-                >
-                  <IconMenu
-                    text="Edit"
-                    icon={<SquarePen className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                  onClick={() => setIsDeleteOpen(true)}
-                >
-                  <IconMenu
-                    text="Delete"
-                    icon={<Trash2 className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </span>
-        </div>
-      </Card>
-    </>
-  );
-};
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const Customers = () => {
   const { data: customers, isError, isLoading } = useGetCustomersQuery();
@@ -118,24 +53,67 @@ const Customers = () => {
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
 
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <div></div>
-        <div className="flex justify-end">
-          <Button
-            className=""
-            onClick={() => {
-              setIsCreateOpen(true);
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      {customers?.map((customer) => (
-        <Items key={customer.id} {...customer}></Items>
-      ))}
+      {/* product orders */}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">ID</TableHead>
+            <TableHead>Address</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Phone</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead className="text-right">
+             
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {customers?.map((customer) => (
+            <TableRow key={customer.id}>
+              <TableCell className="font-medium">{customer.id}</TableCell>
+              <TableCell>{customer.address}</TableCell>
+              <TableCell>{customer.name}</TableCell>
+              <TableCell>{customer.phone}</TableCell>
+              <TableCell>{customer.email}</TableCell>
+              <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                        <span className="sr-only">Open Menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[160px] z-50">
+                      <DropdownMenuItem
+                        className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                        onClick={() => setIsEditOpen(true)}
+                      >
+                        <IconMenu
+                          text="Edit"
+                          icon={<SquarePen className="h-4 w-4" />}
+                        />
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                        onClick={() => setIsDeleteOpen(true)}
+                      >
+                        <IconMenu
+                          text="Delete"
+                          icon={<Trash2 className="h-4 w-4" />}
+                        />
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableCaption> List of customers</TableCaption>
+      </Table>
     </div>
   );
 };

@@ -13,3 +13,5 @@ crud for inventory products => improve UI for inventory managment => crud custom
 
 ## Currently: 
 Crud for inventory products - specfically editing photos and reordering 
+
+auto generates id where needed

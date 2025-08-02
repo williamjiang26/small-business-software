@@ -207,6 +207,10 @@ export const api = createApi({
       }),
       invalidatesTags: ["ProductOrders"],
     }),
+    getProductOrdersByInvoiceNo: build.query<ProductOrder[], number>({
+      query: (invoiceNo) => `/productOrders/invoice/${invoiceNo}`,
+      providesTags: ["ProductOrders"],
+    }),
   }),
 });
 
@@ -232,4 +236,5 @@ export const {
   useDeleteProductOrderMutation,
   useGetProductOrderByOrderNoQuery,
   useUpdateProductOrderMutation,
+  useGetProductOrdersByInvoiceNoQuery,
 } = api;

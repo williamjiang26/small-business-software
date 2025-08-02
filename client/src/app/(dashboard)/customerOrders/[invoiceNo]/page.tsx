@@ -5,15 +5,7 @@ import {
 } from "@/state/api";
 import { ArrowLeft, MapPin, Phone, User, Mail } from "lucide-react";
 import Link from "next/link";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import OrderSummary from "../(components)/OrderSummary";
 
 const CustomerOrderDetails = ({
   params,
@@ -66,6 +58,7 @@ const CustomerOrderDetails = ({
         />
         <span>Back</span>
       </Link>
+
       <div className="flex justify-between items-start w-full">
         <div>
           <div className="text-xl font-bold">{invoiceNo}</div>
@@ -91,28 +84,21 @@ const CustomerOrderDetails = ({
         </div>
       </div>
 
-      {/* product orders */}
-      <Table>
-        <TableCaption> List of items in this order.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Order No.</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Color</TableHead>
-            <TableHead>Size</TableHead>
-            <TableHead className="text-right">Price</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">8351</TableCell>
-            <TableCell>Double</TableCell>
-            <TableCell>Black</TableCell>
-            <TableCell>74x96</TableCell>
-            <TableCell className="text-right">$6300</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      {/* Order Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 px-4 sm:px-0">
+        {/* Left column: Order summary */}
+        <OrderSummary invoiceNo={invoiceNo} />
+
+        {/* Right column: PDFs */}
+        <div className="border-2 border-black p-4 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="border-2 border-black p-20 text-center">
+            Measurement PDF
+          </div>
+          <div className="border-2 border-black p-20 text-center">
+            Customer Invoice Copy PDF
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

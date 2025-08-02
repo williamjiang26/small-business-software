@@ -25,6 +25,7 @@ const getCustomerOrders = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getCustomerOrders = getCustomerOrders;
+// GET BY ID
 const getCustomerOrderById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const invoiceNo = parseInt(req.params.invoiceNo, 10);
@@ -49,8 +50,9 @@ exports.getCustomerOrderById = getCustomerOrderById;
 // CREATE
 const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { invoiceNo, customerId, dateOrdered, status } = req.body;
-        if (!invoiceNo || !customerId || !dateOrdered || !status) {
+        const { invoiceNo, customerId, dateOrdered, status, address, name, phone, email } = req.body;
+        console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body);
+        if (!invoiceNo || !customerId || !dateOrdered || !status || !address || !name || !phone || !email) {
             res.status(400).json({ message: "Missing required fields" });
             return;
         }
@@ -59,6 +61,15 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
             res.status(400).json({ message: "Invalid dateOrdered format" });
             return;
         }
+        const newCustomers = yield prisma.customer.create({
+            data: {
+                id: Number(customerId),
+                name: name,
+                address: address,
+                phone: phone,
+                email: email,
+            },
+        });
         const newCustomerOrder = yield prisma.customerOrderDetails.create({
             data: {
                 invoiceNo: Number(invoiceNo),

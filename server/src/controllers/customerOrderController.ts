@@ -18,6 +18,7 @@ export const getCustomerOrders = async (
   }
 };
 
+// GET BY ID
 export const getCustomerOrderById = async (
   req: Request,
   res: Response
@@ -47,9 +48,10 @@ export const createCustomerOrder = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { invoiceNo, customerId, dateOrdered, status } = req.body;
+    const { invoiceNo, customerId, dateOrdered, status, address, name, phone, email } = req.body;
+    console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body)
 
-    if (!invoiceNo || !customerId || !dateOrdered || !status) {
+    if (!invoiceNo || !customerId || !dateOrdered || !status || !address || !name || !phone || !email) {
       res.status(400).json({ message: "Missing required fields" });
       return;
     }
@@ -60,6 +62,16 @@ export const createCustomerOrder = async (
       return;
     }
 
+    const newCustomers = await prisma.customer.create({
+      data: {
+        id: Number(customerId),
+        name: name,
+        address: address,
+        phone: phone,
+        email: email,
+      },
+    });
+
     const newCustomerOrder = await prisma.customerOrderDetails.create({
       data: {
         invoiceNo: Number(invoiceNo),
@@ -69,6 +81,7 @@ export const createCustomerOrder = async (
       },
     });
     res.status(201).json(newCustomerOrder);
+
   } catch (error) {
     res.status(500).json({ message: "Error creating customer order", error });
   }
