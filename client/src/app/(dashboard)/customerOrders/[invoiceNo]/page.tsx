@@ -6,6 +6,7 @@ import {
 import { ArrowLeft, MapPin, Phone, User, Mail } from "lucide-react";
 import Link from "next/link";
 import OrderSummary from "../(components)/OrderSummary";
+import PdfComponent from "../(components)/PdfComponent";
 
 const CustomerOrderDetails = ({
   params,
@@ -91,12 +92,8 @@ const CustomerOrderDetails = ({
 
         {/* Right column: PDFs */}
         <div className="border-2 border-black p-4 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div className="border-2 border-black p-20 text-center">
-            Measurement PDF
-          </div>
-          <div className="border-2 border-black p-20 text-center">
-            Customer Invoice Copy PDF
-          </div>
+          <PdfComponent title={"Measurement"} />
+          <PdfComponent title={"Customer Invoice Copy"} />
         </div>
       </div>
     </div>

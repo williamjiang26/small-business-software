@@ -80,11 +80,11 @@ const OrderSummary = ({ invoiceNo }) => {
   return (
     <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
       {/* Header */}
-      <h3 className="text-lg font-semibold px-7 pt-5 pb-2">Order Summary</h3>
+      <h3 className="text-lg font-medium px-7 pt-5 pb-2">Order Summary</h3>
       <hr />
 
       {/* Product list */}
-      <div className="overflow-auto h-full p-4 space-y-3">
+      <div className="flex-1 overflow-auto p-4">
         {isLoading && (
           <p className="text-sm text-gray-400">Loading orders...</p>
         )}
