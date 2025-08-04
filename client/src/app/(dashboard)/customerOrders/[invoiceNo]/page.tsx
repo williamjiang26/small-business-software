@@ -5,6 +5,7 @@ import {
 } from "@/state/api";
 import { ArrowLeft, MapPin, Phone, User, Mail } from "lucide-react";
 import Link from "next/link";
+import AdditionalFiles from "../(components)/AdditionalFiles";
 import OrderSummary from "../(components)/OrderSummary";
 import PdfComponent from "../(components)/PdfComponent";
 
@@ -91,9 +92,15 @@ const CustomerOrderDetails = ({
         <OrderSummary invoiceNo={invoiceNo} />
 
         {/* Right column: PDFs */}
-        <div className="border-2 border-black p-4 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <PdfComponent title={"Measurement"} />
-          <PdfComponent title={"Customer Invoice Copy"} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/*  Display a pdf with the option to delete and reupload */}
+          <PdfComponent />
+          <PdfComponent />
+        </div>
+
+        <div className="grid grid-cols">
+          {/* Folder to hold additional files */}
+          <AdditionalFiles />
         </div>
       </div>
     </div>

@@ -1,55 +1,95 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { CustomFormField } from "@/app/Components/FormField";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { useCreateCustomerMutation } from "@/state/api";
-import { Dispatch, SetStateAction } from "react";
-import { Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import { Document, Page } from "react-pdf";
+import { useDropzone } from "react-dropzone";
 
-const formSchema = z.object({
-  pdf: z.array(z.instanceof(File)).min(1, "At least two photos are required"),
-});
+const PDFComponent = () => {
+  const [file, setFile] = useState<File | null>(null);
 
-const PdfComponent = ({ title }) => {
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-    } catch (error) {
-      console.error("Failed to create customer", error);
+  const onDrop = (acceptedFiles: File[]) => {
+    if (acceptedFiles[0]) {
+      setFile(acceptedFiles[0]);
     }
   };
 
-  // form
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      pdf: [],
-    },
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "application/pdf", // Only accept PDF files
   });
 
-  return (
-    <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
-      {/* Header */}
-      <h3 className="text-lg font-medium px-7 pt-5 pb-2">{title}</h3>
-      <hr />
+  const handleDelete = () => {
+    setFile(null); // Reset to drag-and-drop field
+  };
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col space-y-2 sm:px-0 px-4"
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100%",
+        border: "2px dashed #ccc",
+        borderRadius: "8px",
+        padding: "20px",
+      }}
+    >
+      {!file ? (
+        <div
+          {...getRootProps()}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            textAlign: "center",
+            padding: "20px",
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+          }}
         >
-          <CustomFormField
-            name="photos"
-            label="Images"
-            type="file"
-            accept="image/*"
-          />
-        </form>
-      </Form>
+          <input {...getInputProps()} />
+          <p style={{ margin: 0, fontSize: "16px", color: "#555" }}>
+            Drop here, or Browse
+          </p>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Document
+            file={file}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "10px",
+            }}
+          >
+            <Page pageNumber={1} />
+          </Document>
+          <button
+            onClick={handleDelete}
+            style={{
+              backgroundColor: "#ff4d4f",
+              color: "white",
+              border: "none",
+              padding: "8px 16px",
+              cursor: "pointer",
+              borderRadius: "4px",
+              fontSize: "14px",
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
-export default PdfComponent;
+export default PDFComponent;
