@@ -15,6 +15,7 @@ a tool to manage the fulfillment of orders in a small business
 crud for inventory products => improve UI for inventory managment => crud customer orders => improve UI for customer order and case manaement => deploy
 
 ## Currently: 
-Crud for inventory products - specfically editing photos and reordering 
+editiing photos in forms and creating drop and browse compoents with pdf viewer
+
 
 auto generates id where needed
