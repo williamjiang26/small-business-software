@@ -25,6 +25,11 @@ model CustomerOrderDetails {
 
   status        StatusEnum     @default(CREATEORDER)
   orderSummary  ProductOrder[]
+
+  measurementPdf   String?          //s3 url
+  customerCopyPdf  String?          //s3 url
+
+  additionalFiles  String[]     @default([])    //s3 urls
 }
 
 model Customer {
