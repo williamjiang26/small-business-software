@@ -8,6 +8,7 @@
     "height": 82,
     "width": 56,
     "length": 5,
-    "price": 8000.0
+    "price": 8000.0,
+    "status": "INSTOCK"
   }
 ]

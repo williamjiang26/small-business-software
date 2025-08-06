@@ -1,9 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
   useGetCustomerByIdQuery,
   useGetCustomerOrderByIdQuery,
 } from "@/state/api";
-import { ArrowLeft, MapPin, Phone, User, Mail } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, User, Mail, Download } from "lucide-react";
 import Link from "next/link";
 import AdditionalFiles from "../(components)/AdditionalFiles";
 import OrderSummary from "../(components)/OrderSummary";
@@ -49,17 +50,23 @@ const CustomerOrderDetails = ({
     );
   }
   return (
-    <div>
-      <Link
-        href="/customerOrders"
-        className="mb-6 flex flex-row items-center space-x-1 group"
-      >
-        <ArrowLeft
-          size={16}
-          className="group-hover:-translate-x-1 duration-200 transition-all"
-        />
-        <span>Back</span>
-      </Link>
+    <div className="p-5">
+      <div className="flex justify-between">
+        <Link
+          href="/customerOrders"
+          className="mb-6 flex flex-row items-center space-x-1 group"
+        >
+          <ArrowLeft
+            size={16}
+            className="group-hover:-translate-x-1 duration-200 transition-all"
+          />
+          <span>Back</span>
+        </Link>
+        <Button className="bg-white text-black hover:text-white">
+          <Download className="w-4 h-4" />
+          Download
+        </Button>
+      </div>
 
       <div className="flex justify-between items-start w-full">
         <div>
@@ -97,20 +104,19 @@ const CustomerOrderDetails = ({
           {/* do i pass in the file component? i can implement the logic here, if there is a component , 
       render the pdf preview otherwise render the drop and browse component */}
           <div>
-          {customerOrder?.measurementPdf ? (
-            <>render pdf preview</>
-          ) : (
-            <>render drop and browse component with delete button</>
-          )}
+            {customerOrder?.measurementPdf ? (
+              <>render pdf preview</>
+            ) : (
+              <>render drop and browse component with delete button</>
+            )}
           </div>
           <div>
-          {customerOrder?.customerCopyPDf ? (
-            <>render pdf preview</>
-          ) : (
-            <>render drop and browse component with delete button</>
-          )}
+            {customerOrder?.customerCopyPDf ? (
+              <>render pdf preview</>
+            ) : (
+              <>render drop and browse component with delete button</>
+            )}
           </div>
-         
         </div>
 
         <div className="grid grid-cols">

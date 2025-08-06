@@ -50,9 +50,16 @@ exports.getCustomerOrderById = getCustomerOrderById;
 // CREATE
 const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { invoiceNo, customerId, dateOrdered, status, address, name, phone, email } = req.body;
+        const { invoiceNo, customerId, dateOrdered, status, address, name, phone, email, orderSummary, additionalFiles, } = req.body;
         console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body);
-        if (!invoiceNo || !customerId || !dateOrdered || !status || !address || !name || !phone || !email) {
+        if (!invoiceNo ||
+            !customerId ||
+            !dateOrdered ||
+            !status ||
+            !address ||
+            !name ||
+            !phone ||
+            !email) {
             res.status(400).json({ message: "Missing required fields" });
             return;
         }
@@ -78,6 +85,23 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
                 status,
             },
         });
+        // const newProductDetails = await prisma.productDetails.create({
+        //   data: {
+        //     name: name,
+        //     type,
+        //     height: parseInt(height, 10),
+        //     width: parseInt(width, 10),
+        //   },
+        // });
+        // const newProductOrder = await prisma.productOrder.create({
+        //   data: {
+        //     productId,
+        //     dateOrdered: new Date(dateOrdered),
+        //     dateStocked: new Date(dateStocked),
+        //     dateSold: new Date(dateSold),
+        //     customerInvoice: invoiceNo,
+        //   },
+        // });
         res.status(201).json(newCustomerOrder);
     }
     catch (error) {

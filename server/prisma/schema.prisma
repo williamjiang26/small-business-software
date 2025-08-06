@@ -7,12 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum StatusEnum {
+enum OrderStatusEnum {
   CREATEORDER
   ORDERPLACED
   ORDERSHIPPED
   ORDERRECEIVED
   ORDERDELIVERED
+}
+
+enum ProductOrderStatusEnum {
+  PROCESSING
+  ORDERPLACED
+  ENROUTE
+  RECEIVED
+  INSTOCK
+  DELIVERED
 }
 
 model CustomerOrderDetails {
@@ -23,7 +32,7 @@ model CustomerOrderDetails {
   customerId    Int   
   customer      Customer       @relation(fields: [customerId], references: [id])
 
-  status        StatusEnum     @default(CREATEORDER)
+  status        OrderStatusEnum     @default(CREATEORDER)
   orderSummary  ProductOrder[]
 
   measurementPdf   String?          //s3 url
@@ -50,15 +59,16 @@ enum ProductEnum {
 }
 
 model ProductDetails {
-  id        Int               @unique
-  name      String
-  type      ProductEnum
+  id        Int              @unique  @id @default(autoincrement())
+  name      String?
+  type      ProductEnum?
   dateOrdered  DateTime?      @default(now())
-  color     String
-  height    Int
-  width     Int
-  length    Int
-  price     Float
+  color     String?
+  height    Int?
+  width     Int?
+  length    Int?
+  price     Float?
+  status    ProductOrderStatusEnum @default(PROCESSING)
   orders    ProductOrder[]
   photos    ProductPhoto[]
 } 
@@ -72,13 +82,13 @@ model ProductPhoto {
 }
 
 model ProductOrder {
-  orderNo       Int      @unique
+  orderNo       Int      @unique  @id @default(autoincrement())
   productId     Int
   customerInvoice Int?
   dateOrdered     DateTime
 
-  section       Int
-  row           Int
+  section       Int?
+  row           Int?
 
   dateStocked   DateTime?
   dateSold      DateTime?

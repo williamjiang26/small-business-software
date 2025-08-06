@@ -1,5 +1,8 @@
 -- CreateEnum
-CREATE TYPE "StatusEnum" AS ENUM ('CREATEORDER', 'ORDERPLACED', 'ORDERSHIPPED', 'ORDERRECEIVED', 'ORDERDELIVERED');
+CREATE TYPE "OrderStatusEnum" AS ENUM ('CREATEORDER', 'ORDERPLACED', 'ORDERSHIPPED', 'ORDERRECEIVED', 'ORDERDELIVERED');
+
+-- CreateEnum
+CREATE TYPE "ProductOrderStatusEnum" AS ENUM ('PROCESSING', 'ORDERPLACED', 'ENROUTE', 'RECEIVED', 'INSTOCK', 'DELIVERED');
 
 -- CreateEnum
 CREATE TYPE "ProductEnum" AS ENUM ('Single', 'Double');
@@ -10,7 +13,10 @@ CREATE TABLE "CustomerOrderDetails" (
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "dateOrdered" TIMESTAMP(3),
     "customerId" INTEGER NOT NULL,
-    "status" "StatusEnum" NOT NULL DEFAULT 'CREATEORDER'
+    "status" "OrderStatusEnum" NOT NULL DEFAULT 'CREATEORDER',
+    "measurementPdf" TEXT,
+    "customerCopyPdf" TEXT,
+    "additionalFiles" TEXT[] DEFAULT ARRAY[]::TEXT[]
 );
 
 -- CreateTable
@@ -26,15 +32,18 @@ CREATE TABLE "Customer" (
 
 -- CreateTable
 CREATE TABLE "ProductDetails" (
-    "id" INTEGER NOT NULL,
-    "name" TEXT NOT NULL,
-    "type" "ProductEnum" NOT NULL,
+    "id" SERIAL NOT NULL,
+    "name" TEXT,
+    "type" "ProductEnum",
     "dateOrdered" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "color" TEXT NOT NULL,
-    "height" INTEGER NOT NULL,
-    "width" INTEGER NOT NULL,
-    "length" INTEGER NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL
+    "color" TEXT,
+    "height" INTEGER,
+    "width" INTEGER,
+    "length" INTEGER,
+    "price" DOUBLE PRECISION,
+    "status" "ProductOrderStatusEnum" NOT NULL DEFAULT 'PROCESSING',
+
+    CONSTRAINT "ProductDetails_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -49,14 +58,16 @@ CREATE TABLE "ProductPhoto" (
 
 -- CreateTable
 CREATE TABLE "ProductOrder" (
-    "orderNo" INTEGER NOT NULL,
+    "orderNo" SERIAL NOT NULL,
     "productId" INTEGER NOT NULL,
     "customerInvoice" INTEGER,
     "dateOrdered" TIMESTAMP(3) NOT NULL,
-    "section" INTEGER NOT NULL,
-    "row" INTEGER NOT NULL,
+    "section" INTEGER,
+    "row" INTEGER,
     "dateStocked" TIMESTAMP(3),
-    "dateSold" TIMESTAMP(3)
+    "dateSold" TIMESTAMP(3),
+
+    CONSTRAINT "ProductOrder_pkey" PRIMARY KEY ("orderNo")
 );
 
 -- CreateIndex

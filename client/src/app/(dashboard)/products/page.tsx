@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useGetProductOrdersByProductIdQuery,
   useGetProductPhotoByProductIdQuery,
@@ -83,7 +84,8 @@ const Items = ({
 
       {/* Card */}
       <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
-        <div className="relative w-full  flex justify-between rounded-lg space-x-23 bg-white hover:bg-gray-50 transition">
+          
+          
           <Link href={`/products/${id}`} className="block">
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
@@ -94,6 +96,8 @@ const Items = ({
               </span>
             </div>
           </Link>
+
+
           {/* carousel here */}
           <div className=" w-20 h-20 max-w-screen-lg max-h-screen">
             {productPhotoUrls ? (
@@ -104,6 +108,8 @@ const Items = ({
               </div>
             )}
           </div>
+
+
           <Link href={`/products/${id}`} className="block">
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
               <span className="text-sm text-gray-700 whitespace-nowrap">
@@ -120,7 +126,7 @@ const Items = ({
               </span>
               <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 {productOrders?.length ?? 0} pcs
-              </span>{" "}
+              </span>
             </div>
           </Link>
 
@@ -158,7 +164,6 @@ const Items = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </div>
       </Card>
     </>
   );
@@ -190,55 +195,64 @@ const ProductsPage = () => {
       >
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
-      <div>
-        {/* Filters Bar */}
-        <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
-          <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
-            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
-              <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                ID SKU
-              </span>
-              <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                Date Ordered
-              </span>
-              <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                Photos
-              </span>
-              <span className="text-sm text-gray-700 whitespace-nowrap">
-                Type
-              </span>
-              <span className="text-sm text-gray-700 whitespace-nowrap">
-                Color
-              </span>
-              <div className="text-sm text-gray-600 whitespace-nowrap">
-                Height x Width x Length
-              </div>
-              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                Price
-              </span>
-              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                QTY
-              </span>
 
-              <Button
-                variant="ghost"
-                className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
-                onClick={() => {
-                  setIsCreateOpen(true);
-                }}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
+      {/* Filters Bar */}
+      <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
+        <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
+          <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
+            <span className="min-w-[40px] text-sm font-medium text-gray-800">
+              ID SKU
+            </span>
+            <span className="min-w-[40px] text-sm font-medium text-gray-800">
+              Date Ordered
+            </span>
+            <span className="min-w-[40px] text-sm font-medium text-gray-800">
+              Photos
+            </span>
+            <span className="text-sm text-gray-700 whitespace-nowrap">
+              Type
+            </span>
+            <span className="text-sm text-gray-700 whitespace-nowrap">
+              Color
+            </span>
+            <div className="text-sm text-gray-600 whitespace-nowrap">
+              Height x Width x Length
             </div>
-          </div>
-        </Card>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              Price
+            </span>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              QTY
+            </span>
 
-        {/* cards */}
-        {products?.map((product) => {
-          console.log("🚀 ~ product:", product);
-          return <Items key={product.id} {...product} />;
-        })}
-      </div>
+            <Button
+              variant="ghost"
+              className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+              onClick={() => {
+                setIsCreateOpen(true);
+              }}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      <Tabs defaultValue="inventory">
+        <TabsList>
+          <TabsTrigger value="inventory">Inventory</TabsTrigger>
+          <TabsTrigger value="ordersPlaced">Orders Placed</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="inventory">
+          {/* cards */}
+          {products?.map((product) => {
+            console.log("🚀 ~ product:", product);
+            return <Items key={product.id} {...product} />;
+          })}
+        </TabsContent>
+        <TabsContent value="ordersPlaced">Orders Placed</TabsContent>
+      </Tabs>
     </>
   );
 };

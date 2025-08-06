@@ -178,7 +178,7 @@ const CustomerOrdersPage = () => {
         title="Create"
         description=""
       >
-        <CreateForm setIsOpen={setIsCreateOpen} />
+          <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
 
       {/* Filters Bar */}
