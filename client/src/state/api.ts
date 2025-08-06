@@ -5,6 +5,8 @@ export interface CustomerOrder {
   customerId: number;
   dateOrdered: string;
   status: string;
+  orderSummary: Product[];
+  additionalFiles: any[];
 }
 
 export interface Customer {
@@ -16,15 +18,15 @@ export interface Customer {
 }
 
 export interface Product {
-  id: number;
-  name: string;
-  type: string;
-  color: string;
-  height: number;
-  width: number;
-  length: number;
-  price: number;
-  dateOrdered: string;
+  id?: number;
+  name?: string;
+  type?: string;
+  color?: string;
+  height?: number;
+  width?: number;
+  length?: number;
+  price?: number;
+  dateOrdered?: string;
 }
 
 export interface ProductPhoto {
@@ -34,14 +36,14 @@ export interface ProductPhoto {
 }
 
 export interface ProductOrder {
-  orderNo: number;
-  productId: number;
-  dateOrdered: string;
-  section: number;
-  row: number;
-  dateStocked: string;
-  dateSold: string;
-  customerInvoice: number;
+  orderNo?: number;
+  productId?: number;
+  dateOrdered?: string;
+  section?: number;
+  row?: number;
+  dateStocked?: string;
+  dateSold?: string;
+  customerInvoice?: number;
 }
 
 export const api = createApi({

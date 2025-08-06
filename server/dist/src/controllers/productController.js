@@ -56,10 +56,10 @@ exports.getProductById = getProductById;
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id, 10);
-        const { color, name, height, width, length, type, price, photos } = req.body;
+        const { color, name, height, width, length, type, price, status, photos } = req.body;
         const updateProduct = yield prisma.productDetails.update({
             where: { id },
-            data: { color, name, height, width, length, type, price, photos },
+            data: { color, name, height, width, length, type, price, status, photos },
         });
         res.json(updateProduct);
     }

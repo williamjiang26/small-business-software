@@ -68,15 +68,21 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
             res.status(400).json({ message: "Invalid dateOrdered format" });
             return;
         }
-        const newCustomers = yield prisma.customer.create({
-            data: {
-                id: Number(customerId),
-                name: name,
-                address: address,
-                phone: phone,
-                email: email,
-            },
+        // Check if customer exists
+        const existingCustomer = yield prisma.customer.findUnique({
+            where: { id: Number(customerId) },
         });
+        if (!existingCustomer) {
+            yield prisma.customer.create({
+                data: {
+                    id: Number(customerId),
+                    name,
+                    address,
+                    phone,
+                    email,
+                },
+            });
+        }
         const newCustomerOrder = yield prisma.customerOrderDetails.create({
             data: {
                 invoiceNo: Number(invoiceNo),
@@ -85,23 +91,23 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
                 status,
             },
         });
-        // const newProductDetails = await prisma.productDetails.create({
-        //   data: {
-        //     name: name,
-        //     type,
-        //     height: parseInt(height, 10),
-        //     width: parseInt(width, 10),
-        //   },
-        // });
-        // const newProductOrder = await prisma.productOrder.create({
-        //   data: {
-        //     productId,
-        //     dateOrdered: new Date(dateOrdered),
-        //     dateStocked: new Date(dateStocked),
-        //     dateSold: new Date(dateSold),
-        //     customerInvoice: invoiceNo,
-        //   },
-        // });
+        for (const order of orderSummary) {
+            const newProductDetails = yield prisma.productDetails.create({
+                data: {
+                    name: name,
+                    type: order.type,
+                    height: order.height,
+                    width: order.width,
+                },
+            });
+            const newProductOrder = yield prisma.productOrder.create({
+                data: {
+                    productId: newProductDetails.id,
+                    customerInvoice: invoiceNo,
+                    dateOrdered: parsedDate,
+                },
+            });
+        }
         res.status(201).json(newCustomerOrder);
     }
     catch (error) {

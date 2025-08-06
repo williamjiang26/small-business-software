@@ -10,20 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { OrderStatusEnum } from "@/lib/constants";
 import ResponsiveDialog from "@/app/Components/ui/ResponsiveDialog";
-import { ProductEnum, ProductColorEnum } from "@/lib/constants";
-
-const formSchema = z.object({
-  invoiceNo: z.coerce.number(), // Converts input to a number and validates
-  dateOrdered: z.string().min(1, "Date is required"), // Validates as a non-empty string
-  status: z.string().min(1, "Status is required"), // Non-empty string
-  customerId: z.coerce.number(), // Converts input to number and validates
-  address: z.string().min(1, "Address is required"), // Non-empty string
-  name: z.string().min(1, "Name is required"), // Non-empty string
-  phone: z.string().min(1, "Phone number is required"), // Non-empty string
-  email: z.string().email("Invalid email address"), // Validates as an email
-  orderSummary: z.array(z.string()).optional(), // Optional array of strings
-  additionalFiles: z.array(z.string()).optional(), // Optional array of strings
-});
+import { ProductEnum } from "@/lib/constants";
 
 const productFormSchema = z.object({
   type: z.string().min(1, "Type is required"),
@@ -114,6 +101,19 @@ const CreateProductForm = ({
   );
 };
 
+const formSchema = z.object({
+  invoiceNo: z.coerce.number(), // Converts input to a number and validates
+  dateOrdered: z.string().min(1, "Date is required"), // Validates as a non-empty string
+  status: z.string().min(1, "Status is required"), // Non-empty string
+  customerId: z.coerce.number(), // Converts input to number and validates
+  address: z.string().min(1, "Address is required"), // Non-empty string
+  name: z.string().min(1, "Name is required"), // Non-empty string
+  phone: z.string().min(1, "Phone number is required"), // Non-empty string
+  email: z.string().email("Invalid email address"), // Validates as an email
+  orderSummary: z.array(productFormSchema).optional(), // Optional array of strings
+  additionalFiles: z.array(z.string()).optional(), // Optional array of strings
+});
+
 const Item = ({ type, height, width }) => {
   return (
     <div>
@@ -129,6 +129,7 @@ const CreateForm = ({
 }) => {
   const [createCustomerOrder] = useCreateCustomerOrderMutation();
   const [orderSummary, setOrderSummary] = useState<Product[]>([]);
+  const [additionalFiles, setAdditionalFiles] = useState([]);
   const [isCreateSecondOpen, setIsCreateSecondOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -146,14 +147,32 @@ const CreateForm = ({
     },
   });
 
+  // useEffect(() => {
+  //   const subscription = form.watch((value) => {
+  //     console.log("Current form values:", value);
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [form]);
   useEffect(() => {
-    console.log("Updated Order Summary:", orderSummary);
-  }, [orderSummary]);
+    form.setValue("orderSummary", orderSummary);
+  }, [orderSummary, form]);
+
+  useEffect(() => {
+    form.setValue("additionalFiles", additionalFiles);
+  }, [additionalFiles, form]);
+
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createCustomerOrder(values).unwrap();
-    setIsOpen(false);
+    console.log("🚀 ~ onSubmit ~ values:", values);
+    console.log("🧪 orderSummary:", values.orderSummary);
+
+    try {
+      await createCustomerOrder(values).unwrap();
+      setIsOpen(false);
+    } catch (error) {
+      console.error("❌ Failed to create customer order:", error);
+    }
   };
 
   return (
@@ -162,8 +181,6 @@ const CreateForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:px-0 px-4"
       >
-        {/* add products modal */}
-
         {/* LEFT COLUMN - customer */}
         <div className="flex flex-col gap-4">
           <CustomFormField name="customerId" label="CustomerID" />
@@ -192,20 +209,19 @@ const CreateForm = ({
           />
         </div>
 
-        {/* Order Summary */}
-        <ResponsiveDialog
-          isOpen={isCreateSecondOpen}
-          setIsOpen={setIsCreateSecondOpen}
-          title="Add Product"
-          description="Add product to order"
-        >
-          <CreateProductForm
-            setIsProductOpen={setIsCreateSecondOpen}
-            setOrderSummary={setOrderSummary}
-          />
-        </ResponsiveDialog>
-
         <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+          {/* Order Summary */}
+          <ResponsiveDialog
+            isOpen={isCreateSecondOpen}
+            setIsOpen={setIsCreateSecondOpen}
+            title="Add Product"
+            description="Add product to order"
+          >
+            <CreateProductForm
+              setIsProductOpen={setIsCreateSecondOpen}
+              setOrderSummary={setOrderSummary}
+            />
+          </ResponsiveDialog>
           {/* Header */}
           <h3 className="text-lg font-medium px-7 pt-5 pb-2">Order Summary</h3>
           <Button

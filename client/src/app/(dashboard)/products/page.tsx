@@ -34,6 +34,7 @@ const Items = ({
   width,
   length,
   price,
+  status,
 }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -84,86 +85,82 @@ const Items = ({
 
       {/* Card */}
       <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
-          
-          
-          <Link href={`/products/${id}`} className="block">
-            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
-              <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                {id} {name}
-              </span>
-              <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                {new Date(dateOrdered).toLocaleDateString()}
-              </span>
-            </div>
-          </Link>
-
-
-          {/* carousel here */}
-          <div className=" w-20 h-20 max-w-screen-lg max-h-screen">
-            {productPhotoUrls ? (
-              <ImageCarousel images={productPhotoUrls} />
-            ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <span className="text-gray-500 text-sm">No image</span>
-              </div>
-            )}
+        <Link href={`/products/${id}`} className="block">
+          <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
+            <span className="min-w-[40px] text-sm font-medium text-gray-800">
+              {id} {name}
+            </span>
+            <span className="min-w-[40px] text-sm font-medium text-gray-800">
+              {new Date(dateOrdered).toLocaleDateString()}
+            </span>
           </div>
+        </Link>
 
-
-          <Link href={`/products/${id}`} className="block">
-            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
-              <span className="text-sm text-gray-700 whitespace-nowrap">
-                {type}
-              </span>
-              <span className="text-sm text-gray-700 whitespace-nowrap">
-                {color}
-              </span>
-              <div className="text-sm text-gray-600 whitespace-nowrap">
-                {height} x {width} x {length}
-              </div>
-              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                ${price}
-              </span>
-              <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                {productOrders?.length ?? 0} pcs
-              </span>
+        {/* carousel here */}
+        <div className=" w-20 h-20 max-w-screen-lg max-h-screen">
+          {productPhotoUrls ? (
+            <ImageCarousel images={productPhotoUrls} />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <span className="text-gray-500 text-sm">No image</span>
             </div>
-          </Link>
+          )}
+        </div>
 
-          <div className="absolute  right-1 top-2 z-10">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                  <span className="sr-only">Open Menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px] z-50">
-                <DropdownMenuItem
-                  className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
-                  onClick={() => setIsEditOpen(true)}
-                >
-                  <IconMenu
-                    text="Edit"
-                    icon={<SquarePen className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
-                  onClick={() => setIsDeleteOpen(true)}
-                >
-                  <IconMenu
-                    text="Delete"
-                    icon={<Trash2 className="h-4 w-4" />}
-                  />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        <Link href={`/products/${id}`} className="block">
+          <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
+            <span className="text-sm text-gray-700 whitespace-nowrap">
+              {type}
+            </span>
+            <span className="text-sm text-gray-700 whitespace-nowrap">
+              {color}
+            </span>
+            <div className="text-sm text-gray-600 whitespace-nowrap">
+              {height} x {width} x {length}
+            </div>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              ${price}
+            </span>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              {productOrders?.length ?? 0} pcs
+            </span>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              {status}
+            </span>
           </div>
+        </Link>
+
+        <div className="absolute  right-1 top-2 z-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+              >
+                <MoreVertical className="w-4 h-4" />
+                <span className="sr-only">Open Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px] z-50">
+              <DropdownMenuItem
+                className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsEditOpen(true)}
+              >
+                <IconMenu
+                  text="Edit"
+                  icon={<SquarePen className="h-4 w-4" />}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </Card>
     </>
   );
@@ -224,7 +221,9 @@ const ProductsPage = () => {
             <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
               QTY
             </span>
-
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              Status
+            </span>
             <Button
               variant="ghost"
               className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
@@ -246,12 +245,23 @@ const ProductsPage = () => {
 
         <TabsContent value="inventory">
           {/* cards */}
-          {products?.map((product) => {
-            console.log("🚀 ~ product:", product);
-            return <Items key={product.id} {...product} />;
-          })}
+          {products
+            ?.filter((product) => product.status === "INSTOCK")
+            .map((product) => {
+              console.log("🚀 ~ product:", product);
+              return <Items key={product.id} {...product} />;
+            })}
         </TabsContent>
-        <TabsContent value="ordersPlaced">Orders Placed</TabsContent>
+        <TabsContent value="ordersPlaced">
+          {" "}
+          {/* cards */}
+          {products
+            ?.filter((product) => product.status !== "INSTOCK")
+            .map((product) => {
+              console.log("🚀 ~ product:", product);
+              return <Items key={product.id} {...product} />;
+            })}
+        </TabsContent>
       </Tabs>
     </>
   );

@@ -14,7 +14,7 @@ import {
   useGetProductPhotoByProductIdQuery,
   useUpdateProductMutation,
 } from "@/state/api";
-import { ProductEnum, ProductColorEnum } from "@/lib/constants";
+import { ProductEnum, ProductColorEnum, ProductOrderStatusEnum } from "@/lib/constants";
 
 const formSchema = z.object({
   id: z.coerce.number(),
@@ -25,9 +25,8 @@ const formSchema = z.object({
   width: z.coerce.number(),
   length: z.coerce.number(),
   price: z.coerce.number(),
-  photos: z
-    .array(z.instanceof(File))
-    .min(1, "At least two photos are required"),
+  status: z.string().min(1),
+  photos: z.array(z.instanceof(File)).optional(),
 });
 
 export default function EditForm({
@@ -58,6 +57,7 @@ export default function EditForm({
       width: 0,
       length: 0,
       price: 0,
+      status: "",
       photos: [],
     },
   });
@@ -74,8 +74,8 @@ export default function EditForm({
         width: product.width,
         length: product.length,
         price: product.price,
+        status: product.status,
       });
-
     }
   }, [product, form]);
 
@@ -137,6 +137,16 @@ export default function EditForm({
           label="Images"
           type="file"
           accept="image/*"
+        />
+        <CustomFormField
+          name="status"
+          label="Status"
+          type="select"
+          placeholder="Select a status"
+          options={Object.keys(ProductOrderStatusEnum).map((type) => ({
+            value: type,
+            label: type,
+          }))}
         />
 
         {/* SUBMIT BUTTON - aligned right on larger screens */}

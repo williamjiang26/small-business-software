@@ -57,7 +57,7 @@ export const createCustomerOrder = async (
       name,
       phone,
       email,
-      orderSummary, 
+      orderSummary,
       additionalFiles,
     } = req.body;
     console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body);
@@ -82,15 +82,22 @@ export const createCustomerOrder = async (
       return;
     }
 
-    const newCustomers = await prisma.customer.create({
-      data: {
-        id: Number(customerId),
-        name: name,
-        address: address,
-        phone: phone,
-        email: email,
-      },
+    // Check if customer exists
+    const existingCustomer = await prisma.customer.findUnique({
+      where: { id: Number(customerId) },
     });
+
+    if (!existingCustomer) {
+      await prisma.customer.create({
+        data: {
+          id: Number(customerId),
+          name,
+          address,
+          phone,
+          email,
+        },
+      });
+    }
 
     const newCustomerOrder = await prisma.customerOrderDetails.create({
       data: {
@@ -101,24 +108,23 @@ export const createCustomerOrder = async (
       },
     });
 
-    // const newProductDetails = await prisma.productDetails.create({
-    //   data: {
-    //     name: name,
-    //     type,
-    //     height: parseInt(height, 10),
-    //     width: parseInt(width, 10),
-    //   },
-    // });
-
-    // const newProductOrder = await prisma.productOrder.create({
-    //   data: {
-    //     productId,
-    //     dateOrdered: new Date(dateOrdered),
-    //     dateStocked: new Date(dateStocked),
-    //     dateSold: new Date(dateSold),
-    //     customerInvoice: invoiceNo,
-    //   },
-    // });
+    for (const order of orderSummary) {
+      const newProductDetails = await prisma.productDetails.create({
+        data: {
+          name: name,
+          type: order.type,
+          height: order.height,
+          width: order.width,
+        },
+      });
+      const newProductOrder = await prisma.productOrder.create({
+        data: {
+          productId: newProductDetails.id,
+          customerInvoice: invoiceNo,
+          dateOrdered: parsedDate,
+        },
+      });
+    }
 
     res.status(201).json(newCustomerOrder);
   } catch (error) {

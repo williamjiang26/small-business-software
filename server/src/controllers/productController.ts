@@ -53,10 +53,10 @@ export const updateProduct = async (
 ): Promise<void> => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { color, name, height, width, length, type, price, photos } = req.body;
+    const { color, name, height, width, length, type, price, status, photos } = req.body;
     const updateProduct = await prisma.productDetails.update({
       where: { id },
-      data: { color, name, height, width, length, type, price, photos },
+      data: { color, name, height, width, length, type, price, status, photos },
     });
     res.json(updateProduct);
   } catch (error) {
