@@ -4,12 +4,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useCreateCustomerOrderMutation } from "@/state/api";
-import { CustomFormField } from "@/app/Components/FormField";
+import { CustomFormField } from "@/app/(components)/FormField";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { OrderStatusEnum } from "@/lib/constants";
-import ResponsiveDialog from "@/app/Components/ui/ResponsiveDialog";
+import ResponsiveDialog from "@/app/(components)/ui/ResponsiveDialog";
 import { ProductEnum } from "@/lib/constants";
 
 const productFormSchema = z.object({
@@ -110,7 +110,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"), // Non-empty string
   phone: z.string().min(1, "Phone number is required"), // Non-empty string
   email: z.string().email("Invalid email address"), // Validates as an email
-  orderSummary: z.array(productFormSchema).optional(), // Optional array of strings
+  orderSummary: z.array(productFormSchema).min(1, "A product is required"), // Optional array of strings
   additionalFiles: z.array(z.string()).optional(), // Optional array of strings
 });
 
@@ -225,6 +225,7 @@ const CreateForm = ({
           {/* Header */}
           <h3 className="text-lg font-medium px-7 pt-5 pb-2">Order Summary</h3>
           <Button
+            type="button"
             variant="ghost"
             className="h-8 w-8 p-0 flex items-center justify-center rounded-md bg-white shadow-md hover:bg-gray-100"
             onClick={() => {

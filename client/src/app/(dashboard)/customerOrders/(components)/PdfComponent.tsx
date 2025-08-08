@@ -1,4 +1,4 @@
-import { CustomFormField } from "@/app/Components/FormField";
+import { CustomFormField } from "@/app/(components)/FormField";
 import React, { useState } from "react";
 import { Document, Page } from "react-pdf";
 

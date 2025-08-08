@@ -3,7 +3,7 @@ import { MoreVertical, Trash2, SquarePen, Plus } from "lucide-react";
 import { useState } from "react";
 import { useGetCustomersQuery } from "@/state/api";
 import { Button } from "@/components/ui/button";
-import ResponsiveDialog from "../../Components/ui/ResponsiveDialog";
+import ResponsiveDialog from "../../(components)/ui/ResponsiveDialog";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import {
@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IconMenu from "../../Components/ui/IconMenu";
+import IconMenu from "../../(components)/ui/IconMenu";
 import EditForm from "./customerForms/EditForm";
 import DeleteForm from "./customerForms/DeleteForm";
 import CreateForm from "./customerForms/CreateForm";
@@ -62,9 +62,7 @@ const Customers = () => {
             <TableHead>Name</TableHead>
             <TableHead>Phone</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead className="text-right">
-             
-            </TableHead>
+            <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -76,38 +74,38 @@ const Customers = () => {
               <TableCell>{customer.phone}</TableCell>
               <TableCell>{customer.email}</TableCell>
               <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-                      >
-                        <MoreVertical className="w-4 h-4" />
-                        <span className="sr-only">Open Menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[160px] z-50">
-                      <DropdownMenuItem
-                        className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                        onClick={() => setIsEditOpen(true)}
-                      >
-                        <IconMenu
-                          text="Edit"
-                          icon={<SquarePen className="h-4 w-4" />}
-                        />
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                        onClick={() => setIsDeleteOpen(true)}
-                      >
-                        <IconMenu
-                          text="Delete"
-                          icon={<Trash2 className="h-4 w-4" />}
-                        />
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                    >
+                      <MoreVertical className="w-4 h-4" />
+                      <span className="sr-only">Open Menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px] z-50">
+                    <DropdownMenuItem
+                      className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                      onClick={() => setIsEditOpen(true)}
+                    >
+                      <IconMenu
+                        text="Edit"
+                        icon={<SquarePen className="h-4 w-4" />}
+                      />
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
+                      onClick={() => setIsDeleteOpen(true)}
+                    >
+                      <IconMenu
+                        text="Delete"
+                        icon={<Trash2 className="h-4 w-4" />}
+                      />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

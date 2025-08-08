@@ -8,13 +8,17 @@ import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { CustomFormField } from "../../../Components/FormField";
+import { CustomFormField } from "../../../(components)/FormField";
 import {
   useGetProductByIdQuery,
   useGetProductPhotoByProductIdQuery,
   useUpdateProductMutation,
 } from "@/state/api";
-import { ProductEnum, ProductColorEnum, ProductOrderStatusEnum } from "@/lib/constants";
+import {
+  ProductEnum,
+  ProductColorEnum,
+  ProductOrderStatusEnum,
+} from "@/lib/constants";
 
 const formSchema = z.object({
   id: z.coerce.number(),
@@ -43,7 +47,7 @@ export default function EditForm({
     Number(cardId)
   );
   const photoUrls = productPhotoUrls.map((p) => p.url);
-  console.log("🚀 ~ EditForm ~ productPhotoUrls:", photoUrls);
+
   const [updateProduct] = useUpdateProductMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({

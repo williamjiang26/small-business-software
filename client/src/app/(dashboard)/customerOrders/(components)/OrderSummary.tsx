@@ -1,4 +1,4 @@
-import ImageCarousel from "@/app/Components/Carousel";
+import ImageCarousel from "@/app/(components)/Carousel";
 import { Card } from "@/components/ui/card";
 import {
   useGetProductByIdQuery,

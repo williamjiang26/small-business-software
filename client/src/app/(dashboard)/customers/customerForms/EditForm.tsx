@@ -9,7 +9,7 @@ import {
   useUpdateCustomerMutation,
 } from "@/state/api";
 import { z } from "zod";
-import { CustomFormField } from "../../../Components/FormField";
+import { CustomFormField } from "../../../(components)/FormField";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),

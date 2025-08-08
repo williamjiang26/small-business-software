@@ -7,7 +7,7 @@ import {
   useGetProductOrdersByProductIdQuery,
   useGetProductPhotoByProductIdQuery,
 } from "@/state/api";
-import ImageCarousel from "@/app/Components/Carousel";
+import ImageCarousel from "@/app/(components)/Carousel";
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import ResponsiveDialog from "@/app/Components/ui/ResponsiveDialog";
+import ResponsiveDialog from "@/app/(components)/ui/ResponsiveDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IconMenu from "@/app/Components/ui/IconMenu";
+import IconMenu from "@/app/(components)/ui/IconMenu";
 import CreateForm from "../productOrderForms/CreateForm";
 import DeleteForm from "../productOrderForms/DeleteForm";
 import EditForm from "../productOrderForms/EditForm";
@@ -90,7 +90,7 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
           <ImageCarousel images={productPhotoUrls} />
           {/* Product description */}
           <div className="flex flex-col justify-between">
-          <div className="text-xl font-extrabold">{product.name}</div>
+            <div className="text-xl font-extrabold">{product.name}</div>
             <div className="text-xl ">{product.type}</div>
             <div>{product.color}</div>
             <div>

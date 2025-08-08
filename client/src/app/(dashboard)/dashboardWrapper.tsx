@@ -1,15 +1,15 @@
 "use client";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import Header from "./Components/Header";
-import AppSidebar from "./Components/Sidebar";
+import Header from "../(components)/Header";
+import AppSidebar from "../(components)/Sidebar";
 
-import StoreProvider, { useAppSelector } from "./redux";
+import StoreProvider, { useAppSelector } from "../redux";
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider >
-      <AppSidebar variant="inset"  />
+    <SidebarProvider>
+      <AppSidebar variant="inset" />
       <SidebarInset className="bg-white">
         <Header />
         {children}

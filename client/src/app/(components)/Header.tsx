@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Settings } from "lucide-react";
+import Link from "../../../node_modules/next/link";
 
 const Header = () => {
   return (
@@ -14,16 +15,16 @@ const Header = () => {
         />
         <h1 className="text-base font-medium"></h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href=" "
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
+          <Link
+            href={`/settings`}
+            // rel="noopener noreferrer"/
+            target="_blank"
+            className="dark:text-foreground"
+          >
+            <Button variant="ghost" className="hidden sm:flex ">
               <Settings className="w-4 h-4" />
-            </a>
-          </Button>
+            </Button>{" "}
+          </Link>
         </div>
       </div>
     </header>

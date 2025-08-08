@@ -1,5 +1,5 @@
 import Landing from "@/app/(nondashboard)/landing/page";
-import Navbar from "./Components/Navbar";
+import Navbar from "./(components)/Navbar";
 export default function Home() {
   return (
     <div className="h-full w-full ">

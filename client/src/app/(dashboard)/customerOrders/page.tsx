@@ -15,7 +15,7 @@ import {
   useGetCustomerOrdersQuery,
 } from "@/state/api";
 import { Button } from "@/components/ui/button";
-import ResponsiveDialog from "../../Components/ui/ResponsiveDialog";
+import ResponsiveDialog from "../../(components)/ui/ResponsiveDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IconMenu from "../../Components/ui/IconMenu";
+import IconMenu from "../../(components)/ui/IconMenu";
 import CreateForm from "./customerOrderForms/CreateForm";
 import { Card } from "@/components/ui/card";
 import EditForm from "./customerOrderForms/EditForm";
@@ -178,7 +178,7 @@ const CustomerOrdersPage = () => {
         title="Create"
         description=""
       >
-          <CreateForm setIsOpen={setIsCreateOpen} />
+        <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
 
       {/* Filters Bar */}
