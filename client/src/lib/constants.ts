@@ -1,7 +1,31 @@
+import {
+  Single,
+  Double,
+  RoundTop,
+  RoundTopDouble,
+  Window,
+  Railings,
+} from "@/app/(components)/icons";
 export enum ProductEnum {
   Single = "Single",
   Double = "Double",
+  RoundTop = "RoundTop",
+  RoundTopDouble = "RoundTopDouble",
+  Window = "Window",
+  Railings = "Railings",
 }
+export const ProductTypeIcons: Record<
+  ProductEnum,
+  React.FC<{ size?: number; color?: string }>
+> = {
+  Single: Single,
+  Double: Double,
+  RoundTop: RoundTop,
+  RoundTopDouble: RoundTopDouble,
+  Window: Window,
+  Railings: Railings,
+};
+
 export enum ProductColorEnum {
   Black = "Black",
   LightCopper = "LightCopper",

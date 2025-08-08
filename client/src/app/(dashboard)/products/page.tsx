@@ -23,6 +23,15 @@ import EditForm from "./productForms/EditForm";
 import DeleteForm from "./productForms/DeleteForm";
 import CreateForm from "./productForms/CreateForm";
 import ImageCarousel from "@/app/(components)/Carousel";
+import {
+  DoorIcon,
+  Double,
+  Railings,
+  RoundedTop,
+  Single,
+  Window,
+} from "@/app/(components)/icons";
+import { ProductEnum, ProductTypeIcons } from "@/lib/constants";
 
 const Items = ({
   id,
@@ -165,7 +174,101 @@ const Items = ({
     </>
   );
 };
+const Orders = ({
+  id,
+  type,
+  name,
+  dateOrdered,
+  color,
+  height,
+  width,
+  length,
+  price,
+  status,
+}) => {
+  const IconComponent = ProductTypeIcons[type as ProductEnum];
+  return (
+    <>
+      {/* <ResponsiveDialog
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        title="Edit Product"
+        description="edit product details"
+      >
+        <EditForm cardId={id} setIsOpen={setIsEditOpen} />
+      </ResponsiveDialog>
 
+      <ResponsiveDialog
+        isOpen={isDeleteOpen}
+        setIsOpen={setIsDeleteOpen}
+        title="Delete"
+        description=""
+      >
+        <DeleteForm cardId={id} setIsOpen={setIsDeleteOpen} />
+      </ResponsiveDialog> */}
+
+      {/* Card */}
+      <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
+        <Link href={`/products/${id}`} className="block">
+          <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
+            <span className="min-w-[40px] text-sm font-medium text-gray-800">
+              {new Date(dateOrdered).toLocaleDateString()}
+            </span>
+            <span className="text-sm text-gray-700 whitespace-nowrap flex">
+              {IconComponent && <IconComponent size={18} color="#4B5563" />}
+              {type}
+            </span>
+            <span className="text-sm text-gray-700 whitespace-nowrap">
+              {color}
+            </span>
+            <div className="text-sm text-gray-600 whitespace-nowrap">
+              {height} x {width} x {length}
+            </div>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              ${price}
+            </span>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap"></span>
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              {status}
+            </span>
+          </div>
+        </Link>
+
+        <div className="absolute  right-1 top-2 z-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+              >
+                <MoreVertical className="w-4 h-4" />
+                <span className="sr-only">Open Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px] z-50">
+              <DropdownMenuItem
+                className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsEditOpen(true)}
+              >
+                <IconMenu
+                  text="Edit"
+                  icon={<SquarePen className="h-4 w-4" />}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </Card>
+    </>
+  );
+};
 const ProductsPage = () => {
   const { data: products, isError, isLoading } = useGetProductsQuery();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -259,7 +362,7 @@ const ProductsPage = () => {
             ?.filter((product) => product.status !== "INSTOCK")
             .map((product) => {
               console.log("🚀 ~ product:", product);
-              return <Items key={product.id} {...product} />;
+              return <Orders key={product.id} {...product} />;
             })}
         </TabsContent>
       </Tabs>

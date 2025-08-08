@@ -175,8 +175,8 @@ const CustomerOrdersPage = () => {
       <ResponsiveDialog
         isOpen={isCreateOpen}
         setIsOpen={setIsCreateOpen}
-        title="Create"
-        description=""
+        title="Invoice"
+        description="create customer order"
       >
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>

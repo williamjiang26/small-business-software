@@ -42,9 +42,9 @@ const ResponsiveDialog = ({
     return (
       // dialog
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]  bg-white">
+        <DialogContent className="sm:max-w-[888px] bg-white">
           <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
+            <DialogTitle className="text-xl">{title}</DialogTitle>
             {description && (
               <DialogDescription>{description}</DialogDescription>
             )}
@@ -57,7 +57,7 @@ const ResponsiveDialog = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerContent className="bg-white">
+      <DrawerContent className="bg-white p-5">
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

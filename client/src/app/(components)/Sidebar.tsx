@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import React from "react";
-import { Package, SquareUser, ReceiptText } from "lucide-react";
+import { Package, SquareUser, ReceiptText, CalendarRange } from "lucide-react";
 import TDCLOGO from "../../assets/TDClogo.png";
 import Image from "../../../node_modules/next/image";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,11 @@ const items = [
   //   icon: ReceiptText,
   // },
   {
+    title: "Schedule",
+    url: "/schedule",
+    icon: CalendarRange,
+  },
+  {
     title: "Customers",
     url: "/customers",
     icon: SquareUser,
@@ -44,7 +49,7 @@ const items = [
 
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
-    <Sidebar collapsible="offcanvas" {...props} >
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
