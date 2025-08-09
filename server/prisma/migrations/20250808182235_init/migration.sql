@@ -5,7 +5,7 @@ CREATE TYPE "OrderStatusEnum" AS ENUM ('CREATEORDER', 'ORDERPLACED', 'ORDERSHIPP
 CREATE TYPE "ProductOrderStatusEnum" AS ENUM ('PROCESSING', 'ORDERPLACED', 'ENROUTE', 'RECEIVED', 'INSTOCK', 'DELIVERED');
 
 -- CreateEnum
-CREATE TYPE "ProductEnum" AS ENUM ('Single', 'Double');
+CREATE TYPE "ProductEnum" AS ENUM ('Single', 'Double', 'RoundTop', 'RoundTopDouble', 'Window', 'Railing');
 
 -- CreateTable
 CREATE TABLE "CustomerOrderDetails" (

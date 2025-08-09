@@ -4,7 +4,7 @@ import {
   RoundTop,
   RoundTopDouble,
   Window,
-  Railings,
+  Railing,
 } from "@/app/(components)/icons";
 export enum ProductEnum {
   Single = "Single",
@@ -12,7 +12,7 @@ export enum ProductEnum {
   RoundTop = "RoundTop",
   RoundTopDouble = "RoundTopDouble",
   Window = "Window",
-  Railings = "Railings",
+  Railing = "Railing",
 }
 export const ProductTypeIcons: Record<
   ProductEnum,
@@ -23,7 +23,7 @@ export const ProductTypeIcons: Record<
   RoundTop: RoundTop,
   RoundTopDouble: RoundTopDouble,
   Window: Window,
-  Railings: Railings,
+  Railing: Railing,
 };
 
 export enum ProductColorEnum {

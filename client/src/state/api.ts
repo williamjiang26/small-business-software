@@ -6,7 +6,7 @@ export interface CustomerOrder {
   dateOrdered: string;
   status: string;
   orderSummary: Product[];
-  additionalFiles: any[];
+  additionalFiles?: any[];
 }
 
 export interface Customer {
@@ -22,6 +22,7 @@ export interface Product {
   name?: string;
   type?: string;
   color?: string;
+  status?: string;
   height?: number;
   width?: number;
   length?: number;

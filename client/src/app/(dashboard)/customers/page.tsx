@@ -87,7 +87,7 @@ const Customers = () => {
                   <DropdownMenuContent align="end" className="w-[160px] z-50">
                     <DropdownMenuItem
                       className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                      onClick={() => setIsEditOpen(true)}
+                      onClick={() => {}}
                     >
                       <IconMenu
                         text="Edit"
@@ -97,7 +97,7 @@ const Customers = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-                      onClick={() => setIsDeleteOpen(true)}
+                      onClick={() => {}}
                     >
                       <IconMenu
                         text="Delete"

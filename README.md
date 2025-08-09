@@ -12,10 +12,21 @@ store customer cases, make updates to their order
 a tool to manage the fulfillment of orders in a small business
 
 ## Engineering Roadmap
-crud for inventory products => improve UI for inventory managment => crud customer orders => improve UI for customer order and case manaement => deploy
+- create customer order
+- track customer orders
+- create product order
+- track product orders
+- schedule deliveries
+- track revenue and sales
+- track customer cases
+- sales training
+
 
 ## Currently: 
-editiing photos in forms and creating drop and browse compoents with pdf viewer
+editing photos in forms and creating drop and browse compoents with pdf viewer
+authentication and user dashboards(manager and sales)
+
+
 
 
 auto generates id where needed

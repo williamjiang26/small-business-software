@@ -87,7 +87,7 @@ export const Window = ({ size = 24, color = "currentColor" }) => (
   </svg>
 );
 
-export const Railings = ({ size = 24, color = "currentColor" }) => (
+export const Railing = ({ size = 24, color = "currentColor" }) => (
     <svg
     //   xmlns="http://www.w3.org/2000/svg"
       width={size}

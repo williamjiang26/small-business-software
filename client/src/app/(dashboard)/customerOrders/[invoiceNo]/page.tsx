@@ -103,20 +103,20 @@ const CustomerOrderDetails = ({
           {/*  Display a pdf with the option to delete and reupload */}
           {/* do i pass in the file component? i can implement the logic here, if there is a component , 
       render the pdf preview otherwise render the drop and browse component */}
-          <div>
+          {/* <div>
             {customerOrder?.measurementPdf ? (
               <>render pdf preview</>
             ) : (
               <>render drop and browse component with delete button</>
             )}
-          </div>
-          <div>
-            {customerOrder?.customerCopyPDf ? (
+          </div> */}
+          {/* <div>
+            {customerOrder?.customerCopyPdf ? (
               <>render pdf preview</>
             ) : (
               <>render drop and browse component with delete button</>
             )}
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols">

@@ -177,9 +177,6 @@ const CreateForm = ({
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("🚀 ~ onSubmit ~ values:", values);
-    console.log("🧪 orderSummary:", values.orderSummary);
-
     try {
       await createCustomerOrder(values).unwrap();
       setIsOpen(false);

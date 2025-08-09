@@ -103,7 +103,11 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
         {/* Right side: ID + Date */}
         <div className="text-right">
           <div className="text-xl font-extrabold">{product.id}</div>
-          <div>{new Date(product?.dateOrdered).toLocaleDateString()}</div>
+          <div>
+            {product?.dateOrdered
+              ? new Date(product.dateOrdered).toLocaleDateString()
+              : "No date available"}
+          </div>
         </div>
       </div>
       <ResponsiveDialog
@@ -112,7 +116,7 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
         title="Create"
         description=""
       >
-        <CreateForm setIsOpen={setIsCreateOpen} productId={product.id} />
+        <CreateForm setIsOpen={setIsCreateOpen} productId={product.id ?? 0} />
       </ResponsiveDialog>
 
       <div className="flex justify-end">
@@ -175,15 +179,21 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
                 {productOrder.orderNo}
               </TableCell>
               <TableCell>
-                {new Date(productOrder.dateOrdered).toLocaleDateString()}
+                {productOrder?.dateOrdered
+                  ? new Date(productOrder.dateOrdered).toLocaleDateString()
+                  : "Date not available"}
               </TableCell>
               <TableCell>{productOrder.section}</TableCell>
               <TableCell>{productOrder.row}</TableCell>
               <TableCell>
-                {new Date(productOrder.dateStocked).toLocaleDateString()}
+                {productOrder?.dateStocked
+                  ? new Date(productOrder.dateStocked).toLocaleDateString()
+                  : "Date not available"}{" "}
               </TableCell>
               <TableCell>
-                {new Date(productOrder.dateSold).toLocaleDateString()}
+                {productOrder?.dateSold
+                  ? new Date(productOrder.dateSold).toLocaleDateString()
+                  : "Date not available"}{" "}
               </TableCell>
               <TableCell>{productOrder.customerInvoice}</TableCell>
               <TableCell className="text-right">
@@ -200,7 +210,7 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
                   <DropdownMenuContent align="end" className="w-[160px] z-50">
                     <DropdownMenuItem
                       className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
-                      onClick={() => setActiveEditOrderNo(productOrder.orderNo)}
+                      onClick={() => setActiveEditOrderNo(productOrder.orderNo ?? null)}
                     >
                       <IconMenu
                         text="Edit"
@@ -211,7 +221,7 @@ const ProductDetails = ({ params }: { params: { id: number } }) => {
                     <DropdownMenuItem
                       className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
                       onClick={() =>
-                        setActiveDeleteOrderNo(productOrder.orderNo)
+                        setActiveDeleteOrderNo(productOrder.orderNo ?? null)
                       }
                     >
                       <IconMenu

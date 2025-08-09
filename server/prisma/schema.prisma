@@ -56,6 +56,10 @@ model Customer {
 enum ProductEnum {
   Single
   Double
+  RoundTop
+  RoundTopDouble
+  Window
+  Railing
 }
 
 model ProductDetails {

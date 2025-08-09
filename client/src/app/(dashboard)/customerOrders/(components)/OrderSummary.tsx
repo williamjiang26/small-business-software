@@ -14,12 +14,12 @@ const Items = ({ productId, onPrice }) => {
     // isError2,
     // isLoading2,
   } = useGetProductPhotoByProductIdQuery(Number(productId));
-  console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls);
+ 
   React.useEffect(() => {
     if (product?.price && onPrice) {
       onPrice(product.price); // now safely called only once
     }
-  }, [product?.price]); // Only fires when price is first available
+  }); // Only fires when price is first available
 
   if (!product) {
     return (
@@ -35,7 +35,7 @@ const Items = ({ productId, onPrice }) => {
     <Card className="mb-2 flex shadow-md flex-row items-center justify-between p-4 hover:shadow-xl transition duration-200">
       {/* Image Carousel */}
       <div className="w-24 h-24 mr-4">
-        {productPhotoUrls?.length > 0 ? (
+        {productPhotoUrls ? (
           <ImageCarousel images={productPhotoUrls} />
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -46,9 +46,6 @@ const Items = ({ productId, onPrice }) => {
 
       {/* Product Info */}
       <div className="flex flex-col flex-1 space-y-1">
-        <span className="text-sm font-medium text-gray-800">
-          {product.name}
-        </span>
         <span className="text-sm text-gray-700">{product.type}</span>
       </div>
 
@@ -98,7 +95,7 @@ const OrderSummary = ({ invoiceNo }) => {
         )}
         {productOrders?.map((order) => (
           <Items
-            key={order.id}
+            key={order.orderNo}
             productId={order.productId}
             onPrice={(price) => handleAddPrice(order.productId, price)}
           />
