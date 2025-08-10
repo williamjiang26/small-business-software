@@ -4,7 +4,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import Header from "../(components)/Header";
 import AppSidebar from "../(components)/Sidebar";
 
-import StoreProvider, { useAppSelector } from "../redux";
+import StoreProvider, { useAppSelector } from "../../state/redux";
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

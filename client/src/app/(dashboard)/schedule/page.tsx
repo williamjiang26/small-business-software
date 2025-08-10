@@ -12,6 +12,7 @@ const page = () => {
         <TabsContent value="schedule">schedule</TabsContent>
         <TabsContent value="ordersInStock"> products in stock</TabsContent>
       </Tabs>
+      calendar
     </div>
   );
 };

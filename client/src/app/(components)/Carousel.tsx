@@ -30,6 +30,7 @@ export default function ImageCarousel({ images }) {
           </CarouselItem>
         ))}
       </CarouselContent>
+
       <CarouselPrevious className="absolute left-1 top-1/2 -translate-y-1/2 z-10" />
       <CarouselNext className="absolute right-1 top-1/2 -translate-y-1/2 z-10" />
     </Carousel>

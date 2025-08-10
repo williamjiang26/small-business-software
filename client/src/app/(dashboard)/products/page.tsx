@@ -46,6 +46,7 @@ const Items = ({
     isError: isPhotoError,
     isLoading: isPhotoLoading,
   } = useGetProductPhotoByProductIdQuery(Number(id));
+    console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls)
   console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls);
   const {
     data: productOrders,
@@ -89,31 +90,37 @@ const Items = ({
         </ResponsiveDialog>
 
         {/* Card */}
-        <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
-          <Link href={`/products/${id}`} className="block">
-            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
-              <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                {id} {name}
-              </span>
-              <span className="min-w-[40px] text-sm font-medium text-gray-800">
-                {new Date(dateOrdered).toLocaleDateString()}
-              </span>
-            </div>
-          </Link>
-
-          {/* carousel here */}
-          <div className=" w-20 h-20 max-w-screen-lg max-h-screen">
-            {productPhotoUrls ? (
-              <ImageCarousel images={productPhotoUrls} />
-            ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <span className="text-gray-500 text-sm">No image</span>
+        <Card className="mb-2 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
+          {/* Main content in three spaced columns */}
+          <div className="flex w-full items-center gap-8">
+            {/* 1. Product basic info */}
+            <Link href={`/products/${id}`} className="min-w-[150px]">
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-gray-800 truncate">
+                  {id} {name}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {new Date(dateOrdered).toLocaleDateString()}
+                </span>
               </div>
-            )}
-          </div>
+            </Link>
 
-          <Link href={`/products/${id}`} className="block">
-            <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
+            {/* 2. Carousel / placeholder */}
+            <div className=" w-40 h-40 flex-shrink-0">
+              {productPhotoUrls.length > 0 ? (
+                <ImageCarousel images={productPhotoUrls} />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-500 text-sm">No image</span>
+                </div>
+              )}
+            </div>
+
+            {/* 3. Product details & stats */}
+            <Link
+              href={`/products/${id}`}
+              className="flex flex-wrap gap-4 flex-1"
+            >
               <span className="text-sm text-gray-700 whitespace-nowrap">
                 {type}
               </span>
@@ -132,10 +139,11 @@ const Items = ({
               <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 {status}
               </span>
-            </div>
-          </Link>
+            </Link>
+          </div>
 
-          <div className="absolute  right-1 top-2 z-10">
+          {/* 4. Dropdown actions */}
+          <div className="absolute right-2 top-2 z-10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -178,27 +186,30 @@ const Items = ({
   if (component === "Order") {
     return (
       <>
-        {/* <ResponsiveDialog
-        isOpen={isEditOpen}
-        setIsOpen={setIsEditOpen}
-        title="Edit Product"
-        description="edit product details"
-      >
-        <EditForm cardId={id} setIsOpen={setIsEditOpen} />
-      </ResponsiveDialog>
+        <ResponsiveDialog
+          isOpen={isEditOpen}
+          setIsOpen={setIsEditOpen}
+          title="Edit Product"
+          description="edit product details"
+        >
+          <EditForm cardId={id} setIsOpen={setIsEditOpen} />
+        </ResponsiveDialog>
 
-      <ResponsiveDialog
-        isOpen={isDeleteOpen}
-        setIsOpen={setIsDeleteOpen}
-        title="Delete"
-        description=""
-      >
-        <DeleteForm cardId={id} setIsOpen={setIsDeleteOpen} />
-      </ResponsiveDialog> */}
+        <ResponsiveDialog
+          isOpen={isDeleteOpen}
+          setIsOpen={setIsDeleteOpen}
+          title="Delete"
+          description=""
+        >
+          <DeleteForm cardId={id} setIsOpen={setIsDeleteOpen} />
+        </ResponsiveDialog>
 
         {/* Card */}
         <Card className="mb-2 h-10 flex shadow-md flex-row items-center justify-between relative hover:shadow-xl duration-200 transition-all">
-          <Link href={`/customerOrders/${productOrders?.[0]?.customerInvoice ?? 0}`} className="block">
+          <Link
+            href={`/customerOrders/${productOrders?.[0]?.customerInvoice ?? 0}`}
+            className="block"
+          >
             <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
               <span className="min-w-[40px] text-sm font-medium text-gray-800">
                 {new Date(dateOrdered).toLocaleDateString()}
@@ -291,37 +302,14 @@ const ProductsPage = () => {
         <CreateForm setIsOpen={setIsCreateOpen} />
       </ResponsiveDialog>
 
-      {/* Filters Bar */}
-      <Card className="mb-2 p-1 flex shadow-md flex-row items-center justify-between space-x-1 relative hover:shadow-xl duration-200 transition-all">
-        <div className="relative w-full p-1 flex justify-between rounded-lg  bg-white hover:bg-gray-50 transition">
-          <div className="flex items-center justify-between w-full overflow-x-auto space-x-4">
-            <span className="min-w-[40px] text-sm font-medium text-gray-800">
-              ID SKU
-            </span>
-            <span className="min-w-[40px] text-sm font-medium text-gray-800">
-              Date Ordered
-            </span>
-            <span className="min-w-[40px] text-sm font-medium text-gray-800">
-              Photos
-            </span>
-            <span className="text-sm text-gray-700 whitespace-nowrap">
-              Type
-            </span>
-            <span className="text-sm text-gray-700 whitespace-nowrap">
-              Color
-            </span>
-            <div className="text-sm text-gray-600 whitespace-nowrap">
-              Height x Width x Length
+      <div className="p-5">
+        <Tabs defaultValue="inventory">
+          <TabsList className="flex justify-between">
+            <div>
+              <TabsTrigger value="inventory">Inventory</TabsTrigger>
+              <TabsTrigger value="ordersPlaced">Orders Placed</TabsTrigger>
             </div>
-            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-              Price
-            </span>
-            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-              QTY
-            </span>
-            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-              Status
-            </span>
+
             <Button
               variant="ghost"
               className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
@@ -331,14 +319,6 @@ const ProductsPage = () => {
             >
               <Plus className="h-4 w-4" />
             </Button>
-          </div>
-        </div>
-      </Card>
-      <div className="p-5">
-        <Tabs defaultValue="inventory">
-          <TabsList>
-            <TabsTrigger value="inventory">Inventory</TabsTrigger>
-            <TabsTrigger value="ordersPlaced">Orders Placed</TabsTrigger>
           </TabsList>
 
           <TabsContent value="inventory">

@@ -130,7 +130,7 @@ const formSchema = z.object({
 const Item = ({ type, height, width }) => {
   return (
     <div>
-      {type} | {width} x {height} 
+      {type} | {width} x {height}
     </div>
   );
 };
@@ -271,6 +271,13 @@ const CreateForm = ({
           <h2 className="text-lg font-semibold text-gray-800 ">
             Additional Files
           </h2>
+          <hr />
+          <CustomFormField
+            name="photos"
+            label=""
+            type="file"
+            accept="image/*"
+          />
         </div>
         <div className="flex w-full sm:justify-end">
           <Button

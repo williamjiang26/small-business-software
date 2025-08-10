@@ -13,6 +13,8 @@ import { useState } from "react";
 import {
   useGetCustomerByIdQuery,
   useGetCustomerOrdersQuery,
+  useGetProductByIdQuery,
+  useGetProductOrdersByInvoiceNoQuery,
 } from "@/state/api";
 import { Button } from "@/components/ui/button";
 import ResponsiveDialog from "../../(components)/ui/ResponsiveDialog";
@@ -30,6 +32,57 @@ import EditForm from "./customerOrderForms/EditForm";
 import DeleteForm from "./customerOrderForms/DeleteForm";
 import Link from "next/link";
 
+const ProductCard = ({ productId }) => {
+  console.log("🚀 ~ ProductCard ~ productId:", productId);
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useGetProductByIdQuery(Number(productId));
+  console.log("🚀 ~ ProductCard ~ product:", product);
+  if (isLoading) {
+    return (
+      <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative animate-pulse">
+        <div className="p-4 text-sm text-gray-400">
+          Loading product details...
+        </div>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative">
+        <div className="p-4 text-sm text-red-500">
+          Failed to load product details
+        </div>
+      </Card>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative">
+        <div className="p-4 text-sm text-gray-400">No product found</div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="mb-2 flex shadow-md flex-row items-center justify-between p-4 hover:shadow-xl transition duration-200">
+      {/* Product Info */}
+      <div className="flex flex-col flex-1 space-y-1">
+        <span className="text-sm text-gray-700">{product.type}</span>
+      </div>
+
+      {/* Price */}
+      <div className="text-sm font-semibold text-gray-900 ml-4 whitespace-nowrap">
+        ${product.price}
+      </div>
+    </Card>
+  );
+};
+
 const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -38,7 +91,11 @@ const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
     isError,
     isLoading,
   } = useGetCustomerByIdQuery(Number(customerId));
-
+  const {
+    data: productOrders,
+    isLoading: isOrdersLoading,
+    isError: isOrdersError,
+  } = useGetProductOrdersByInvoiceNoQuery(Number(invoiceNo));
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
@@ -72,40 +129,61 @@ const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
       </ResponsiveDialog>
 
       {/* Card */}
-      <Card className="w-full mb-2 p-6 flex shadow-md relative hover:shadow-xl duration-200 transition-all">
+      <Card className=" w-full mb-2 p-6 shadow-md relative hover:shadow-xl duration-200 transition-all">
         {/* Row content */}
         <Link href={`/customerOrders/${invoiceNo}`}>
           {/* get customer by id, replace customer id with customer details */}
           <div className="relative w-full  p-4 rounded-lg bg-white">
             {/* Card content */}
             <div className="flex justify-between items-start w-full space-x-6">
-              {/* 1. Customer Info Section */}
-              <div className="flex flex-col space-y-1 min-w-[200px]">
-                <div className="text-2xl font-bold">{invoiceNo}</div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <MapPin className="h-4 w-4" />
-                  <span>{customer.address}</span>
+              <div className="flex flex-row justify-between space-x-8">
+                {/* 1. Customer Info Section */}
+                <div className="flex flex-col space-y-1 min-w-[200px]">
+                  <div className="text-2xl font-bold">{invoiceNo}</div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <MapPin className="h-4 w-4" />
+                    <span>{customer.address}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Phone className="h-4 w-4" />
+                    <span>{customer.phone}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <User className="h-4 w-4" />
+                    <span>{customer.name}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Mail className="h-4 w-4" />
+                    <span>{customer.email}</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <Phone className="h-4 w-4" />
-                  <span>{customer.phone}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <User className="h-4 w-4" />
-                  <span>{customer.name}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <Mail className="h-4 w-4" />
-                  <span>{customer.email}</span>
-                </div>
-              </div>
 
-              {/* 2. Order Summary Section (placeholder) */}
-              <div className="flex-1 text-sm">
-                <div className="font-medium mb-1">Order Summary</div>
-                <p className="text-muted-foreground">
-                  Add order summary content here
-                </p>
+                {/* 2. Order Summary Section (placeholder) */}
+                <div className="  w-80    bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+                  {/* Header */}
+                  <h3 className="text-sm font-medium px-7 pt-5 pb-2">
+                    Order Summary
+                  </h3>
+                  <hr />
+                  <div className="flex-1 overflow-auto p-4">
+                    {isOrdersLoading && (
+                      <p className="text-sm text-gray-400">Loading orders...</p>
+                    )}
+                    {isOrdersError && (
+                      <p className="text-sm text-red-500">
+                        Failed to load orders.
+                      </p>
+                    )}
+                    {productOrders?.length === 0 && (
+                      <p className="text-sm text-gray-500">
+                        No products found for this invoice.
+                      </p>
+                    )}
+                    {productOrders?.map((order) => (
+                      <ProductCard productId={order.productId} />
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* 3. Status Section */}

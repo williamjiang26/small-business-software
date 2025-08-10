@@ -66,7 +66,7 @@ export const RoundTopDouble = ({ size = 24, color = "currentColor" }) => (
     {/* Outer rounded-top frame */}
     <path d="M3 21 V9 A9 9 0 0 1 21 9 V21 H3 Z" />
     {/* Vertical split line */}
-    <line x1="12" y1="9" x2="12" y2="21" />
+    <line x1="12" y1="0" x2="12" y2="21" />
   </svg>
 );
 

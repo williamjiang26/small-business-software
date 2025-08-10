@@ -14,7 +14,7 @@ const Items = ({ productId, onPrice }) => {
     // isError2,
     // isLoading2,
   } = useGetProductPhotoByProductIdQuery(Number(productId));
- 
+
   React.useEffect(() => {
     if (product?.price && onPrice) {
       onPrice(product.price); // now safely called only once
