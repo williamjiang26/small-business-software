@@ -18,36 +18,70 @@ import TDCLOGO from "../../assets/TDClogo.png";
 import Image from "../../../node_modules/next/image";
 import { Button } from "@/components/ui/button";
 import Link from "../../../node_modules/next/link";
-// menu items
-const items = [
-  {
-    title: "Orders",
-    url: "/customerOrders",
-    icon: ReceiptText,
-  },
-  {
-    title: "Inventory",
-    url: "/products",
-    icon: Package,
-  },
-  // {
-  //   title: "Leads",
-  //   url: "/",
-  //   icon: ReceiptText,
-  // },
-  {
-    title: "Schedule",
-    url: "/schedule",
-    icon: CalendarRange,
-  },
-  {
-    title: "Customers",
-    url: "/customers",
-    icon: SquareUser,
-  },
-];
 
-const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+const AppSidebar = ({
+  userType,
+  ...props
+}: React.ComponentProps<typeof Sidebar>) => {
+  // menu items
+  const items =
+    userType === "manager"
+      ? [
+          {
+            title: "Orders",
+            url: "/customerOrders",
+            icon: ReceiptText,
+          },
+          {
+            title: "Order Management",
+            url: "/confirmOrderDetails",
+            icon: SquareUser,
+          },
+          {
+            title: "Deliveries",
+            url: "/schedule",
+            icon: CalendarRange,
+          },
+          {
+            title: "Products",
+            url: "/products",
+            icon: Package,
+          },
+          {
+            title: "Customers",
+            url: "/customers",
+            icon: SquareUser,
+          },
+          // {
+          //   title: "Leads",
+          //   url: "/",
+          //   icon: ReceiptText,
+          // },
+
+          {
+            title: "Revenue & Costs",
+            url: "/schedule",
+            icon: CalendarRange,
+          },
+        ]
+      : [
+          {
+            title: "Orders",
+            url: "/customerOrders",
+            icon: ReceiptText,
+          },
+          {
+            title: "Deliveries",
+            url: "/schedule",
+            icon: CalendarRange,
+          },
+          {
+            title: "Products",
+            url: "/products",
+            icon: Package,
+          },
+        ];
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -72,7 +106,37 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
           <SidebarGroupLabel>V1 Fulfillment</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {items.slice(0, 3).map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+          <SidebarGroupLabel>V2 Storage</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.slice(3, 5).map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+          <SidebarGroupLabel>V3 Books</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.slice(5, 6).map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>

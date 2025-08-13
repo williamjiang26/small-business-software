@@ -17,8 +17,8 @@ import {
 } from "@/state/api";
 import { MoreVertical, SquarePen, Trash2, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import IconMenu from "../../(components)/ui/IconMenu";
-import ResponsiveDialog from "../../(components)/ui/ResponsiveDialog";
+import IconMenu from "../../../(components)/ui/IconMenu";
+import ResponsiveDialog from "../../../(components)/ui/ResponsiveDialog";
 import EditForm from "./productForms/EditForm";
 import DeleteForm from "./productForms/DeleteForm";
 import CreateForm from "./productForms/CreateForm";
@@ -46,7 +46,7 @@ const Items = ({
     isError: isPhotoError,
     isLoading: isPhotoLoading,
   } = useGetProductPhotoByProductIdQuery(Number(id));
-    console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls)
+  console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls);
   console.log("🚀 ~ Items ~ productPhotoUrls:", productPhotoUrls);
   const {
     data: productOrders,
@@ -186,6 +186,7 @@ const Items = ({
   if (component === "Order") {
     return (
       <>
+        {/* managers permission */}
         <ResponsiveDialog
           isOpen={isEditOpen}
           setIsOpen={setIsEditOpen}
@@ -338,7 +339,7 @@ const ProductsPage = () => {
             {products
               ?.filter((product) => product.status !== "INSTOCK")
               .map((product) => {
-                console.log("🚀 ~ product:", product);
+            
                 return (
                   <Items key={product.id} component="Order" {...product} />
                 );

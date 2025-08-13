@@ -9,6 +9,7 @@
     "width": 56,
     "length": 5,
     "price": 8000.0,
-    "status": "INSTOCK"
+    "status": "INSTOCK",
+    "salesRepId": 1
   }
 ]

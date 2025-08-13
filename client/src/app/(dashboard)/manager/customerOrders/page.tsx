@@ -17,7 +17,7 @@ import {
   useGetProductOrdersByInvoiceNoQuery,
 } from "@/state/api";
 import { Button } from "@/components/ui/button";
-import ResponsiveDialog from "../../(components)/ui/ResponsiveDialog";
+import ResponsiveDialog from "../../../(components)/ui/ResponsiveDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,12 +25,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IconMenu from "../../(components)/ui/IconMenu";
+import IconMenu from "../../../(components)/ui/IconMenu";
 import CreateForm from "./customerOrderForms/CreateForm";
 import { Card } from "@/components/ui/card";
 import EditForm from "./customerOrderForms/EditForm";
 import DeleteForm from "./customerOrderForms/DeleteForm";
 import Link from "next/link";
+import { ProductEnum, ProductTypeIcons } from "@/lib/constants";
 
 const ProductCard = ({ productId }) => {
   console.log("🚀 ~ ProductCard ~ productId:", productId);
@@ -234,7 +235,23 @@ const Items = ({ invoiceNo, customerId, dateOrdered, status }) => {
   );
 };
 
+const sampleProductOrder = {
+  orderNo: 9876,
+  dateOrdered: "8/13/25",
+  type: "Double",
+  color: "Black",
+  height: 76,
+  width: 76,
+  jamb: 76,
+  invoiceNo: 15765,
+  image: [],
+  status: "new",
+  additionalFiles: [],
+};
 const CustomerOrdersPage = () => {
+  const IconComponent =
+    ProductTypeIcons[sampleProductOrder.type as ProductEnum];
+
   const { data: orders, isLoading, isError } = useGetCustomerOrdersQuery();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   if (isLoading) {
@@ -276,6 +293,139 @@ const CustomerOrdersPage = () => {
       {orders?.map((order) => (
         <Items key={order.invoiceNo} {...order} />
       ))}
+
+      {/* Card */}
+      <Card className=" w-full mb-2 p-6 shadow-md relative hover:shadow-xl duration-200 transition-all">
+        {/* get customer by id, replace customer id with customer details */}
+        <div className="relative w-full  p-4 rounded-lg bg-white">
+          {/* Card content */}
+          <div className="flex justify-between items-start w-full space-x-6">
+            <div className="flex flex-row justify-between space-x-8">
+              {/* ID */}
+              <div>001</div>
+              <div className="font-medium">
+                {new Date(sampleProductOrder.dateOrdered).toLocaleDateString()}
+              </div>
+              {/* Product Detail Section */}
+              <div>
+                {IconComponent && <IconComponent size={18} color="#4B5563" />}{" "}
+              </div>
+              <div> {sampleProductOrder.type}</div>
+              <div>74in</div>
+              <div>96in</div>
+              <div>9in</div>
+
+              {/* Invoice order and store */}
+              <div className="">{sampleProductOrder.invoiceNo}</div>
+              <div className="">Store 1</div>
+              {/* 3. Status Section */}
+              <div className="flex flex-col items-end text-sm min-w-[120px]">
+                <div className="text-green-600">
+                  {sampleProductOrder.status}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* 4. More Options Button */}
+        <div className="absolute right-4 top-4 z-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              >
+                <MoreVertical className="w-4 h-4" />
+                <span className="sr-only">Open Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px] z-50">
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsEditOpen(true)}
+              >
+                <IconMenu
+                  text="Edit"
+                  icon={<SquarePen className="h-4 w-4" />}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </Card>
+      {/* Card */}
+      <Card className=" w-full mb-2 p-6 shadow-md relative hover:shadow-xl duration-200 transition-all">
+        {/* get customer by id, replace customer id with customer details */}
+        <div className="relative w-full  p-4 rounded-lg bg-white">
+          {/* Card content */}
+          <div className="flex justify-between items-start w-full space-x-6">
+            <div className="flex flex-row justify-between space-x-8">
+              {/* ID */}
+              <div>002</div>
+              <div className="font-medium">
+                {new Date(sampleProductOrder.dateOrdered).toLocaleDateString()}
+              </div>
+              {/* Product Detail Section */}
+              <div>
+                {IconComponent && <IconComponent size={18} color="#4B5563" />}{" "}
+              </div>
+              <div> {sampleProductOrder.type}</div>
+              <div>74in</div>
+              <div>96in</div>
+              <div>9in</div>
+
+              {/* Invoice order and store */}
+              <div className="">15766</div>
+              <div className="">Store 1</div>
+              {/* 3. Status Section */}
+              <div className="flex flex-col items-end text-sm min-w-[120px]">
+                <div className="text-green-600">
+                  {sampleProductOrder.status}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* 4. More Options Button */}
+        <div className="absolute right-4 top-4 z-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              >
+                <MoreVertical className="w-4 h-4" />
+                <span className="sr-only">Open Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px] z-50">
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsEditOpen(true)}
+              >
+                <IconMenu
+                  text="Edit"
+                  icon={<SquarePen className="h-4 w-4" />}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </Card>
     </div>
   );
 };

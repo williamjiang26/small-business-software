@@ -11,6 +11,7 @@ import productOrderRoutes from "./routes/productOrderRoutes";
 import productPhotoRoutes from "./routes/productPhotoRoutes";
 import customerOrderRoutes from "./routes/customerOrderRoutes";
 import customerRoutes from "./routes/customerRoutes";
+import { authMiddleware } from "./middleware/authMiddleware";
 
 // configurations
 dotenv.config();
@@ -24,6 +25,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // routes
+app.use("/tenants", authMiddleware(["tenant"]), tenantRoutes);
+app.use("/managers", authMiddleware(["manager"]), managerRoutes);
+
 app.use("/products", productRoutes);
 app.use("/productPhotos", productPhotoRoutes);
 app.use("/productOrders", productOrderRoutes);
