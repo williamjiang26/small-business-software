@@ -21,6 +21,7 @@ Amplify.configure({
   },
 });
 
+// Fixed field names
 const formFields = {
   signIn: {
     username: {
@@ -61,14 +62,15 @@ const formFields = {
     },
   },
 };
+
 const components = {
   Header() {
     return (
-      <View className=" mt-4 mb-7">
+      <View className="mt-4 mb-7">
         <Heading level={3} className="!text-2xl !font-bold">
-          BASE
+          TDC
           <span className="text-secondary-500 font-light hover:!text-primary-300">
-            CLUB
+            MANAGEMENT
           </span>
         </Heading>
         <p className="text-muted-foreground mt-2">
@@ -98,7 +100,6 @@ const components = {
   SignUp: {
     FormFields() {
       const { validationErrors } = useAuthenticator();
-
       return (
         <>
           <Authenticator.SignUp.FormFields />
@@ -109,7 +110,7 @@ const components = {
             hasError={!!validationErrors?.["custom:role"]}
             isRequired
           >
-            <Radio value="tenant">Tenant</Radio>
+            <Radio value="sales">Sales</Radio>
             <Radio value="manager">Manager</Radio>
           </RadioGroupField>
         </>
@@ -138,19 +139,20 @@ const Auth = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuthenticator((context) => [context.user]);
   const router = useRouter();
   const pathname = usePathname();
-
   const isAuthPage = pathname.match(/^\/(signin|signup)$/);
   const isDashboardPage =
-    pathname.startsWith("/manager") || pathname.startsWith("/tenants");
+    pathname.startsWith("/manager") || pathname.startsWith("/sales");
 
-  // redirect authenticated users from auth pages
+  // Avoid redirecting away from signup page when testing
   useEffect(() => {
-    if (user && isAuthPage) {
-      router.push("/");
+    if (user && isAuthPage && !pathname.includes("signup")) {
+      router.push(`/`);
     }
   }, [user, isAuthPage, router]);
 
-  // allow access to public pages without authentication
+
+  console.log(user)
+  // Public pages
   if (!isAuthPage && !isDashboardPage) {
     return <>{children}</>;
   }

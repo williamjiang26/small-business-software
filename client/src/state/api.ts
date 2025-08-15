@@ -1,4 +1,6 @@
+import { createNewUserInDatabase } from "@/lib/utils";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
 
 export interface CustomerOrder {
   invoiceNo: number;
@@ -49,6 +51,14 @@ export interface ProductOrder {
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000" }),
+  prepareHeaders: async (headers) => {
+    const session = await fetchAuthSession();
+    const { idToken } = session.tokens ?? {};
+    if (idToken) {
+      headers.set("Authorization", `Bearer ${idToken}`);
+    }
+    return Headers;
+  },
   reducerPath: "api",
   tagTypes: [
     "CustomerOrders",
@@ -58,6 +68,46 @@ export const api = createApi({
     "ProductOrders",
   ],
   endpoints: (build) => ({
+    getAuthUser: build.query<User, void>({
+      queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
+        try {
+          const session = await fetchAuthSession();
+          const { idToken } = session.tokens ?? {};
+          const user = await getCurrentUser();
+          const userRole = idToken?.payload["custom:role"] as string;
+
+          const endpoint =
+            userRole === "manager"
+              ? `/manager/${user.userId}`
+              : `/sales/${user.userId}`;
+
+          let userDetailsResponse = await fetchWithBQ(endpoint);
+
+          // if user doesn't exist, create new user
+          if (
+            userDetailsResponse.error &&
+            userDetailsResponse.error.status === 404
+          ) {
+            userDetailsResponse = await createNewUserInDatabase(
+              user,
+              idToken,
+              userRole,
+              fetchWithBQ
+            );
+          }
+
+          return {
+            data: {
+              cognitoInfo: { ...user },
+              userInfo: userDetailsResponse.data as Sales | Manager,
+              userRole,
+            },
+          };
+        } catch (error) {
+          return { error: error.message || "Could not fetch user data" };
+        }
+      },
+    }),
     getCustomerOrders: build.query<CustomerOrder[], string | void>({
       query: (search) => ({
         url: "/customerOrders",
@@ -218,6 +268,7 @@ export const api = createApi({
 });
 
 export const {
+  useGetAuthUserQuery,
   useGetCustomerOrdersQuery,
   useGetCustomerOrderByIdQuery,
   useCreateCustomerOrderMutation,

@@ -50,7 +50,7 @@ exports.getCustomerOrderById = getCustomerOrderById;
 // CREATE
 const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { invoiceNo, customerId, dateOrdered, status, address, name, phone, email, orderSummary, additionalFiles, } = req.body;
+        const { invoiceNo, customerId, dateOrdered, status, address, name, phone, email, salesRepId, orderSummary, additionalFiles, } = req.body;
         console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body);
         if (!invoiceNo ||
             !customerId ||
@@ -87,6 +87,7 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
             data: {
                 invoiceNo: Number(invoiceNo),
                 customerId: Number(customerId),
+                salesRepId: Number(salesRepId),
                 dateOrdered: parsedDate,
                 status,
             },
@@ -98,6 +99,7 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
                     type: order.type,
                     height: order.height,
                     width: order.width,
+                    createdBy: salesRepId
                 },
             });
             const newProductOrder = yield prisma.productOrder.create({

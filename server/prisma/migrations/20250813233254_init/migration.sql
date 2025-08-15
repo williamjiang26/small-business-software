@@ -73,7 +73,6 @@ CREATE TABLE "ProductDetails" (
     "width" INTEGER,
     "length" INTEGER,
     "price" DOUBLE PRECISION,
-    "status" TEXT NOT NULL,
     "salesRepId" INTEGER NOT NULL,
 
     CONSTRAINT "ProductDetails_pkey" PRIMARY KEY ("id")

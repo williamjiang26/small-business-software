@@ -24,32 +24,33 @@ const AppSidebar = ({
   ...props
 }: React.ComponentProps<typeof Sidebar>) => {
   // menu items
+  console.log(userType);
   const items =
-    userType === "manager"
+    userType === "manager"   
       ? [
           {
             title: "Orders",
-            url: "/customerOrders",
+            url: `/manager/customerOrders`,
             icon: ReceiptText,
           },
           {
             title: "Order Management",
-            url: "/confirmOrderDetails",
+            url: `/manager/confirmOrderDetails`,
             icon: SquareUser,
           },
           {
             title: "Deliveries",
-            url: "/schedule",
+            url: `/manager/schedule`,
             icon: CalendarRange,
           },
           {
             title: "Products",
-            url: "/products",
+            url: `/manager/products`,
             icon: Package,
           },
           {
             title: "Customers",
-            url: "/customers",
+            url: `/manager/customers`,
             icon: SquareUser,
           },
           // {
@@ -60,24 +61,24 @@ const AppSidebar = ({
 
           {
             title: "Revenue & Costs",
-            url: "/schedule",
+            url: `/manager/revenue`,
             icon: CalendarRange,
           },
         ]
       : [
           {
             title: "Orders",
-            url: "/customerOrders",
+            url: "/sales/customerOrders",
             icon: ReceiptText,
           },
           {
             title: "Deliveries",
-            url: "/schedule",
+            url: "/sales/schedule",
             icon: CalendarRange,
           },
           {
             title: "Products",
-            url: "/products",
+            url: "/sales/products",
             icon: Package,
           },
         ];
@@ -91,7 +92,7 @@ const AppSidebar = ({
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link href={`/dashboard`}>
+              <Link href={`/${userType}/dashboard`}>
                 <Image width={40} height={40} src={TDCLOGO} alt="TDC" />
                 <span className="text-base text-black font-semibold">
                   TDC Inc.

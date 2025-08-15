@@ -53,10 +53,10 @@ export const updateProduct = async (
 ): Promise<void> => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { color, name, height, width, length, type, price, status, photos } = req.body;
+    const { color, name, height, width, length, type, price, photos } = req.body;
     const updateProduct = await prisma.productDetails.update({
       where: { id },
-      data: { color, name, height, width, length, type, price, status, photos },
+      data: { color, name, height, width, length, type, price, photos },
     });
     res.json(updateProduct);
   } catch (error) {
@@ -69,7 +69,7 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id, name, color, height, width, length, type, price } = req.body;
+    const { id, name, color, height, width, length, type, price, salesRepId } = req.body;
 
     const newProduct = await prisma.productDetails.create({
       data: {
@@ -81,6 +81,7 @@ export const createProduct = async (
         width: parseInt(width, 10),
         length: parseInt(length, 10),
         price: parseInt(price, 10),
+        salesRepId: parseInt(salesRepId, 10),
       },
     });
     res.status(201).json(newProduct);

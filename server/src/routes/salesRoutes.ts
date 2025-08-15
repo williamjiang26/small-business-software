@@ -1,23 +1,9 @@
 import express from "express";
-import {
- 
-} from "../controllers/tenantControllers";
+import { getSales, createSales } from "../controllers/salesControllers";
 
 const router = express.Router();
 
-//  crud sales user
-
-// create invoice order
-// get my stores invoice
-// update a invoice 
-// get a invoice
-// delete a invoice
-
-
-// create deliveries
-// get products in inventory
-
-
-
+router.get("/:cognitoId", getSales);
+router.post("/", createSales);
 
 export default router;

@@ -11,6 +11,8 @@ import productOrderRoutes from "./routes/productOrderRoutes";
 import productPhotoRoutes from "./routes/productPhotoRoutes";
 import customerOrderRoutes from "./routes/customerOrderRoutes";
 import customerRoutes from "./routes/customerRoutes";
+import salesRoutes from "./routes/salesRoutes";
+import managerRoutes from "./routes/managerRoutes";
 import { authMiddleware } from "./middleware/authMiddleware";
 
 // configurations
@@ -25,8 +27,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // routes
-app.use("/tenants", authMiddleware(["tenant"]), tenantRoutes);
-app.use("/managers", authMiddleware(["manager"]), managerRoutes);
+app.use("/sales", authMiddleware(["sales"]), salesRoutes);
+app.use("/manager", authMiddleware(["manager"]), managerRoutes);
 
 app.use("/products", productRoutes);
 app.use("/productPhotos", productPhotoRoutes);

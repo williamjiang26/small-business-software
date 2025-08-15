@@ -57,6 +57,7 @@ export const createCustomerOrder = async (
       name,
       phone,
       email,
+      salesRepId,
       orderSummary,
       additionalFiles,
     } = req.body;
@@ -103,6 +104,7 @@ export const createCustomerOrder = async (
       data: {
         invoiceNo: Number(invoiceNo),
         customerId: Number(customerId),
+        salesRepId: Number(salesRepId),
         dateOrdered: parsedDate,
         status,
       },
@@ -115,6 +117,7 @@ export const createCustomerOrder = async (
           type: order.type,
           height: order.height,
           width: order.width,
+          createdBy: salesRepId
         },
       });
       const newProductOrder = await prisma.productOrder.create({
