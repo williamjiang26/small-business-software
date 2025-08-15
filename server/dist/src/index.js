@@ -10,13 +10,8 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
 // route imports
-const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
-const productOrderRoutes_1 = __importDefault(require("./routes/productOrderRoutes"));
-const productPhotoRoutes_1 = __importDefault(require("./routes/productPhotoRoutes"));
-const customerOrderRoutes_1 = __importDefault(require("./routes/customerOrderRoutes"));
-const customerRoutes_1 = __importDefault(require("./routes/customerRoutes"));
 const salesRoutes_1 = __importDefault(require("./routes/salesRoutes"));
-const managerRoutes_1 = __importDefault(require("./routes/managerRoutes"));
+// import managerRoutes from "./routes/managerRoutes";
 const authMiddleware_1 = require("./middleware/authMiddleware");
 // configurations
 dotenv_1.default.config();
@@ -30,12 +25,7 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
 // routes
 app.use("/sales", (0, authMiddleware_1.authMiddleware)(["sales"]), salesRoutes_1.default);
-app.use("/manager", (0, authMiddleware_1.authMiddleware)(["manager"]), managerRoutes_1.default);
-app.use("/products", productRoutes_1.default);
-app.use("/productPhotos", productPhotoRoutes_1.default);
-app.use("/productOrders", productOrderRoutes_1.default);
-app.use("/customerOrders", customerOrderRoutes_1.default);
-app.use("/customers", customerRoutes_1.default);
+// app.use("/manager", authMiddleware(["manager"]), managerRoutes);
 // server
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

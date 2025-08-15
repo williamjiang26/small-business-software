@@ -30,7 +30,6 @@ CREATE TABLE "Manager" (
 CREATE TABLE "Sales" (
     "id" SERIAL NOT NULL,
     "cognitoId" TEXT NOT NULL,
-    "storeId" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
@@ -44,7 +43,6 @@ CREATE TABLE "CustomerOrderDetails" (
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "dateOrdered" TIMESTAMP(3),
     "customerId" INTEGER NOT NULL,
-    "salesRepId" INTEGER NOT NULL,
     "status" "OrderStatusEnum" NOT NULL DEFAULT 'CREATEORDER',
     "measurementPdf" TEXT,
     "customerCopyPdf" TEXT,
@@ -113,9 +111,6 @@ CREATE UNIQUE INDEX "Manager_cognitoId_key" ON "Manager"("cognitoId");
 CREATE UNIQUE INDEX "Sales_cognitoId_key" ON "Sales"("cognitoId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Sales_storeId_key" ON "Sales"("storeId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "CustomerOrderDetails_invoiceNo_key" ON "CustomerOrderDetails"("invoiceNo");
 
 -- CreateIndex
@@ -125,13 +120,7 @@ CREATE UNIQUE INDEX "ProductDetails_id_key" ON "ProductDetails"("id");
 CREATE UNIQUE INDEX "ProductOrder_orderNo_key" ON "ProductOrder"("orderNo");
 
 -- AddForeignKey
-ALTER TABLE "Sales" ADD CONSTRAINT "Sales_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "Store"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "CustomerOrderDetails" ADD CONSTRAINT "CustomerOrderDetails_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "CustomerOrderDetails" ADD CONSTRAINT "CustomerOrderDetails_salesRepId_fkey" FOREIGN KEY ("salesRepId") REFERENCES "Sales"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProductDetails" ADD CONSTRAINT "ProductDetails_salesRepId_fkey" FOREIGN KEY ("salesRepId") REFERENCES "Sales"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

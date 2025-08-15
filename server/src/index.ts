@@ -6,13 +6,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 // route imports
-import productRoutes from "./routes/productRoutes";
-import productOrderRoutes from "./routes/productOrderRoutes";
-import productPhotoRoutes from "./routes/productPhotoRoutes";
-import customerOrderRoutes from "./routes/customerOrderRoutes";
-import customerRoutes from "./routes/customerRoutes";
 import salesRoutes from "./routes/salesRoutes";
-import managerRoutes from "./routes/managerRoutes";
+// import managerRoutes from "./routes/managerRoutes";
 import { authMiddleware } from "./middleware/authMiddleware";
 
 // configurations
@@ -28,13 +23,7 @@ app.use(cors());
 
 // routes
 app.use("/sales", authMiddleware(["sales"]), salesRoutes);
-app.use("/manager", authMiddleware(["manager"]), managerRoutes);
-
-app.use("/products", productRoutes);
-app.use("/productPhotos", productPhotoRoutes);
-app.use("/productOrders", productOrderRoutes);
-app.use("/customerOrders", customerOrderRoutes);
-app.use("/customers", customerRoutes);
+// app.use("/manager", authMiddleware(["manager"]), managerRoutes);
 
 // server
 const port = process.env.PORT || 3001;

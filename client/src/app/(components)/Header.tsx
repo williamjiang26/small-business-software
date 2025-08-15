@@ -38,12 +38,12 @@ const Header = () => {
         />
         <h1 className="text-base font-medium">Dasboard</h1>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2 rounded-lg shadow-md">
           {authUser ? (
             <>
               <DropdownMenu>
-                <DropdownMenuTrigger className=" flex flex-row items-center space-x-1 shadow-md">
-                  <Avatar className="border-2 border-black">
+                <DropdownMenuTrigger className=" flex flex-row items-center space-x-1 ">
+                  <Avatar className="border-2 bg-gray">
                     <AvatarImage src={authUser.userInfo?.image} />
                     <AvatarFallback className="bg-white text-black">
                       {authUser.userRole?.[0].toUpperCase()}
@@ -56,16 +56,9 @@ const Header = () => {
                 <DropdownMenuContent className="bg-white text-primary-700">
                   <DropdownMenuItem
                     className="cursor-pointer hover:!bg-primary-700 hover:!text-primary-100 font-bold"
-                    onClick={() =>
-                      router.push(
-                        authUser.userRole?.toLowerCase() === "manager"
-                          ? "/manager/dashboard"
-                          : "/sales/dashboard",
-                        { scroll: false }
-                      )
-                    }
+                    onClick={() => router.push("/", { scroll: false })}
                   >
-                    Go to Dashboard
+                    Go to Login Page
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />

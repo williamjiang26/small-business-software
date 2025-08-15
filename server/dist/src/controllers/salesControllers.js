@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createSales = exports.getSales = void 0;
+exports.getCustomerOrders = exports.createSales = exports.getSales = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
@@ -34,14 +34,13 @@ exports.getSales = getSales;
 // GET
 const createSales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { cognitoId, name, email, phoneNumber, store } = req.body;
+        const { cognitoId, name, email, phoneNumber } = req.body;
         const sales = yield prisma.sales.create({
             data: {
                 cognitoId,
                 name,
                 email,
                 phoneNumber,
-                store,
             },
         });
         res.status(201).json(sales);
@@ -51,3 +50,24 @@ const createSales = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.createSales = createSales;
+// GET
+const getCustomerOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const customerOrders = yield prisma.customerOrderDetails.findMany({
+            where: {},
+        });
+        console.log("🚀 ~ getCustomerOrders ~ customerOrders:", customerOrders);
+        if (customerOrders) {
+            res.json(customerOrders);
+        }
+        else {
+            res.status(404).json({ message: "Customer Orders not found" });
+        }
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: "Error retrieving Customer Orders", error });
+    }
+});
+exports.getCustomerOrders = getCustomerOrders;

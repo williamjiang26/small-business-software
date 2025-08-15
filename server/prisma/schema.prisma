@@ -18,7 +18,6 @@ enum OrderStatusEnum {
 model Store {
   id       Int            @id @unique
   address  String 
-  salesRep  Sales[]
 }
 
 model Manager {
@@ -32,13 +31,9 @@ model Manager {
 model Sales {
   id              Int    @id @default(autoincrement())
   cognitoId       String @unique
-  storeId         Int    @unique
   name            String
   email           String
   phoneNumber     String
-
-  store           Store   @relation(fields: [storeId], references: [id])
-  customerOrders  CustomerOrderDetails[]
   products        ProductDetails[]
 }
 
@@ -49,9 +44,6 @@ model CustomerOrderDetails {
 
   customerId       Int   
   customer         Customer       @relation(fields: [customerId], references: [id])
-
-  salesRepId       Int
-  salesRep         Sales          @relation(fields: [salesRepId], references: [id])
 
   status           OrderStatusEnum     @default(CREATEORDER)
   orderSummary     ProductOrder[]

@@ -1,7 +1,6 @@
 [
   {
     "customerId": 1,
-    "salesRepId": 1,
     "invoiceNo": 15765,
     "createdAt": "2025-10-26T00:00:00Z",
     "dateOrdered": "2025-10-26T00:00:00Z",

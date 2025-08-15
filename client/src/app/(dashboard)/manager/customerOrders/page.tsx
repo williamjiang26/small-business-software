@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import IconMenu from "../../../(components)/ui/IconMenu";
-import CreateForm from "./customerOrderForms/CreateForm";
+import CreateForm from "../../sales/customerOrders/CreateForm";
 import { Card } from "@/components/ui/card";
 import EditForm from "./customerOrderForms/EditForm";
 import DeleteForm from "./customerOrderForms/DeleteForm";

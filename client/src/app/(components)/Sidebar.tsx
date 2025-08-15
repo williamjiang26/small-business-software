@@ -73,12 +73,12 @@ const AppSidebar = ({
           },
           {
             title: "Deliveries",
-            url: "/sales/schedule",
+            url: "/sales/deliveries",
             icon: CalendarRange,
           },
           {
             title: "Products",
-            url: "/sales/products",
+            url: "/sales/inventory",
             icon: Package,
           },
         ];
