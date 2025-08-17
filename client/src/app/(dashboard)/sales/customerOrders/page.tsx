@@ -15,7 +15,42 @@ import { ProductEnum, ProductTypeIcons } from "@/lib/constants";
 import ResponsiveDialog from "@/app/(components)/ui/ResponsiveDialog";
 import { useState } from "react";
 import CreateForm from "../customerOrders/CreateForm";
-import { useGetAuthUserQuery, useGetCustomerOrdersQuery } from "@/state/api";
+import {
+  useGetAuthUserQuery,
+  useGetCustomerByIdQuery,
+  useGetCustomerOrdersQuery,
+  useGetProductByProductOrderIdQuery,
+  useGetProductOrdersByInvoiceNoQuery,
+} from "@/state/api";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import IconMenu from "@/app/(components)/ui/IconMenu";
+import { useRouter } from "next/navigation"; // for App Router
+
+const ProductOrder = ({ id }) => {
+  console.log("🚀 ~ ProductOrder ~ id:", id);
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useGetProductByProductOrderIdQuery(id);
+  const IconComponent = ProductTypeIcons[product?.type as ProductEnum];
+  return (
+    <div className="flex flex-row space-x-1 items-center">
+      <div>{IconComponent && <IconComponent size={18} color="#4B5563" />}</div>
+      <div>
+        {product?.height} x {product?.width}
+      </div>
+      <div> - {product?.color}</div>
+    </div>
+  );
+};
 
 const Item = ({
   invoiceNo,
@@ -26,62 +61,106 @@ const Item = ({
   measurementPdf,
   customerCopyPdf,
 }) => {
+  // get customer info by customerID
+  const {
+    data: customer,
+    isLoading,
+    isError,
+  } = useGetCustomerByIdQuery(customerId);
+
+  const {
+    data: productOrders,
+    isLoading: isProductOrdersLoading,
+    isError: isProductOrdersLoadingError,
+  } = useGetProductOrdersByInvoiceNoQuery(invoiceNo);
+  console.log("🚀 ~ Item ~ productOrders:", productOrders);
+  const router = useRouter();
+
+  // now handle UI states
+  if (isLoading || isProductOrdersLoading) {
+    return <div className="py-4">Loading...</div>;
+  }
+
+  if (isError || !customer || isProductOrdersLoadingError || !productOrders) {
+    return (
+      <div className="text-center text-red-500 py-4">
+        Failed to Fetch Customers
+      </div>
+    );
+  }
+
   return (
     <Card className=" w-full mb-2 p-1 relative hover:shadow-xl duration-200 transition-all">
-      {/* Card content */}
       <div className="flex flex-row justify-between space-x-8 relative w-full  p-4 rounded-lg bg-white">
-        {/* ID */}
-        <div>001</div>
-        <div className="font-medium">
-          {new Date(dateOrdered).toLocaleDateString()}
+        <div>
+          <div className="font-semibold text-lg">{invoiceNo}</div>
+          <div className="flex items-center space-x-2 text-sm">
+            <MapPin className="h-4 w-4" />
+            <span>{customer.address}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-sm">
+            <Phone className="h-4 w-4" />
+            <span>{customer.phone}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-sm">
+            <User className="h-4 w-4" />
+            <span>{customer.name}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-sm">
+            <Mail className="h-4 w-4" />
+            <span>{customer.email}</span>
+          </div>
         </div>
-        {/* Product Detail Section */}
-        <div>hth</div>
-        <div>{createdAt}</div>
-        <div>74in</div>
-        <div>96in</div>
-        <div>9in</div>
 
-        {/* Invoice order and store */}
-        <div className="">{invoiceNo}</div>
-        <div className="">Store 1</div>
-        {/* 3. Status Section */}
-        <div className="flex flex-col items-end text-sm min-w-[120px] text-green-600">
-          {status}
+        <div className="flex flex-col">
+          Order Summary
+          <hr />
+          {productOrders?.map((order) => (
+            <ProductOrder id={order.productId} />
+          ))}
+        </div>
+
+        <div>
+          <div className=""> {new Date(dateOrdered).toLocaleDateString()}</div>
+          <div className="">Sales Rep</div>
+        </div>
+
+        <div className="flex flex-row  text-sm min-w-[120px] space-x-2">
+          <div className="text-green-600">{status}</div>
+        </div>
+
+        <div className="">
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex h-6 w-6 p-0 data-[state=open]:bg-muted"
+              >
+                <MoreVertical className="w-4 h-4" />
+                <span className="sr-only">Open Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px] z-50">
+              <DropdownMenuItem
+                className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => router.push(`/sales/customerOrders/${invoiceNo}`)}
+              >
+                <IconMenu
+                  text="Edit"
+                  icon={<SquarePen className="h-4 w-4" />}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {/* <DropdownMenuItem
+                className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
+              </DropdownMenuItem> */}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-      {/* 4. More Options Button */}
-      {/* <div className="absolute right-4 top-4 z-10">
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-        >
-          <MoreVertical className="w-4 h-4" />
-          <span className="sr-only">Open Menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px] z-50">
-        <DropdownMenuItem
-          className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
-          onClick={() => setIsEditOpen(true)}
-        >
-          <IconMenu
-            text="Edit"
-            icon={<SquarePen className="h-4 w-4" />}
-          />
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="w-full justify-start flex rounded-md p-2 hover:bg-neutral-100"
-          onClick={() => setIsDeleteOpen(true)}
-        >
-          <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  </div> */}
     </Card>
   );
 };
@@ -104,7 +183,6 @@ const page = () => {
       </div>
     );
   }
-  console.log("🚀 ~ page ~ customerOrdersvvv:", customerOrders);
 
   return (
     <div>
@@ -115,7 +193,7 @@ const page = () => {
             isOpen={isCreateOpen}
             setIsOpen={setIsCreateOpen}
             title="Invoice"
-            description="create customer order"
+            description=" "
           >
             <CreateForm setIsOpen={setIsCreateOpen} />
           </ResponsiveDialog>
@@ -129,10 +207,26 @@ const page = () => {
         </div>
       </div>
       <div>
-        page content {/* Card */}
-        {customerOrders?.map((order) => (
-          <Item {...order} />
-        ))}
+        <Tabs defaultValue="all">
+          <TabsList className="">
+            <TabsTrigger value="all">All Orders</TabsTrigger>
+            <TabsTrigger value="new">New Orders</TabsTrigger>
+          </TabsList>
+          <TabsContent value="new">
+            {customerOrders
+              ?.filter((order) => order.status !== "INSTOCK")
+              .map((order) => (
+                <Item {...order} />
+              ))}
+          </TabsContent>
+          <TabsContent value="all">
+            {customerOrders
+              ?.filter((order) => order.status === "INSTOCK")
+              .map((order) => (
+                <Item {...order} />
+              ))}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

@@ -1,9 +1,16 @@
-// import express from "express";
-// import { createManager, getManager } from "../controllers/managerController";
+import express from "express";
+import {
+  createManager,
+  getCustomerOrdersManager,
+  getManager,
+  updateCustomerOrdersManager,
+} from "../controllers/managerControllers";
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get("/:cognitoId", getManager);
-// router.post("/", createManager);
+router.put("/customerOrders/invoice/:invoiceNo", updateCustomerOrdersManager);
+router.get("/customerOrders", getCustomerOrdersManager);
+router.get("/:cognitoId", getManager);
+router.post("/", createManager);
 
-// export default router;
+export default router;

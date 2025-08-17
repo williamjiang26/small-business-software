@@ -34,7 +34,6 @@ model Sales {
   name            String
   email           String
   phoneNumber     String
-  products        ProductDetails[]
 }
 
 model CustomerOrderDetails {
@@ -72,7 +71,7 @@ enum ProductEnum {
 }
 
 model ProductDetails {
-  id           Int             @unique  @id @default(autoincrement())
+  id           Int             @id @default(autoincrement())
   name         String?
   type         ProductEnum?
   dateOrdered  DateTime?       @default(now())
@@ -83,8 +82,6 @@ model ProductDetails {
   price        Float?
   orders       ProductOrder[]
   photos       ProductPhoto[]
-  salesRepId   Int
-  createdBy    Sales           @relation(fields: [salesRepId], references: [id])
 } 
 
 enum ProductOrderStatusEnum {
@@ -97,9 +94,11 @@ enum ProductOrderStatusEnum {
 }
 
 model ProductOrder {
-  orderNo         Int      @unique  @id @default(autoincrement())
+  productOrderId  Int      @id  @default(autoincrement())
+
+
   productId       Int
-  
+  orderNo         Int?     @unique
   customerInvoice Int?
   dateOrdered     DateTime
 

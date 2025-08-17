@@ -42,16 +42,16 @@ const Header = () => {
           {authUser ? (
             <>
               <DropdownMenu>
-                <DropdownMenuTrigger className=" flex flex-row items-center space-x-1 ">
+                <DropdownMenuTrigger className=" flex flex-row items-center space-x-1 "> <p className="text-primary-200 hidden md:block">
+                    {authUser.cognitoInfo?.username}
+                  </p>
                   <Avatar className="border-2 bg-gray">
                     <AvatarImage src={authUser.userInfo?.image} />
                     <AvatarFallback className="bg-white text-black">
                       {authUser.userRole?.[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <p className="text-primary-200 hidden md:block">
-                    {authUser.cognitoInfo?.username}
-                  </p>
+                 
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white text-primary-700">
                   <DropdownMenuItem

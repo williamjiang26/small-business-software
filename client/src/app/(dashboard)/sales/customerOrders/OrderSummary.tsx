@@ -1,40 +1,26 @@
 import ImageCarousel from "@/app/(components)/Carousel";
 import { Card } from "@/components/ui/card";
-import {
-  useGetProductByIdQuery,
-  useGetProductOrdersByInvoiceNoQuery,
-  useGetProductPhotoByProductIdQuery,
-} from "@/state/api";
 import React, { useState } from "react";
 
-const Items = ({ productId, onPrice }) => {
-  const { data: product } = useGetProductByIdQuery(Number(productId));
-  const {
-    data: productPhotoUrls,
-    // isError2,
-    // isLoading2,
-  } = useGetProductPhotoByProductIdQuery(Number(productId));
+const Items = ({ productId, onPrice, order, details }) => {
+  // console.log("🚀 ~ Items ~ details:", details);
+  // console.log("🚀 ~ Items ~ order:", order);
+  //   const {
+  //     data: productPhotoUrls,
+  //     // isError2,
+  //     // isLoading2,
+  //   } = useGetProductPhotoByProductIdQuery(Number(productId));
 
-  React.useEffect(() => {
-    if (product?.price && onPrice) {
-      onPrice(product.price); // now safely called only once
-    }
-  }); // Only fires when price is first available
-
-  if (!product) {
-    return (
-      <Card className="mb-2 flex shadow-md flex-row items-center justify-between relative animate-pulse">
-        <div className="p-4 text-sm text-gray-400">
-          Loading product details...
-        </div>
-      </Card>
-    );
-  }
+  //   React.useEffect(() => {
+  //     if (product?.price && onPrice) {
+  //       onPrice(product.price); // now safely called only once
+  //     }
+  //   });
 
   return (
     <Card className="mb-2 flex shadow-md flex-row items-center justify-between p-4 hover:shadow-xl transition duration-200">
       {/* Image Carousel */}
-      <div className="w-24 h-24 mr-4">
+      {/* <div className="w-24 h-24 mr-4">
         {productPhotoUrls ? (
           <ImageCarousel images={productPhotoUrls} />
         ) : (
@@ -42,27 +28,32 @@ const Items = ({ productId, onPrice }) => {
             <span className="text-gray-500 text-sm">No image</span>
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Product Info */}
-      <div className="flex flex-col flex-1 space-y-1">
-        <span className="text-sm text-gray-700">{product.type}</span>
+      <div className="flex flex-row flex-1 space-x-1 items-center">
+        <span className="text-sm text-gray-700">{details?.type}</span>
+        <span className="text-sm text-gray-700">{details?.color}</span>
+      </div>
+
+      {/* Product Size */}
+      <div className="flex flex-row flex-1 space-x-1 items-center">
+        <span className="text-sm text-gray-700">
+          {details?.width} x {details?.height} x {details?.length}
+        </span>
       </div>
 
       {/* Price */}
       <div className="text-sm font-semibold text-gray-900 ml-4 whitespace-nowrap">
-        ${product.price}
+        ${details?.price || 0.0}
       </div>
+      {/* Price */}
+      <div className="text-sm ml-4 rounded bg-green-300 whitespace-nowrap">{order?.status}</div>
     </Card>
   );
 };
 
-const OrderSummary = ({ invoiceNo }) => {
-  const {
-    data: productOrders,
-    isLoading,
-    isError,
-  } = useGetProductOrdersByInvoiceNoQuery(Number(invoiceNo));
+const OrderSummary = ({ invoiceDetails }) => {
 
   const [total, setTotal] = useState(0);
   const addedProductIds = React.useRef(new Set());
@@ -82,22 +73,14 @@ const OrderSummary = ({ invoiceNo }) => {
 
       {/* Product list */}
       <div className="flex-1 overflow-auto p-4">
-        {isLoading && (
-          <p className="text-sm text-gray-400">Loading orders...</p>
-        )}
-        {isError && (
-          <p className="text-sm text-red-500">Failed to load orders.</p>
-        )}
-        {productOrders?.length === 0 && (
-          <p className="text-sm text-gray-500">
-            No products found for this invoice.
-          </p>
-        )}
-        {productOrders?.map((order) => (
+
+        {invoiceDetails?.productOrders?.map((order, index) => (
           <Items
             key={order.orderNo}
             productId={order.productId}
             onPrice={(price) => handleAddPrice(order.productId, price)}
+            order={order}
+            details={invoiceDetails.productDetails?.[index]}
           />
         ))}
       </div>

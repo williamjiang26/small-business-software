@@ -93,7 +93,7 @@ const AppSidebar = ({
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href={`/${userType}/dashboard`}>
-                <Image width={40} height={40} src={TDCLOGO} alt="TDC" />
+                {/* <Image width={40} height={40} src={TDCLOGO} alt="TDC" /> */}
                 <span className="text-base text-black font-semibold">
                   TDC Inc.
                 </span>

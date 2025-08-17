@@ -7,7 +7,7 @@ import {
 import { ArrowLeft, MapPin, Phone, User, Mail, Download } from "lucide-react";
 import Link from "next/link";
 import AdditionalFiles from "../(components)/AdditionalFiles";
-import OrderSummary from "../(components)/OrderSummary";
+import OrderSummary from "../../../sales/customerOrders/OrderSummary";
 import PdfComponent from "../(components)/PdfComponent";
 
 const CustomerOrderDetails = ({

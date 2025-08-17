@@ -1,0 +1,166 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateCustomerOrdersManager = exports.getCustomerOrdersManager = exports.createManager = exports.getManager = void 0;
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
+// GET
+const getManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { cognitoId } = req.params;
+        const manager = yield prisma.manager.findUnique({
+            where: { cognitoId },
+        });
+        if (manager) {
+            res.json(manager);
+        }
+        else {
+            res.status(404).json({ message: "Manager not found" });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error retrieving manager", error });
+    }
+});
+exports.getManager = getManager;
+// CREATE
+const createManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { cognitoId, name, email, phoneNumber } = req.body;
+        const manager = yield prisma.manager.create({
+            data: {
+                cognitoId,
+                name,
+                email,
+                phoneNumber,
+            },
+        });
+        res.status(201).json(manager);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error retrieving manager", error });
+    }
+});
+exports.createManager = createManager;
+// GET
+const getCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let newCustomerOrders = [];
+        const orders = yield prisma.productOrder.findMany({
+            where: {},
+        });
+        for (let order of orders) {
+            let invoice = null;
+            if (order.customerInvoice) {
+                invoice = yield prisma.customerOrderDetails.findUnique({
+                    where: { invoiceNo: order.customerInvoice },
+                });
+            }
+            const productDetails = yield prisma.productDetails.findUnique({
+                where: { id: order.productId },
+            });
+            let customerOrder = {
+                customerInvoice: order.customerInvoice,
+                dateOrdered: order.dateOrdered,
+                // customer order does not create the product order. customer order is just a ticket. manager creates the product order.
+                // manager assigns a product order to a customer order ticket.
+                orderNo: order.orderNo,
+                status: order.status,
+                productId: order.productId,
+                productOrderId: order.productOrderId,
+                type: productDetails === null || productDetails === void 0 ? void 0 : productDetails.type,
+                name: productDetails === null || productDetails === void 0 ? void 0 : productDetails.name,
+                color: productDetails === null || productDetails === void 0 ? void 0 : productDetails.color,
+                height: productDetails === null || productDetails === void 0 ? void 0 : productDetails.height,
+                width: productDetails === null || productDetails === void 0 ? void 0 : productDetails.width,
+                length: productDetails === null || productDetails === void 0 ? void 0 : productDetails.length,
+                price: productDetails === null || productDetails === void 0 ? void 0 : productDetails.price,
+                measurementPdf: invoice === null || invoice === void 0 ? void 0 : invoice.measurementPdf,
+                customerCopyPdf: invoice === null || invoice === void 0 ? void 0 : invoice.customerCopyPdf,
+                additionalFiles: invoice === null || invoice === void 0 ? void 0 : invoice.additionalFiles,
+            };
+            newCustomerOrders.push(customerOrder);
+        }
+        if (newCustomerOrders.length > 0) {
+            res.json(newCustomerOrders);
+        }
+        else {
+            res.status(404).json({ message: "Customer Orders not found" });
+        }
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: "Error retrieving Customer Orders", error });
+    }
+});
+exports.getCustomerOrdersManager = getCustomerOrdersManager;
+// UPDATE
+const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const invoiceNo = parseInt(req.params.invoiceNo, 10);
+        console.log("🚀 ~ updateCustomerOrdersManager ~ invoiceNo:", invoiceNo);
+        const { orderNo, productId, productOrderId, status, type, name, color, height, width, length,
+        // measurementPdf,
+        // customerCopyPdf,
+        // additionalFiles,
+         } = req.body;
+        console.log("🚀 ~ updateCustomerOrdersManager ~ req.body:", req.body);
+        if (!invoiceNo) {
+            res.status(400).json({ error: "Missing invoiceNo in params" });
+            return;
+        }
+        if (!productId || !productOrderId) {
+            res.status(400).json({ error: "Missing productId or productOrderId" });
+            return;
+        }
+        const [productDetails, productOrder] = yield prisma.$transaction([
+            // prisma.customerOrderDetails.update({
+            //   where: { invoiceNo },
+            //   data: {
+            //     dateOrdered,
+            // measurementPdf,
+            // customerCopyPdf,
+            // additionalFiles,
+            //   },
+            // }),
+            prisma.productDetails.update({
+                where: { id: productId },
+                data: {
+                    type,
+                    color,
+                    height,
+                    width,
+                    length,
+                    name,
+                },
+            }),
+            prisma.productOrder.update({
+                where: { productOrderId },
+                data: {
+                    orderNo,
+                    status,
+                },
+            }),
+        ]);
+        res.json({
+            message: "Customer order updated successfully",
+            // invoice,
+            productDetails,
+            productOrder,
+        });
+    }
+    catch (error) {
+        console.error("❌ Error updating customer order:", error);
+        res.status(500).json({ message: "Error updating Customer Orders", error });
+    }
+});
+exports.updateCustomerOrdersManager = updateCustomerOrdersManager;

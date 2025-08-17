@@ -159,3 +159,39 @@
     query: (invoiceNo) => `/productOrders/invoice/${invoiceNo}`,
     providesTags: ["ProductOrders"],
   }),
+  color
+  : 
+  "Black"
+  customerId
+  : 
+  ""
+  dateOrdered
+  : 
+  "10/24/2024"
+  height
+  : 
+  82
+  invoiceNo
+  : 
+  15900
+  length
+  : 
+  8
+  name
+  : 
+  "Dylan on fifth"
+  orderNo
+  : 
+  9876
+  productOrderId
+  : 
+  2
+  status
+  : 
+  "ORDERPLACED"
+  type
+  : 
+  "Single"
+  width
+  : 
+  38

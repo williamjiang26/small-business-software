@@ -42,13 +42,13 @@ const Navbar = () => {
             scroll={false}
           >
             <div className="flex items-center gap-3">
-              <Image
+              {/* <Image
                 src={LOGO}
                 alt="TDC Logo"
                 width={24}
                 height={24}
                 className="w-6 h-6"
-              />
+              /> */}
               <div className="text-xl font-bold">TDC</div>
             </div>
           </Link>
@@ -57,16 +57,17 @@ const Navbar = () => {
           {authUser ? (
             <>
               <DropdownMenu>
-                <DropdownMenuTrigger>
+                <DropdownMenuTrigger className="flex flex-row items-center space-x-1 ">
+                  {" "}
+                  <p className="text-primary-200 hidden md:block">
+                    {authUser.userInfo?.name}
+                  </p>
                   <Avatar>
                     <AvatarImage src={authUser.userInfo?.image} />
                     <AvatarFallback className="bg-white text-black font-semibold">
                       {authUser.userRole?.[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <p className="text-primary-200 hidden md:block">
-                    {authUser.userInfo?.name}
-                  </p>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white text-primary-700">
                   <DropdownMenuItem

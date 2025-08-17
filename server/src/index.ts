@@ -7,7 +7,7 @@ import morgan from "morgan";
 
 // route imports
 import salesRoutes from "./routes/salesRoutes";
-// import managerRoutes from "./routes/managerRoutes";
+import managerRoutes from "./routes/managerRoutes";
 import { authMiddleware } from "./middleware/authMiddleware";
 
 // configurations
@@ -23,7 +23,7 @@ app.use(cors());
 
 // routes
 app.use("/sales", authMiddleware(["sales"]), salesRoutes);
-// app.use("/manager", authMiddleware(["manager"]), managerRoutes);
+app.use("/manager", authMiddleware(["manager"]), managerRoutes);
 
 // server
 const port = process.env.PORT || 3001;

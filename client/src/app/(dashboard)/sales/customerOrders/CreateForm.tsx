@@ -17,6 +17,8 @@ const productFormSchema = z.object({
   color: z.string().min(1),
   height: z.number().min(0.01, "Height must be greater than 0"),
   width: z.number().min(0.01, "Width must be greater than 0"),
+  length: z.number().min(0.01, "Width must be greater than 0"),
+  price: z.number().min(0.01, "Width must be greater than 0"),
   // jamb size- change to enum
 });
 
@@ -25,6 +27,8 @@ type Product = {
   color: string;
   height: number;
   width: number;
+  length: number;
+  price: number;
 };
 
 const CreateProductForm = ({
@@ -41,6 +45,8 @@ const CreateProductForm = ({
       color: "",
       height: 0,
       width: 0,
+      length: 0,
+      price: 0,
     },
   });
   const isLoading = form.formState.isSubmitting;
@@ -62,10 +68,9 @@ const CreateProductForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:px-0 px-4"
+        className="grid grid-row-4 gap-6 sm:px-0 px-4"
       >
-        {/* LEFT COLUMN */}
-        <div className="flex flex-col gap-4">
+         <div className="flex flex-row">
           <CustomFormField
             name="type"
             label="Type"
@@ -75,6 +80,9 @@ const CreateProductForm = ({
               label: type,
             }))}
           />
+             <CustomFormField name="width" label="Width" type="number" />
+           <CustomFormField name="height" label="Height" type="number" />
+          <CustomFormField name="length" label="Length" type="number" />
           <CustomFormField
             name="color"
             label="Color"
@@ -84,13 +92,10 @@ const CreateProductForm = ({
               label: type,
             }))}
           />
+          <CustomFormField name="price" label="Unit Price" type="number" />
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="flex flex-col gap-4">
-          <CustomFormField name="height" label="Height" type="number" />
-          <CustomFormField name="width" label="Width" type="number" />
-        </div>
+   
 
         {/* SUBMIT BUTTON - adds a produt json to the order summary list*/}
         <div className="sm:col-span-2 flex sm:justify-end">
@@ -127,10 +132,10 @@ const formSchema = z.object({
   additionalFiles: z.array(z.string()).optional(), // Optional array of strings
 });
 
-const Item = ({ type, height, width }) => {
+const Item = ({ type, height, width, length, color, price }) => {
   return (
     <div>
-      {type} | {width} x {height}
+      {type} | {width} x {height} x {length} | {color} | {price}
     </div>
   );
 };
@@ -139,8 +144,7 @@ const CreateForm = ({
   setIsOpen,
 }: {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  }) => {
-
+}) => {
   const [createCustomerOrder] = useCreateCustomerOrderMutation();
   const [orderSummary, setOrderSummary] = useState<Product[]>([]);
   const [additionalFiles, setAdditionalFiles] = useState([]);
@@ -161,12 +165,12 @@ const CreateForm = ({
     },
   });
 
-  // useEffect(() => {
-  //   const subscription = form.watch((value) => {
-  //     console.log("Current form values:", value);
-  //   });
-  //   return () => subscription.unsubscribe();
-  // }, [form]);
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      console.log("Current form values:", value);
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
   useEffect(() => {
     form.setValue("orderSummary", orderSummary);
   }, [orderSummary, form]);
@@ -192,40 +196,62 @@ const CreateForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-1 gap-6 sm:px-0 px-4 w-full "
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Customer */}
+        <div className="flex flex-col gap-6">
+          {/* Invoice */}
+          <div className="flex flex-row">
+            <div></div>
+            <div className="flex flex-col ml-auto">
+              <CustomFormField
+                name="invoiceNo"
+                label="Invoice No."
+                type="number"
+              />
+              <div className="flex flex-row space-x-10 items-center ">
+                <div>Date:</div>
+                <CustomFormField
+                  name="dateOrdered"
+                  label=" "
+                  placeholder="MM/D/YY"
+                />
+              </div>
+              <div className="flex flex-row space-x-10 items-center ">
+                <div>Status:</div>
+                <CustomFormField
+                name="status"
+                label=" "
+                type="select"
+                options={Object.keys(OrderStatusEnum).map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
+              />
+              </div>
 
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800">Customer</h2>
-            <CustomFormField name="customerId" label="ID" />
-            <CustomFormField name="address" label="Address" />
-            <CustomFormField name="name" label="Name" />
-            <CustomFormField name="phone" label="Phone" />
-            <CustomFormField name="email" label="Email" />
+         
+            </div>
           </div>
 
-          {/* Invoice */}
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800 ">Invoice</h2>
-            <CustomFormField
-              name="invoiceNo"
-              label="Invoice No."
-              type="number"
-            />
-            <CustomFormField
-              name="dateOrdered"
-              label="Order Date"
-              placeholder="MM/D/YY"
-            />
-            <CustomFormField
-              name="status"
-              label="Order Status"
-              type="select"
-              options={Object.keys(OrderStatusEnum).map((type) => ({
-                value: type,
-                label: type,
-              }))}
-            />
+          {/* Customer */}
+          <div className="grid grid-cols-2">
+            <div className="col-span-2  ">
+              {" "}
+              <CustomFormField name="customerId" label="ID" />
+            </div>
+            <div className="col-span-2 ">
+              {" "}
+              <CustomFormField name="address" label="Address" />{" "}
+            </div>
+
+            <div className="col-span-2  ">
+              <CustomFormField name="name" label="Name" />
+            </div>
+
+            <div className=" ">
+              <CustomFormField name="phone" label="Phone" />
+            </div>
+            <div className=" ">
+              <CustomFormField name="email" label="Email" />
+            </div>
           </div>
         </div>
         <div className=" bg-white shadow-md rounded-2xl pb-1  ">
@@ -233,7 +259,7 @@ const CreateForm = ({
             isOpen={isCreateSecondOpen}
             setIsOpen={setIsCreateSecondOpen}
             title="Add Product"
-            description="Add product to order"
+            description=""
           >
             <CreateProductForm
               setIsProductOpen={setIsCreateSecondOpen}
@@ -242,7 +268,7 @@ const CreateForm = ({
           </ResponsiveDialog>
           <div className="flex flex-row justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800 ">
-              Order Summary
+              Type | H x W x J | Color | QTY | Price
             </h2>
             <Button
               type="button"
