@@ -59,8 +59,6 @@ const CreateProductForm = ({
   }, [form]);
 
   const onSubmit = async (values: z.infer<typeof productFormSchema>) => {
-    //  add product to order summary
-    console.log("Submitting form with values:", values);
     setOrderSummary((prev) => [...prev, values]);
     setIsProductOpen(false);
   };
@@ -70,7 +68,7 @@ const CreateProductForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-row-4 gap-6 sm:px-0 px-4"
       >
-         <div className="flex flex-row">
+        <div className="flex flex-row">
           <CustomFormField
             name="type"
             label="Type"
@@ -80,8 +78,8 @@ const CreateProductForm = ({
               label: type,
             }))}
           />
-             <CustomFormField name="width" label="Width" type="number" />
-           <CustomFormField name="height" label="Height" type="number" />
+          <CustomFormField name="width" label="Width" type="number" />
+          <CustomFormField name="height" label="Height" type="number" />
           <CustomFormField name="length" label="Length" type="number" />
           <CustomFormField
             name="color"
@@ -94,8 +92,6 @@ const CreateProductForm = ({
           />
           <CustomFormField name="price" label="Unit Price" type="number" />
         </div>
-
-   
 
         {/* SUBMIT BUTTON - adds a produt json to the order summary list*/}
         <div className="sm:col-span-2 flex sm:justify-end">
@@ -122,6 +118,7 @@ const CreateProductForm = ({
 const formSchema = z.object({
   invoiceNo: z.coerce.number(), // Converts input to a number and validates
   dateOrdered: z.string().min(1, "Date is required"), // Validates as a non-empty string
+  createdAt: z.string().min(1, "Date is required"), // Validates as a non-empty string
   status: z.string().min(1, "Status is required"), // Non-empty string
   customerId: z.coerce.number(), // Converts input to number and validates
   address: z.string().min(1, "Address is required"), // Non-empty string
@@ -154,6 +151,7 @@ const CreateForm = ({
     defaultValues: {
       invoiceNo: 0,
       dateOrdered: "",
+      createdAt: "",
       status: "CREATEORDER",
       customerId: 0,
       address: "",
@@ -217,17 +215,15 @@ const CreateForm = ({
               <div className="flex flex-row space-x-10 items-center ">
                 <div>Status:</div>
                 <CustomFormField
-                name="status"
-                label=" "
-                type="select"
-                options={Object.keys(OrderStatusEnum).map((type) => ({
-                  value: type,
-                  label: type,
-                }))}
-              />
+                  name="status"
+                  label=" "
+                  type="select"
+                  options={Object.keys(OrderStatusEnum).map((type) => ({
+                    value: type,
+                    label: type,
+                  }))}
+                />
               </div>
-
-         
             </div>
           </div>
 

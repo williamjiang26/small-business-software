@@ -1,17 +1,12 @@
 "use client";
-import {
-  useGetCustomerOrdersQuery,
-  useGetInvoiceDetailsByInvoiceNoQuery,
-  useGetProductByProductOrderIdQuery,
-  useGetProductOrdersByInvoiceNoQuery,
-} from "@/state/api";
+import { useGetInvoiceDetailsByInvoiceNoQuery } from "@/state/api";
 import React from "react";
 import Link from "../../../../../../node_modules/next/link";
 import { ArrowLeft, MapPin, Phone, User, Mail, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import OrderSummary from "../OrderSummary";
 
-const page = ({ params }: { params: { invoiceNo: number } }) => {
+const Page = ({ params }: { params: { invoiceNo: number } }) => {
   const { invoiceNo } = params;
 
   const {
@@ -58,24 +53,26 @@ const page = ({ params }: { params: { invoiceNo: number } }) => {
           <div className="text-xl font-bold">{invoiceNo}</div>
           <div className="flex items-center space-x-2 text-sm">
             <MapPin className="h-4 w-4" />{" "}
-            <div>{invoiceDetails?.customer.address}</div>
+            <div>{invoiceDetails?.address}</div>
           </div>
           <div className="flex items-center space-x-2 text-sm">
             <Phone className="w-4 h-4" />
-            <div>{invoiceDetails?.customer.phone}</div>
+            <div>{invoiceDetails?.phone}</div>
           </div>
           <div className="flex items-center space-x-2 text-sm">
             <User className="w-4 h-4" />
-            <div>{invoiceDetails?.customer.name}</div>
+            <div>{invoiceDetails?.name}</div>
           </div>
           <div className="flex items-center space-x-2 text-sm">
             <Mail className="w-4 h-4" />
-            <div>{invoiceDetails?.customer.email}</div>
+            <div>{invoiceDetails?.email}</div>
           </div>
         </div>
         <div>
-          <div>{new Date(invoiceDetails.createdAt).toLocaleDateString()}</div>
-          <div className="text-green-500">{invoiceDetails.status}</div>
+          <div>
+            {new Date(invoiceDetails?.createdAt ?? "").toLocaleDateString()}
+          </div>
+          <div className="text-green-500">{invoiceDetails?.status}</div>
         </div>
       </div>
 
@@ -114,4 +111,4 @@ const page = ({ params }: { params: { invoiceNo: number } }) => {
   );
 };
 
-export default page;
+export default Page;

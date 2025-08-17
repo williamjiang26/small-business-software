@@ -116,7 +116,7 @@ const Item = ({
           Order Summary
           <hr />
           {productOrders?.map((order) => (
-            <ProductOrder id={order.productId} />
+            <ProductOrder key={order.productId} id={order.productId} />
           ))}
         </div>
 
@@ -130,7 +130,7 @@ const Item = ({
         </div>
 
         <div className="">
-        <DropdownMenu>
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
@@ -143,7 +143,9 @@ const Item = ({
             <DropdownMenuContent align="end" className="w-[160px] z-50">
               <DropdownMenuItem
                 className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
-                onClick={() => router.push(`/sales/customerOrders/${invoiceNo}`)}
+                onClick={() =>
+                  router.push(`/sales/customerOrders/${invoiceNo}`)
+                }
               >
                 <IconMenu
                   text="Edit"
@@ -164,7 +166,7 @@ const Item = ({
     </Card>
   );
 };
-const page = () => {
+const Page = () => {
   const {
     data: customerOrders,
     isLoading,
@@ -216,14 +218,14 @@ const page = () => {
             {customerOrders
               ?.filter((order) => order.status !== "INSTOCK")
               .map((order) => (
-                <Item {...order} />
+                <Item key={order.id} {...order} />
               ))}
           </TabsContent>
           <TabsContent value="all">
             {customerOrders
               ?.filter((order) => order.status === "INSTOCK")
               .map((order) => (
-                <Item {...order} />
+                <Item key={order.id} {...order} />
               ))}
           </TabsContent>
         </Tabs>
@@ -232,4 +234,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

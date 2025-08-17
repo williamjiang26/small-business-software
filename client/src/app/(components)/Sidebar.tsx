@@ -19,14 +19,15 @@ import Image from "../../../node_modules/next/image";
 import { Button } from "@/components/ui/button";
 import Link from "../../../node_modules/next/link";
 
-const AppSidebar = ({
-  userType,
-  ...props
-}: React.ComponentProps<typeof Sidebar>) => {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  userType: string; // or the type you want
+}
+
+const AppSidebar = ({ userType, ...props }: AppSidebarProps) => {
   // menu items
   console.log(userType);
   const items =
-    userType === "manager"   
+    userType === "manager"
       ? [
           {
             title: "Orders",

@@ -63,7 +63,7 @@ const Navbar = () => {
                     {authUser.userInfo?.name}
                   </p>
                   <Avatar>
-                    <AvatarImage src={authUser.userInfo?.image} />
+                    {/* <AvatarImage src={authUser.userInfo?.image} /> */}
                     <AvatarFallback className="bg-white text-black font-semibold">
                       {authUser.userRole?.[0].toUpperCase()}
                     </AvatarFallback>

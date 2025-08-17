@@ -256,7 +256,10 @@ export const getInvoiceDetailsByInvoiceNo = async (
       invoiceNo: invoice?.invoiceNo,
       createdAt: invoice?.createdAt,
       status: invoice?.status,
-      customer,
+      address: customer?.address,
+      name: customer?.name,
+      phone: customer?.phone,
+      email: customer?.email,
       productOrders,
       productDetails,
     });

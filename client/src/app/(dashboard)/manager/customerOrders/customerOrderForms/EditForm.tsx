@@ -51,13 +51,12 @@ const EditForm = ({ order, setIsOpen }) => {
       height: order?.height ?? 0,
       width: order?.width ?? 0,
       length: order?.length ?? 0,
-      price: order?.price ?? 0,
       orderNo: order?.orderNo ?? 0,
       productId: order?.productId ?? 0,
       productOrderId: order?.productOrderId ?? 0,
     },
   });
-  
+
   useEffect(() => {
     const subscription = form.watch((values) => {
       console.log("Form values changed:", values);
@@ -77,7 +76,6 @@ const EditForm = ({ order, setIsOpen }) => {
         width: order.width ?? 0,
         length: order.length ?? 0,
         orderNo: order.orderNo ?? "",
-        customerId: order.customerId ?? "",
         productId: order?.productId ?? "",
         productOrderId: order.productOrderId ?? "",
       });
@@ -85,8 +83,7 @@ const EditForm = ({ order, setIsOpen }) => {
   }, [order, form]);
 
   const isLoading = form.formState.isSubmitting;
-  if (isLoading || !order)
-    return <div>Loading product...</div>;
+  if (isLoading || !order) return <div>Loading product...</div>;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

@@ -25,8 +25,8 @@ Amplify.configure({
 const formFields = {
   signIn: {
     username: {
-      placeholder: "Enter your email",
-      label: "Email",
+      placeholder: "Enter your username",
+      label: "Username",
       isRequired: true,
     },
     password: {
@@ -148,10 +148,9 @@ const Auth = ({ children }: { children: React.ReactNode }) => {
     if (user && isAuthPage && !pathname.includes("signup")) {
       router.push(`/`);
     }
-  }, [user, isAuthPage, router]);
+  }, [user, isAuthPage, router, pathname]);
 
-
-  console.log(user)
+  console.log(user);
   // Public pages
   if (!isAuthPage && !isDashboardPage) {
     return <>{children}</>;

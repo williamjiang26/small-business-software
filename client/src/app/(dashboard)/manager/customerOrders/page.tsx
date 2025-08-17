@@ -87,12 +87,12 @@ const Items = ({ ...order }) => {
                 />
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 className="flex justify-start rounded-md p-2 hover:bg-neutral-100"
                 onClick={() => setIsDeleteOpen(true)}
               >
                 <IconMenu text="Delete" icon={<Trash2 className="h-4 w-4" />} />
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -132,14 +132,14 @@ const CustomerOrdersPage = () => {
           {orders
             ?.filter((order) => order.status === "PROCESSING")
             .map((order) => (
-              <Items key={order.customerInvoice} {...order} />
+              <Items key={order.invoiceNo} {...order} />
             ))}
         </TabsContent>
         <TabsContent value="all">
           {orders
             ?.filter((order) => order.status === "DELIVERED")
             .map((order) => (
-              <Items key={order.customerInvoice} {...order} />
+              <Items key={order.invoiceNo} {...order} />
             ))}
         </TabsContent>
         <TabsContent value="tracking">
@@ -149,7 +149,7 @@ const CustomerOrdersPage = () => {
                 order.status !== "PROCESSING" && order.status !== "DELIVERED"
             )
             .map((order) => (
-              <Items key={order.customerInvoice} {...order} />
+              <Items key={order.invoiceNo} {...order} />
             ))}
         </TabsContent>
       </Tabs>

@@ -1,13 +1,76 @@
 import { createNewUserInDatabase } from "@/lib/utils";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
+import { fetchAuthSession, getCurrentUser, AuthUser } from "aws-amplify/auth";
 
+export interface Sales {
+  cognitoId: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+}
+export interface Manager {
+  cognitoId: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+}
+
+export interface User {
+  cognitoInfo: AuthUser;
+  userInfo: Sales | Manager;
+  userRole: string;
+}
+export interface Customer {
+  id: number;
+  name: string;
+  address: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface ProductOrder {
+  productOrderId: number;
+  productId?: number;
+  orderNo?: number;
+  customerInvoice?: number;
+  dateOrdered: Date;
+  section?: number;
+  row?: number;
+  dateStocked?: Date;
+  dateSold?: Date;
+}
+export interface ProductDetails {
+  id: number;
+  name?: string;
+  dateOrdered: Date;
+  type?: string;
+  color?: string;
+  height?: number;
+  width?: number;
+  length?: number;
+  price?: number;
+}
+
+export interface CustomerOrderResponse {
+  id: number;
+  invoiceNo: number;
+  createdAt: Date;
+  address: string;
+  name: string;
+  phone: string;
+  email: string;
+  dateOrdered: Date;
+  customerId: number;
+  status: string;
+  measurementPdf: string;
+  customerCopyPdf: string;
+}
+export interface CustomerOrderCreate {}
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: async (headers) => {
       const session = await fetchAuthSession();
-      console.log("🚀 ~ session:", session);
       const { idToken } = session.tokens ?? {};
       if (idToken) {
         headers.set("Authorization", `Bearer ${idToken}`);
@@ -64,25 +127,39 @@ export const api = createApi({
             },
           };
         } catch (error) {
-          return { error: error.message || "Could not fetch user data" };
+          return {
+            error: {
+              status: "CUSTOM_ERROR", // RTK allows string here
+              error:
+                error instanceof Error
+                  ? error.message
+                  : "Could not fetch user data",
+            },
+          };
         }
       },
     }),
-    getCustomerOrders: build.query<CustomerOrder[], string | void>({
+    getCustomerOrders: build.query<CustomerOrderResponse[], string | void>({
       query: (search) => ({
         url: "/sales/customerOrders",
         params: search ? { search } : {},
       }),
       providesTags: ["CustomerOrders"],
     }),
-    getCustomerOrdersManager: build.query<CustomerOrder[], string | void>({
+    getCustomerOrdersManager: build.query<
+      CustomerOrderResponse[],
+      string | void
+    >({
       query: (search) => ({
         url: "/manager/customerOrders",
         params: search ? { search } : {},
       }),
       providesTags: ["CustomerOrders"],
     }),
-    createCustomerOrder: build.mutation<CustomerOrder, CustomerOrder>({
+    createCustomerOrder: build.mutation<
+      CustomerOrderResponse,
+      CustomerOrderCreate
+    >({
       query: (newCustomerOrder) => ({
         url: "/sales/customerOrders",
         method: "POST",
@@ -98,13 +175,13 @@ export const api = createApi({
       query: (invoiceNo) => `/sales/productOrders/invoice/${invoiceNo}`,
       providesTags: ["ProductOrders"],
     }),
-    getProductByProductOrderId: build.query<Product, number>({
+    getProductByProductOrderId: build.query<ProductDetails, number>({
       query: (productId) => `/sales/product/${productId}`,
       providesTags: ["ProductDetails"],
     }),
     updateCustomerOrdersManager: build.mutation<
-      CustomerOrder,
-      { invoiceNo: number; data: Partial<CustomerOrder> }
+      CustomerOrderResponse,
+      { invoiceNo: number; data: Partial<CustomerOrderResponse> }
     >({
       query: ({ invoiceNo, data }) => ({
         url: `/manager/customerOrders/invoice/${invoiceNo}`,
@@ -113,7 +190,7 @@ export const api = createApi({
       }),
       invalidatesTags: ["CustomerOrders"],
     }),
-    getInvoiceDetailsByInvoiceNo: build.query<CustomerOrder, number>({
+    getInvoiceDetailsByInvoiceNo: build.query<CustomerOrderResponse, number>({
       query: (invoiceNo) => `/sales/customerOrders/invoice/${invoiceNo}`,
       providesTags: ["CustomerOrders"],
     }),

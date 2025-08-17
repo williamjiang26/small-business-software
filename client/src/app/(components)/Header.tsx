@@ -46,7 +46,7 @@ const Header = () => {
                     {authUser.cognitoInfo?.username}
                   </p>
                   <Avatar className="border-2 bg-gray">
-                    <AvatarImage src={authUser.userInfo?.image} />
+                    {/* <AvatarImage src={authUser.userInfo?.image} /> */}
                     <AvatarFallback className="bg-white text-black">
                       {authUser.userRole?.[0].toUpperCase()}
                     </AvatarFallback>

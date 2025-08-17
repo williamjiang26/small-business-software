@@ -239,7 +239,10 @@ const getInvoiceDetailsByInvoiceNo = (req, res) => __awaiter(void 0, void 0, voi
             invoiceNo: invoice === null || invoice === void 0 ? void 0 : invoice.invoiceNo,
             createdAt: invoice === null || invoice === void 0 ? void 0 : invoice.createdAt,
             status: invoice === null || invoice === void 0 ? void 0 : invoice.status,
-            customer,
+            address: customer === null || customer === void 0 ? void 0 : customer.address,
+            name: customer === null || customer === void 0 ? void 0 : customer.name,
+            phone: customer === null || customer === void 0 ? void 0 : customer.phone,
+            email: customer === null || customer === void 0 ? void 0 : customer.email,
             productOrders,
             productDetails,
         });

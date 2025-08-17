@@ -20,7 +20,7 @@ type Product = {
   height: number;
   width: number;
 };
-const page = () => {
+const Page = () => {
   const form = useForm<z.infer<typeof productFormSchema>>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
@@ -35,7 +35,7 @@ const page = () => {
   };
   return (
     <div className="p-5">
-      <h3>"Customer Order Checkout Page"</h3>
+      <h3>Customer Order Checkout Page</h3>
       <div className="rounded shadow-md p-5 ">
         <Form {...form}>
           <form
@@ -112,4 +112,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
