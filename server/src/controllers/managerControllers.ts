@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { OrderStatusEnum } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -75,7 +76,7 @@ export const getCustomerOrdersManager = async (
         // manager assigns a product order to a customer order ticket.
         orderNo: order.orderNo,
         status: order.status,
-        productId : order.productId,
+        productId: order.productId,
         productOrderId: order.productOrderId,
 
         type: productDetails?.type,
@@ -113,10 +114,10 @@ export const updateCustomerOrdersManager = async (
 ): Promise<void> => {
   try {
     const invoiceNo = parseInt(req.params.invoiceNo, 10);
-    console.log("🚀 ~ updateCustomerOrdersManager ~ invoiceNo:", invoiceNo)
-    
+    console.log("🚀 ~ updateCustomerOrdersManager ~ invoiceNo:", invoiceNo);
+
     const {
-       orderNo,
+      orderNo,
       productId,
       productOrderId,
       status,
@@ -130,9 +131,8 @@ export const updateCustomerOrdersManager = async (
       // customerCopyPdf,
       // additionalFiles,
     } = req.body;
-    
-    console.log("🚀 ~ updateCustomerOrdersManager ~ req.body:", req.body)
-   
+
+    console.log("🚀 ~ updateCustomerOrdersManager ~ req.body:", req.body);
 
     if (!invoiceNo) {
       res.status(400).json({ error: "Missing invoiceNo in params" });
@@ -148,10 +148,10 @@ export const updateCustomerOrdersManager = async (
       // prisma.customerOrderDetails.update({
       //   where: { invoiceNo },
       //   data: {
-      //     dateOrdered,
-          // measurementPdf,
-          // customerCopyPdf,
-          // additionalFiles,
+      //     // dateOrdered,
+      //     // measurementPdf,
+      //     // customerCopyPdf,
+      // additionalFiles,
       //   },
       // }),
       prisma.productDetails.update({
@@ -173,6 +173,60 @@ export const updateCustomerOrdersManager = async (
         },
       }),
     ]);
+
+    // Update customer order status
+    // find customer order
+    // const invoice = prisma.customerOrderDetails.findUnique({
+    //   where: { invoiceNo: invoiceNo },
+    // });
+    // find each productOrder status
+    const products = await prisma.productOrder.findMany({
+      where: { customerInvoice: invoiceNo },
+    });
+    // update the customer order to be the min of all the product Order statuses
+    const invoiceStatusMapping: Record<number, string> = {
+      0: "CREATEORDER",
+      1: "ORDERPLACED",
+      2: "ORDERSHIPPED",
+      3: "ORDERRECEIVED",
+      4: "ORDERDELIVERED",
+    };
+
+    const orderStatusMapping = {
+      PROCESSING: 0,
+      ORDERPLACED: 1,
+      ENROUTE: 2,
+      RECEIVED: 3,
+      INSTOCK: 3,
+      DELIVERED: 4,
+    };
+
+    let minInvoiceStatus = 10;
+
+    for (const productOrder of products) {
+      const statusValue = orderStatusMapping[productOrder.status];
+      if (statusValue !== undefined) {
+        minInvoiceStatus = Math.min(statusValue, minInvoiceStatus);
+      }
+    }
+
+    if (minInvoiceStatus !== 10) {
+      const invoiceStatusMapping: Record<number, OrderStatusEnum> = {
+        0: OrderStatusEnum.CREATEORDER,
+        1: OrderStatusEnum.ORDERPLACED,
+        2: OrderStatusEnum.ORDERSHIPPED,
+        3: OrderStatusEnum.ORDERRECEIVED,
+        4: OrderStatusEnum.ORDERDELIVERED,
+      };
+      const invoiceStatus = invoiceStatusMapping[minInvoiceStatus];
+      await prisma.customerOrderDetails.update({
+        where: { invoiceNo },
+        data: {
+          status: invoiceStatus,
+        },
+      });
+    }
+
 
     res.json({
       message: "Customer order updated successfully",

@@ -211,19 +211,31 @@ const Page = () => {
       <div>
         <Tabs defaultValue="all">
           <TabsList className="">
-            <TabsTrigger value="all">All Orders</TabsTrigger>
-            <TabsTrigger value="new">New Orders</TabsTrigger>
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="orders placed">Orders Placed</TabsTrigger>
+            <TabsTrigger value="new">New</TabsTrigger>
           </TabsList>
-          <TabsContent value="new">
+          <TabsContent value="all">
             {customerOrders
-              ?.filter((order) => order.status !== "INSTOCK")
+              ?.filter((order) => order.status === "ORDERDELIVERED")
               .map((order) => (
                 <Item key={order.id} {...order} />
               ))}
           </TabsContent>
-          <TabsContent value="all">
+          <TabsContent value="orders placed">
             {customerOrders
-              ?.filter((order) => order.status === "INSTOCK")
+              ?.filter(
+                (order) =>
+                  order.status !== "CREATEORDER" &&
+                  order.status !== "ORDERDELIVERED"
+              )
+              .map((order) => (
+                <Item key={order.id} {...order} />
+              ))}
+          </TabsContent>
+          <TabsContent value="new">
+            {customerOrders
+              ?.filter((order) => order.status === "CREATEORDER")
               .map((order) => (
                 <Item key={order.id} {...order} />
               ))}

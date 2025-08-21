@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateCustomerOrdersManager = exports.getCustomerOrdersManager = exports.createManager = exports.getManager = void 0;
 const client_1 = require("@prisma/client");
+const client_2 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 // GET
 const getManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -126,9 +127,9 @@ const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void
             // prisma.customerOrderDetails.update({
             //   where: { invoiceNo },
             //   data: {
-            //     dateOrdered,
-            // measurementPdf,
-            // customerCopyPdf,
+            //     // dateOrdered,
+            //     // measurementPdf,
+            //     // customerCopyPdf,
             // additionalFiles,
             //   },
             // }),
@@ -151,6 +152,54 @@ const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void
                 },
             }),
         ]);
+        // Update customer order status
+        // find customer order
+        // const invoice = prisma.customerOrderDetails.findUnique({
+        //   where: { invoiceNo: invoiceNo },
+        // });
+        // find each productOrder status
+        const products = yield prisma.productOrder.findMany({
+            where: { customerInvoice: invoiceNo },
+        });
+        // update the customer order to be the min of all the product Order statuses
+        const invoiceStatusMapping = {
+            0: "CREATEORDER",
+            1: "ORDERPLACED",
+            2: "ORDERSHIPPED",
+            3: "ORDERRECEIVED",
+            4: "ORDERDELIVERED",
+        };
+        const orderStatusMapping = {
+            PROCESSING: 0,
+            ORDERPLACED: 1,
+            ENROUTE: 2,
+            RECEIVED: 3,
+            INSTOCK: 3,
+            DELIVERED: 4,
+        };
+        let minInvoiceStatus = 10;
+        for (const productOrder of products) {
+            const statusValue = orderStatusMapping[productOrder.status];
+            if (statusValue !== undefined) {
+                minInvoiceStatus = Math.min(statusValue, minInvoiceStatus);
+            }
+        }
+        if (minInvoiceStatus !== 10) {
+            const invoiceStatusMapping = {
+                0: client_2.OrderStatusEnum.CREATEORDER,
+                1: client_2.OrderStatusEnum.ORDERPLACED,
+                2: client_2.OrderStatusEnum.ORDERSHIPPED,
+                3: client_2.OrderStatusEnum.ORDERRECEIVED,
+                4: client_2.OrderStatusEnum.ORDERDELIVERED,
+            };
+            const invoiceStatus = invoiceStatusMapping[minInvoiceStatus];
+            yield prisma.customerOrderDetails.update({
+                where: { invoiceNo },
+                data: {
+                    status: invoiceStatus,
+                },
+            });
+        }
         res.json({
             message: "Customer order updated successfully",
             // invoice,
