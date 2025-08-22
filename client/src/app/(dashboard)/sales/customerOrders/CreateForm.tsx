@@ -118,7 +118,6 @@ const CreateProductForm = ({
 const formSchema = z.object({
   invoiceNo: z.coerce.number(), // Converts input to a number and validates
   dateOrdered: z.string().min(1, "Date is required"), // Validates as a non-empty string
-  createdAt: z.string().min(1, "Date is required"), // Validates as a non-empty string
   status: z.string().min(1, "Status is required"), // Non-empty string
   customerId: z.coerce.number(), // Converts input to number and validates
   address: z.string().min(1, "Address is required"), // Non-empty string
@@ -151,8 +150,7 @@ const CreateForm = ({
     defaultValues: {
       invoiceNo: 0,
       dateOrdered: "",
-      createdAt: "",
-      status: "CREATEORDER",
+       status: "CREATEORDER",
       customerId: 0,
       address: "",
       name: "",

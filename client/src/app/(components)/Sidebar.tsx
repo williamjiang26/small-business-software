@@ -96,7 +96,7 @@ const AppSidebar = ({ userType, ...props }: AppSidebarProps) => {
               <Link href={`/${userType}/dashboard`}>
                 {/* <Image width={40} height={40} src={TDCLOGO} alt="TDC" /> */}
                 <span className="text-base text-black font-semibold">
-                  TDC Inc.
+                  TDC Management Corp.
                 </span>
               </Link>
             </SidebarMenuButton>

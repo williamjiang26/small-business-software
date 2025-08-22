@@ -187,9 +187,9 @@ const Page = () => {
   }
 
   return (
-    <div>
+    <div className="p-4">
+      {/* Header */}
       <div>
-        Header Bar{" "}
         <div className="relative w-full p-1 flex justify-end rounded-lg hover:bg-gray-50 transition">
           <ResponsiveDialog
             isOpen={isCreateOpen}
@@ -208,6 +208,7 @@ const Page = () => {
           </Button>
         </div>
       </div>
+      {/* Content */}
       <div>
         <Tabs defaultValue="all">
           <TabsList className="">

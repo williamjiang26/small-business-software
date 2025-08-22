@@ -40,9 +40,9 @@ export interface ProductOrder {
   dateSold?: Date;
 }
 export interface ProductDetails {
-  id: number;
+  id?: number;
   name?: string;
-  dateOrdered: Date;
+  dateOrdered?: Date;
   type?: string;
   color?: string;
   height?: number;
@@ -65,7 +65,17 @@ export interface CustomerOrderResponse {
   measurementPdf: string;
   customerCopyPdf: string;
 }
-export interface CustomerOrderCreate {}
+export interface CustomerOrderCreate {
+  invoiceNo: number;
+  dateOrdered: Date;
+  address: string;
+  name: string;
+  phone: string;
+  email: string;
+  customerId: number;
+  status: string;
+  orderSummary: ProductDetails[];
+}
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
