@@ -74,8 +74,12 @@ export interface CustomerOrderCreate {
   email: string;
   customerId: number;
   status: string;
-  orderSummary: ProductDetails[];
+  measurementPdf?: string;
+  customerCopyPdf?: string;
+  additionalFiles?: string;
+  orderSummary: string;
 }
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -160,23 +164,23 @@ export const api = createApi({
       CustomerOrderResponse[],
       string | void
     >({
-      query: (search) => ({
-        url: "/manager/customerOrders",
-        params: search ? { search } : {},
-      }),
+      query: (search) =>
+        `/manager/customerOrders${search ? `?search=${search}` : ""}`,
       providesTags: ["CustomerOrders"],
     }),
+
     createCustomerOrder: build.mutation<
       CustomerOrderResponse,
       CustomerOrderCreate
     >({
-      query: (newCustomerOrder) => ({
+      query: (formData) => ({
         url: "/sales/customerOrders",
         method: "POST",
-        body: newCustomerOrder,
+        body: formData, // pass FormData directly
       }),
       invalidatesTags: ["CustomerOrders"],
     }),
+
     getCustomerById: build.query<Customer, number>({
       query: (id) => `/sales/customer/${id}`,
       providesTags: ["Customers"],

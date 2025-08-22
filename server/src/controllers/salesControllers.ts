@@ -1,8 +1,14 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import AWS from "aws-sdk";
 
 const prisma = new PrismaClient();
 
+export const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID, // from your AWS IAM
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 // GET
 export const getSales = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -76,7 +82,6 @@ export const createCustomerOrder = async (
       phone,
       email,
       orderSummary,
-      additionalFiles,
     } = req.body;
 
     if (
@@ -90,45 +95,69 @@ export const createCustomerOrder = async (
       !email
     ) {
       res.status(400).json({ message: "Missing required fields" });
-      return;
+      return; // stop execution
     }
 
-    // create customer
-    // Check if customer exists
-    const existingCustomer = await prisma.customer.findUnique({
-      where: { id: Number(customerId) },
-    });
-
-    if (!existingCustomer) {
-      await prisma.customer.create({
-        data: {
-          id: Number(customerId),
-          name,
-          address,
-          phone,
-          email,
-        },
-      });
-    }
-    // create invoice
     const parsedDate = new Date(dateOrdered);
     if (isNaN(parsedDate.getTime())) {
       res.status(400).json({ message: "Invalid dateOrdered format" });
       return;
     }
+
+    // create customer if not exists
+    const existingCustomer = await prisma.customer.findUnique({
+      where: { id: Number(customerId) },
+    });
+    if (!existingCustomer) {
+      await prisma.customer.create({
+        data: { id: Number(customerId), name, address, phone, email },
+      });
+    }
+
+    // handle files ...
+    const files = req.files as Record<string, Express.Multer.File[]>;
+    const uploadFile = async (file?: Express.Multer.File) => {
+      if (!file) return null;
+      const result = await s3
+        .upload({
+          Bucket: process.env.S3_BUCKET_NAME!,
+          Key: `${Date.now()}_${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          ACL: "public-read",
+        })
+        .promise();
+      return result.Location;
+    };
+
+    const measurementPdfUrl = await uploadFile(files?.measurementPdf?.[0]);
+    const customerCopyPdfUrl = await uploadFile(files?.customerCopyPdf?.[0]);
+    const additionalFilesUrls: string[] = [];
+
+    for (const file of files?.additionalFiles || []) {
+      const url = await uploadFile(file);
+      if (url) additionalFilesUrls.push(url);
+    }
+    // upload to S3 ...
+
+    // create customer order
     const newCustomerOrder = await prisma.customerOrderDetails.create({
       data: {
         invoiceNo: Number(invoiceNo),
         customerId: Number(customerId),
         dateOrdered: parsedDate,
         status,
+        measurementPdf: measurementPdfUrl || null,
+        customerCopyPdf: customerCopyPdfUrl || null,
+        additionalFiles: additionalFilesUrls,
       },
     });
-    // create product orders
-    for (const order of orderSummary) {
-      const newProductDetails = await prisma.productDetails.create({
+
+    // create product orders ...
+    for (const order of JSON.parse(orderSummary)) {
+      const product = await prisma.productDetails.create({
         data: {
-          name: name,
+          name,
           type: order.type,
           color: order.color,
           height: order.height,
@@ -136,26 +165,21 @@ export const createCustomerOrder = async (
           length: order.length,
         },
       });
-      const newProductOrder = await prisma.productOrder.create({
+      await prisma.productOrder.create({
         data: {
-          productId: newProductDetails.id,
-          customerInvoice: invoiceNo,
+          productId: product.id,
+          customerInvoice: Number(invoiceNo),
           dateOrdered: parsedDate,
         },
       });
     }
-
-    if (newCustomerOrder) {
-      res.json(newCustomerOrder);
-    } else {
-      res.status(404).json({ message: "Customer Orders not found" });
-    }
+    res.json(newCustomerOrder); // just send response, do NOT return
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error retrieving Customer Orders", error });
+    console.error(error);
+    res.status(500).json({ message: "Failed to create customer order", error });
   }
 };
+
 // get customer by id
 export const getCustomerById = async (
   req: Request,
@@ -236,6 +260,7 @@ export const getInvoiceDetailsByInvoiceNo = async (
     const invoice = await prisma.customerOrderDetails.findUnique({
       where: { invoiceNo },
     });
+    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ invoice:", invoice)
     const customer = await prisma.customer.findUnique({
       where: { id: invoice?.customerId },
     });
@@ -256,6 +281,8 @@ export const getInvoiceDetailsByInvoiceNo = async (
       invoiceNo: invoice?.invoiceNo,
       createdAt: invoice?.createdAt,
       status: invoice?.status,
+      measurementPdf: invoice?.measurementPdf,
+      customerCopyPdf: invoice?.customerCopyPdf,
       address: customer?.address,
       name: customer?.name,
       phone: customer?.phone,

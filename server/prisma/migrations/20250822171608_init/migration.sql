@@ -71,6 +71,7 @@ CREATE TABLE "ProductDetails" (
     "width" INTEGER,
     "length" INTEGER,
     "price" DOUBLE PRECISION,
+    "photos" TEXT[] DEFAULT ARRAY[]::TEXT[],
 
     CONSTRAINT "ProductDetails_pkey" PRIMARY KEY ("id")
 );
@@ -89,16 +90,6 @@ CREATE TABLE "ProductOrder" (
     "status" "ProductOrderStatusEnum" NOT NULL DEFAULT 'PROCESSING',
 
     CONSTRAINT "ProductOrder_pkey" PRIMARY KEY ("productOrderId")
-);
-
--- CreateTable
-CREATE TABLE "ProductPhoto" (
-    "id" SERIAL NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "url" TEXT NOT NULL,
-    "productId" INTEGER NOT NULL,
-
-    CONSTRAINT "ProductPhoto_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -124,6 +115,3 @@ ALTER TABLE "ProductOrder" ADD CONSTRAINT "ProductOrder_productId_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "ProductOrder" ADD CONSTRAINT "ProductOrder_customerInvoice_fkey" FOREIGN KEY ("customerInvoice") REFERENCES "CustomerOrderDetails"("invoiceNo") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ProductPhoto" ADD CONSTRAINT "ProductPhoto_productId_fkey" FOREIGN KEY ("productId") REFERENCES "ProductDetails"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

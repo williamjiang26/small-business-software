@@ -52,8 +52,7 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
         <div>
           <div className="text-xl font-bold">{invoiceNo}</div>
           <div className="flex items-center space-x-2 text-sm">
-            <MapPin className="h-4 w-4" />{" "}
-            <div>{invoiceDetails?.address}</div>
+            <MapPin className="h-4 w-4" /> <div>{invoiceDetails?.address}</div>
           </div>
           <div className="flex items-center space-x-2 text-sm">
             <Phone className="w-4 h-4" />
@@ -83,23 +82,30 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
 
         {/* Right column: PDFs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {/*  Display a pdf with the option to delete and reupload */}
-          {/* do i pass in the file component? i can implement the logic here, if there is a component , 
-  render the pdf preview otherwise render the drop and browse component */}
-          {/* <div>
-        {customerOrder?.measurementPdf ? (
-          <>render pdf preview</>
-        ) : (
-          <>render drop and browse component with delete button</>
-        )}
-      </div> */}
-          {/* <div>
-        {customerOrder?.customerCopyPdf ? (
-          <>render pdf preview</>
-        ) : (
-          <>render drop and browse component with delete button</>
-        )}
-      </div> */}
+          <div>
+            {invoiceDetails?.measurementPdf ? (
+              <iframe
+                src={invoiceDetails.measurementPdf}
+                width="100%"
+                height="400"
+                title="Measurement PDF"
+              />
+            ) : (
+              <>render drop and browse component with delete button</>
+            )}
+          </div>
+          <div>
+            {invoiceDetails?.customerCopyPdf ? (
+              <iframe
+                src={invoiceDetails.customerCopyPdf}
+                width="100%"
+                height="400"
+                title="Customer Signature"
+              />
+            ) : (
+              <>render drop and browse component with delete button</>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols">

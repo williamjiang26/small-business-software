@@ -4,14 +4,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const multer_1 = __importDefault(require("multer"));
 const salesControllers_1 = require("../controllers/salesControllers");
 const router = express_1.default.Router();
+const storage = multer_1.default.memoryStorage();
+const upload = (0, multer_1.default)({ storage: storage });
 // Customers
 router.get("/customer/:id", salesControllers_1.getCustomerById);
 // Orders / Invoices
 router.get("/customerOrders", salesControllers_1.getCustomerOrders);
 router.get("/customerOrders/invoice/:invoiceNo", salesControllers_1.getInvoiceDetailsByInvoiceNo);
-router.post("/customerOrders", salesControllers_1.createCustomerOrder);
+const uploadFields = upload.fields([
+    { name: "measurementPdf", maxCount: 1 },
+    { name: "customerCopyPdf", maxCount: 1 },
+    { name: "additionalFiles", maxCount: 10 }, // adjust max as needed
+]);
+router.post("/customerOrders", uploadFields, salesControllers_1.createCustomerOrder);
 // Product Orders / Products
 router.get("/productOrders/invoice/:invoiceNo", salesControllers_1.getProductOrdersByInvoiceNo);
 router.get("/product/:productId", salesControllers_1.getProductByProductOrderId);

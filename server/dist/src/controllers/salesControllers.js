@@ -8,10 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = void 0;
+exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = exports.s3 = void 0;
 const client_1 = require("@prisma/client");
+const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
+exports.s3 = new aws_sdk_1.default.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID, // from your AWS IAM
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+});
 // GET
 const getSales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -72,8 +81,9 @@ const getCustomerOrders = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.getCustomerOrders = getCustomerOrders;
 // create customer order
 const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     try {
-        const { invoiceNo, dateOrdered, status, customerId, address, name, phone, email, orderSummary, additionalFiles, } = req.body;
+        const { invoiceNo, dateOrdered, status, customerId, address, name, phone, email, orderSummary, } = req.body;
         if (!invoiceNo ||
             !customerId ||
             !dateOrdered ||
@@ -83,43 +93,64 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
             !phone ||
             !email) {
             res.status(400).json({ message: "Missing required fields" });
-            return;
+            return; // stop execution
         }
-        // create customer
-        // Check if customer exists
-        const existingCustomer = yield prisma.customer.findUnique({
-            where: { id: Number(customerId) },
-        });
-        if (!existingCustomer) {
-            yield prisma.customer.create({
-                data: {
-                    id: Number(customerId),
-                    name,
-                    address,
-                    phone,
-                    email,
-                },
-            });
-        }
-        // create invoice
         const parsedDate = new Date(dateOrdered);
         if (isNaN(parsedDate.getTime())) {
             res.status(400).json({ message: "Invalid dateOrdered format" });
             return;
         }
+        // create customer if not exists
+        const existingCustomer = yield prisma.customer.findUnique({
+            where: { id: Number(customerId) },
+        });
+        if (!existingCustomer) {
+            yield prisma.customer.create({
+                data: { id: Number(customerId), name, address, phone, email },
+            });
+        }
+        // handle files ...
+        const files = req.files;
+        const uploadFile = (file) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!file)
+                return null;
+            const result = yield exports.s3
+                .upload({
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: `${Date.now()}_${file.originalname}`,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+                ACL: "public-read",
+            })
+                .promise();
+            return result.Location;
+        });
+        const measurementPdfUrl = yield uploadFile((_a = files === null || files === void 0 ? void 0 : files.measurementPdf) === null || _a === void 0 ? void 0 : _a[0]);
+        const customerCopyPdfUrl = yield uploadFile((_b = files === null || files === void 0 ? void 0 : files.customerCopyPdf) === null || _b === void 0 ? void 0 : _b[0]);
+        const additionalFilesUrls = [];
+        for (const file of (files === null || files === void 0 ? void 0 : files.additionalFiles) || []) {
+            const url = yield uploadFile(file);
+            if (url)
+                additionalFilesUrls.push(url);
+        }
+        // upload to S3 ...
+        // create customer order
         const newCustomerOrder = yield prisma.customerOrderDetails.create({
             data: {
                 invoiceNo: Number(invoiceNo),
                 customerId: Number(customerId),
                 dateOrdered: parsedDate,
                 status,
+                measurementPdf: measurementPdfUrl || null,
+                customerCopyPdf: customerCopyPdfUrl || null,
+                additionalFiles: additionalFilesUrls,
             },
         });
-        // create product orders
-        for (const order of orderSummary) {
-            const newProductDetails = yield prisma.productDetails.create({
+        // create product orders ...
+        for (const order of JSON.parse(orderSummary)) {
+            const product = yield prisma.productDetails.create({
                 data: {
-                    name: name,
+                    name,
                     type: order.type,
                     color: order.color,
                     height: order.height,
@@ -127,25 +158,19 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
                     length: order.length,
                 },
             });
-            const newProductOrder = yield prisma.productOrder.create({
+            yield prisma.productOrder.create({
                 data: {
-                    productId: newProductDetails.id,
-                    customerInvoice: invoiceNo,
+                    productId: product.id,
+                    customerInvoice: Number(invoiceNo),
                     dateOrdered: parsedDate,
                 },
             });
         }
-        if (newCustomerOrder) {
-            res.json(newCustomerOrder);
-        }
-        else {
-            res.status(404).json({ message: "Customer Orders not found" });
-        }
+        res.json(newCustomerOrder); // just send response, do NOT return
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ message: "Error retrieving Customer Orders", error });
+        console.error(error);
+        res.status(500).json({ message: "Failed to create customer order", error });
     }
 });
 exports.createCustomerOrder = createCustomerOrder;
@@ -222,6 +247,7 @@ const getInvoiceDetailsByInvoiceNo = (req, res) => __awaiter(void 0, void 0, voi
         const invoice = yield prisma.customerOrderDetails.findUnique({
             where: { invoiceNo },
         });
+        console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ invoice:", invoice);
         const customer = yield prisma.customer.findUnique({
             where: { id: invoice === null || invoice === void 0 ? void 0 : invoice.customerId },
         });
@@ -239,6 +265,8 @@ const getInvoiceDetailsByInvoiceNo = (req, res) => __awaiter(void 0, void 0, voi
             invoiceNo: invoice === null || invoice === void 0 ? void 0 : invoice.invoiceNo,
             createdAt: invoice === null || invoice === void 0 ? void 0 : invoice.createdAt,
             status: invoice === null || invoice === void 0 ? void 0 : invoice.status,
+            measurementPdf: invoice === null || invoice === void 0 ? void 0 : invoice.measurementPdf,
+            customerCopyPdf: invoice === null || invoice === void 0 ? void 0 : invoice.customerCopyPdf,
             address: customer === null || customer === void 0 ? void 0 : customer.address,
             name: customer === null || customer === void 0 ? void 0 : customer.name,
             phone: customer === null || customer === void 0 ? void 0 : customer.phone,

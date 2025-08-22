@@ -116,16 +116,22 @@ const CreateProductForm = ({
 };
 
 const formSchema = z.object({
-  invoiceNo: z.coerce.number(), // Converts input to a number and validates
-  dateOrdered: z.string().min(1, "Date is required"), // Validates as a non-empty string
-  status: z.string().min(1, "Status is required"), // Non-empty string
-  customerId: z.coerce.number(), // Converts input to number and validates
-  address: z.string().min(1, "Address is required"), // Non-empty string
-  name: z.string().min(1, "Name is required"), // Non-empty string
-  phone: z.string().min(1, "Phone number is required"), // Non-empty string
-  email: z.string().email("Invalid email address"), // Validates as an email
-  orderSummary: z.array(productFormSchema).min(1, "A product is required"), // Optional array of strings
-  additionalFiles: z.array(z.string()).optional(), // Optional array of strings
+  invoiceNo: z.coerce.number(), // converts input to number
+  dateOrdered: z.string().min(1, "Date is required"),
+  status: z.string().min(1, "Status is required"),
+  customerId: z.coerce.number(),
+  address: z.string().min(1, "Address is required"),
+  name: z.string().min(1, "Name is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  email: z.string().email("Invalid email address"),
+  orderSummary: z
+    .array(productFormSchema)
+    .min(1, "At least one product is required"),
+
+  // Files
+  measurementPdf: z.array(z.instanceof(File)).optional(), // single file
+  customerCopyPdf: z.array(z.instanceof(File)).optional(), // single file
+  additionalFiles: z.array(z.instanceof(File)).optional(), // multiple files
 });
 
 const Item = ({ type, height, width, length, color, price }) => {
@@ -143,14 +149,13 @@ const CreateForm = ({
 }) => {
   const [createCustomerOrder] = useCreateCustomerOrderMutation();
   const [orderSummary, setOrderSummary] = useState<Product[]>([]);
-  const [additionalFiles, setAdditionalFiles] = useState([]);
   const [isCreateSecondOpen, setIsCreateSecondOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       invoiceNo: 0,
       dateOrdered: "",
-       status: "CREATEORDER",
+      status: "CREATEORDER",
       customerId: 0,
       address: "",
       name: "",
@@ -171,20 +176,35 @@ const CreateForm = ({
     form.setValue("orderSummary", orderSummary);
   }, [orderSummary, form]);
 
-  useEffect(() => {
-    form.setValue("additionalFiles", additionalFiles);
-  }, [additionalFiles, form]);
-
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // Only send non-file fields
+    const payload: any = {};
+  
+    Object.entries(values).forEach(([key, value]) => {
+      // Skip file fields
+      if (["measurementPdf", "customerCopyPdf", "additionalFiles"].includes(key)) {
+        return;
+      }
+  
+      // Serialize arrays/objects
+      if (typeof value === "object") {
+        payload[key] = JSON.stringify(value);
+      } else {
+        payload[key] = value;
+      }
+    });
+  
     try {
-      await createCustomerOrder(values).unwrap();
+      await createCustomerOrder(payload).unwrap();
+      console.log("🚀 ~ onSubmit ~ payload:", payload);
       setIsOpen(false);
     } catch (error) {
       console.error("Failed to create customer order:", error);
     }
   };
+  
 
   return (
     <Form {...form}>
@@ -228,18 +248,14 @@ const CreateForm = ({
           {/* Customer */}
           <div className="grid grid-cols-2">
             <div className="col-span-2  ">
-              {" "}
               <CustomFormField name="customerId" label="ID" />
             </div>
             <div className="col-span-2 ">
-              {" "}
               <CustomFormField name="address" label="Address" />{" "}
             </div>
-
             <div className="col-span-2  ">
               <CustomFormField name="name" label="Name" />
             </div>
-
             <div className=" ">
               <CustomFormField name="phone" label="Phone" />
             </div>
@@ -287,14 +303,39 @@ const CreateForm = ({
             )}
           </div>
         </div>
-
+        <div className="grid grid-cols-2 gap-5">
+          <div className=" bg-white shadow-md rounded-2xl pb-1  ">
+            <h2 className="text-lg font-semibold text-gray-800 ">
+              Measurement
+            </h2>
+            <hr />{" "}
+            <CustomFormField
+              name="measurementPdf"
+              label=""
+              type="file-single"
+              accept="image/*"
+            />{" "}
+          </div>
+          <div className=" bg-white shadow-md rounded-2xl pb-1  ">
+            <h2 className="text-lg font-semibold text-gray-800 ">
+              Customer Signature
+            </h2>
+            <hr />{" "}
+            <CustomFormField
+              name="customerCopyPdf"
+              label=""
+              type="file-single"
+              accept="image/*"
+            />
+          </div>
+        </div>
         <div className=" bg-white shadow-md rounded-2xl pb-1  ">
           <h2 className="text-lg font-semibold text-gray-800 ">
             Additional Files
           </h2>
-          <hr />
+          <hr />{" "}
           <CustomFormField
-            name="photos"
+            name="additionalFiles"
             label=""
             type="file"
             accept="image/*"

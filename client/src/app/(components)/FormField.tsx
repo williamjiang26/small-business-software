@@ -30,9 +30,15 @@ import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginPdfPreview from "filepond-plugin-pdf-preview";
+
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+registerPlugin(
+  FilePondPluginImageExifOrientation,
+  FilePondPluginImagePreview,
+  FilePondPluginPdfPreview
+);
 
 interface FormFieldProps {
   name: string;
@@ -46,6 +52,7 @@ interface FormFieldProps {
     | "switch"
     | "password"
     | "file"
+    | "file-single"
     | "multi-input";
   placeholder?: string;
   options?: { value: string; label: string }[];
@@ -137,7 +144,22 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
           <FilePond
             className={`${inputClassName}`}
             allowMultiple={true}
-            labelIdle='Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+            labelIdle='Drop or <span class="filepond--label-action">Browse</span> multiple files'
+            credits={false}
+            stylePanelAspectRatio="4:1"
+            onupdatefiles={(fileItems) => {
+              const files = fileItems.map((fileItem) => fileItem.file);
+              field.onChange(files);
+              field.onBlur();
+            }}
+          />
+        );
+      case "file-single":
+        return (
+          <FilePond
+            className={`${inputClassName}`}
+            allowMultiple={false}
+            labelIdle='Drop or <span class="filepond--label-action">Browse</span>'
             credits={false}
             stylePanelAspectRatio="4:1"
             onupdatefiles={(fileItems) => {
