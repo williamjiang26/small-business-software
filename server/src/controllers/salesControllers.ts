@@ -268,15 +268,17 @@ export const getInvoiceDetailsByInvoiceNo = async (
     const productOrders = await prisma.productOrder.findMany({
       where: { customerInvoice: invoiceNo },
     });
+    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ productOrders:", productOrders)
 
     let productDetails = [];
+
     for (let order of productOrders) {
       let product = await prisma.productDetails.findUnique({
-        where: { id: order.productOrderId },
+        where: { id: order.productId },
       });
       productDetails.push(product);
     }
-
+    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ productDetails:", productDetails)
     res.json({
       invoiceNo: invoice?.invoiceNo,
       createdAt: invoice?.createdAt,

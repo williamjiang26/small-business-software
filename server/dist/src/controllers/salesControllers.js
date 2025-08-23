@@ -254,13 +254,15 @@ const getInvoiceDetailsByInvoiceNo = (req, res) => __awaiter(void 0, void 0, voi
         const productOrders = yield prisma.productOrder.findMany({
             where: { customerInvoice: invoiceNo },
         });
+        console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ productOrders:", productOrders);
         let productDetails = [];
         for (let order of productOrders) {
             let product = yield prisma.productDetails.findUnique({
-                where: { id: order.productOrderId },
+                where: { id: order.productId },
             });
             productDetails.push(product);
         }
+        console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ productDetails:", productDetails);
         res.json({
             invoiceNo: invoice === null || invoice === void 0 ? void 0 : invoice.invoiceNo,
             createdAt: invoice === null || invoice === void 0 ? void 0 : invoice.createdAt,

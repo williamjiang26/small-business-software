@@ -14,6 +14,7 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
     isLoading,
     isError,
   } = useGetInvoiceDetailsByInvoiceNoQuery(invoiceNo);
+    console.log("🚀 ~ Page ~ invoiceDetails:", invoiceDetails)
 
   // now handle UI states
   if (isLoading) {
@@ -27,7 +28,7 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
       </div>
     );
   }
-  console.log("🚀 ~ page ~ invoiceDetails:", invoiceDetails);
+ 
 
   return (
     <div className="p-5">

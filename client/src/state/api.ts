@@ -94,7 +94,6 @@ export const api = createApi({
       return headers;
     },
   }),
-
   reducerPath: "api",
   tagTypes: [
     "Sales",
