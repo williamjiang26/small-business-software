@@ -64,13 +64,16 @@ export const getCustomerOrdersManager = async (
           where: { invoiceNo: order.customerInvoice },
         });
       }
-
+      const customer = await prisma.customer.findUnique({
+        where: { id: invoice?.customerId },
+      });
       const productDetails = await prisma.productDetails.findUnique({
         where: { id: order.productId },
       });
 
       let customerOrder = {
         customerInvoice: order.customerInvoice,
+        customerName: customer?.name,
         dateOrdered: order.dateOrdered,
         // customer order does not create the product order. customer order is just a ticket. manager creates the product order.
         // manager assigns a product order to a customer order ticket.
@@ -127,9 +130,6 @@ export const updateCustomerOrdersManager = async (
       height,
       width,
       length,
-      // measurementPdf,
-      // customerCopyPdf,
-      // additionalFiles,
     } = req.body;
 
     console.log("🚀 ~ updateCustomerOrdersManager ~ req.body:", req.body);
@@ -145,15 +145,6 @@ export const updateCustomerOrdersManager = async (
     }
 
     const [productDetails, productOrder] = await prisma.$transaction([
-      // prisma.customerOrderDetails.update({
-      //   where: { invoiceNo },
-      //   data: {
-      //     // dateOrdered,
-      //     // measurementPdf,
-      //     // customerCopyPdf,
-      // additionalFiles,
-      //   },
-      // }),
       prisma.productDetails.update({
         where: { id: productId },
         data: {

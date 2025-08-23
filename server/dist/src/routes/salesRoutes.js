@@ -9,16 +9,17 @@ const salesControllers_1 = require("../controllers/salesControllers");
 const router = express_1.default.Router();
 const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({ storage: storage });
-// Customers
-router.get("/customer/:id", salesControllers_1.getCustomerById);
-// Orders / Invoices
-router.get("/customerOrders", salesControllers_1.getCustomerOrders);
-router.get("/customerOrders/invoice/:invoiceNo", salesControllers_1.getInvoiceDetailsByInvoiceNo);
 const uploadFields = upload.fields([
     { name: "measurementPdf", maxCount: 1 },
     { name: "customerCopyPdf", maxCount: 1 },
     { name: "additionalFiles", maxCount: 10 }, // adjust max as needed
 ]);
+// Customers
+router.get("/customer/:id", salesControllers_1.getCustomerById);
+// Orders / Invoices
+router.put("/customerOrders/updateInvoice/:invoiceNo", uploadFields, salesControllers_1.updateCustomerOrder);
+router.get("/customerOrders", salesControllers_1.getCustomerOrders);
+router.get("/customerOrders/invoice/:invoiceNo", salesControllers_1.getInvoiceDetailsByInvoiceNo);
 router.post("/customerOrders", uploadFields, salesControllers_1.createCustomerOrder);
 // Product Orders / Products
 router.get("/productOrders/invoice/:invoiceNo", salesControllers_1.getProductOrdersByInvoiceNo);

@@ -32,6 +32,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const Items = ({ ...order }) => {
   const {
     customerInvoice,
+    customerName,
     dateOrdered,
     type,
     width,
@@ -39,6 +40,9 @@ const Items = ({ ...order }) => {
     length,
     name,
     status,
+    measurementPdf,
+    customerCopyPdf,
+    additionalFiles
   } = order;
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -53,13 +57,14 @@ const Items = ({ ...order }) => {
         <EditForm order={order} setIsOpen={setIsEditOpen} />
       </ResponsiveDialog>
 
-      <div className="rounded grid grid-cols-7 text-md hover:border-2 hover:shadow-xl duration-200 transition-all p-1 relative">
+      <div className="rounded grid grid-cols-8 text-md hover:border-2 hover:shadow-xl duration-200 transition-all p-1 relative">
         <div>{new Date(dateOrdered).toLocaleDateString()}</div>
         <div>{type}</div>
+        <div>{name}</div>
         <div>
           {width} x {height} x {length}
         </div>
-        <div>{name}</div>
+        <div>{customerName}</div>
         <div>{customerInvoice}</div>
         <div>Store No</div>
         <div className="flex items-center justify-between gap-2">
@@ -107,7 +112,7 @@ const CustomerOrdersPage = () => {
     isLoading,
     isError,
   } = useGetCustomerOrdersManagerQuery();
-  console.log("🚀 ~ CustomerOrdersPage ~ orders:", orders);
+    console.log("🚀 ~ CustomerOrdersPage ~ orders:", orders)
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }

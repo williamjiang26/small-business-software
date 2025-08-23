@@ -138,7 +138,6 @@ export const createCustomerOrder = async (
       const url = await uploadFile(file);
       if (url) additionalFilesUrls.push(url);
     }
-    // upload to S3 ...
 
     // create customer order
     const newCustomerOrder = await prisma.customerOrderDetails.create({
@@ -157,7 +156,7 @@ export const createCustomerOrder = async (
     for (const order of JSON.parse(orderSummary)) {
       const product = await prisma.productDetails.create({
         data: {
-          name,
+          name: order.name,
           type: order.type,
           color: order.color,
           height: order.height,
@@ -180,6 +179,63 @@ export const createCustomerOrder = async (
   }
 };
 
+// UPDATE
+export const updateCustomerOrder = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const invoiceNo = parseInt(req.params.invoiceNo, 10);
+    console.log("🚀 ~ updateCustomerOrder ~ invoiceNo:", invoiceNo);
+
+    const files = req.files as Record<string, Express.Multer.File[]>;
+    const uploadFile = async (file?: Express.Multer.File) => {
+      if (!file) return null;
+      const result = await s3
+        .upload({
+          Bucket: process.env.S3_BUCKET_NAME!,
+          Key: `${Date.now()}_${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          ACL: "public-read",
+        })
+        .promise();
+      return result.Location;
+    };
+
+    const measurementPdfUrl = await uploadFile(files?.measurementPdf?.[0]);
+    const customerCopyPdfUrl = await uploadFile(files?.customerCopyPdf?.[0]);
+    const additionalFilesUrls: string[] = [];
+
+    for (const file of files?.additionalFiles || []) {
+      const url = await uploadFile(file);
+      if (url) additionalFilesUrls.push(url);
+    }
+    console.log("🚀 ~ updateCustomerOrder ~ req.body:", files);
+
+    if (!invoiceNo) {
+      res.status(400).json({ error: "Missing invoiceNo in params" });
+      return;
+    }
+
+    const updatedCustomerOrder = await prisma.customerOrderDetails.update({
+      where: { invoiceNo },
+      data: {
+        measurementPdf: measurementPdfUrl || null,
+        customerCopyPdf: customerCopyPdfUrl || null,
+        additionalFiles: additionalFilesUrls,
+      },
+    });
+
+    res.json({
+      message: "Customer order updated successfully",
+      updatedCustomerOrder,
+    });
+  } catch (error) {
+    console.error("❌ Error updating customer order:", error);
+    res.status(500).json({ message: "Error updating Customer Orders", error });
+  }
+};
 // get customer by id
 export const getCustomerById = async (
   req: Request,
@@ -260,7 +316,7 @@ export const getInvoiceDetailsByInvoiceNo = async (
     const invoice = await prisma.customerOrderDetails.findUnique({
       where: { invoiceNo },
     });
-    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ invoice:", invoice)
+    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ invoice:", invoice);
     const customer = await prisma.customer.findUnique({
       where: { id: invoice?.customerId },
     });
@@ -268,7 +324,10 @@ export const getInvoiceDetailsByInvoiceNo = async (
     const productOrders = await prisma.productOrder.findMany({
       where: { customerInvoice: invoiceNo },
     });
-    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ productOrders:", productOrders)
+    console.log(
+      "🚀 ~ getInvoiceDetailsByInvoiceNo ~ productOrders:",
+      productOrders
+    );
 
     let productDetails = [];
 
@@ -278,7 +337,10 @@ export const getInvoiceDetailsByInvoiceNo = async (
       });
       productDetails.push(product);
     }
-    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ productDetails:", productDetails)
+    console.log(
+      "🚀 ~ getInvoiceDetailsByInvoiceNo ~ productDetails:",
+      productDetails
+    );
     res.json({
       invoiceNo: invoice?.invoiceNo,
       createdAt: invoice?.createdAt,

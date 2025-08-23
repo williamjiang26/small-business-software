@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = exports.s3 = void 0;
+exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.updateCustomerOrder = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = exports.s3 = void 0;
 const client_1 = require("@prisma/client");
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
@@ -133,7 +133,6 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
             if (url)
                 additionalFilesUrls.push(url);
         }
-        // upload to S3 ...
         // create customer order
         const newCustomerOrder = yield prisma.customerOrderDetails.create({
             data: {
@@ -150,7 +149,7 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
         for (const order of JSON.parse(orderSummary)) {
             const product = yield prisma.productDetails.create({
                 data: {
-                    name,
+                    name: order.name,
                     type: order.type,
                     color: order.color,
                     height: order.height,
@@ -174,6 +173,59 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.createCustomerOrder = createCustomerOrder;
+// UPDATE
+const updateCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    try {
+        const invoiceNo = parseInt(req.params.invoiceNo, 10);
+        console.log("🚀 ~ updateCustomerOrder ~ invoiceNo:", invoiceNo);
+        const files = req.files;
+        const uploadFile = (file) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!file)
+                return null;
+            const result = yield exports.s3
+                .upload({
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: `${Date.now()}_${file.originalname}`,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+                ACL: "public-read",
+            })
+                .promise();
+            return result.Location;
+        });
+        const measurementPdfUrl = yield uploadFile((_a = files === null || files === void 0 ? void 0 : files.measurementPdf) === null || _a === void 0 ? void 0 : _a[0]);
+        const customerCopyPdfUrl = yield uploadFile((_b = files === null || files === void 0 ? void 0 : files.customerCopyPdf) === null || _b === void 0 ? void 0 : _b[0]);
+        const additionalFilesUrls = [];
+        for (const file of (files === null || files === void 0 ? void 0 : files.additionalFiles) || []) {
+            const url = yield uploadFile(file);
+            if (url)
+                additionalFilesUrls.push(url);
+        }
+        console.log("🚀 ~ updateCustomerOrder ~ req.body:", files);
+        if (!invoiceNo) {
+            res.status(400).json({ error: "Missing invoiceNo in params" });
+            return;
+        }
+        const updatedCustomerOrder = yield prisma.customerOrderDetails.update({
+            where: { invoiceNo },
+            data: {
+                measurementPdf: measurementPdfUrl || null,
+                customerCopyPdf: customerCopyPdfUrl || null,
+                additionalFiles: additionalFilesUrls,
+            },
+        });
+        res.json({
+            message: "Customer order updated successfully",
+            updatedCustomerOrder,
+        });
+    }
+    catch (error) {
+        console.error("❌ Error updating customer order:", error);
+        res.status(500).json({ message: "Error updating Customer Orders", error });
+    }
+});
+exports.updateCustomerOrder = updateCustomerOrder;
 // get customer by id
 const getCustomerById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

@@ -180,6 +180,18 @@ export const api = createApi({
       invalidatesTags: ["CustomerOrders"],
     }),
 
+    updateCustomerOrder: build.mutation<
+      CustomerOrderResponse,
+      { invoiceNo: number; data: FormData }
+    >({
+      query: ({ invoiceNo, data }) => ({
+        url: `/sales/customerOrders/updateInvoice/${invoiceNo}`,
+        method: "PUT",
+        body: data, // pass FormData directly
+      }),
+      invalidatesTags: ["CustomerOrders"],
+    }),
+
     getCustomerById: build.query<Customer, number>({
       query: (id) => `/sales/customer/${id}`,
       providesTags: ["Customers"],
@@ -215,6 +227,7 @@ export const {
   useGetCustomerOrdersQuery,
   useGetCustomerOrdersManagerQuery,
   useCreateCustomerOrderMutation,
+  useUpdateCustomerOrderMutation,
   useGetCustomerByIdQuery,
   useGetProductOrdersByInvoiceNoQuery,
   useGetProductByProductOrderIdQuery,

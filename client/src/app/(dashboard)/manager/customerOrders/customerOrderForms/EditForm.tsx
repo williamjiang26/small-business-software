@@ -155,8 +155,30 @@ const EditForm = ({ order, setIsOpen }) => {
         </div>
 
         <div className="flex flex-row justify-between">
-          <div className="w-full">Measurement PDF</div>
-          <div className="w-full">Customer Copy</div>
+          <div className="w-full">
+            {order?.measurementPdf ? (
+              <iframe
+                src={order.measurementPdf}
+                width="100%"
+                height="400"
+                title="Measurement PDF"
+              />
+            ) : (
+              <>render drop and browse component with delete button</>
+            )}
+          </div>
+          <div className="w-full">
+             {order?.customerCopyPdf ? (
+              <iframe
+                src={order.customerCopyPdf}
+                width="100%"
+                height="400"
+                title="customerCopy PDF"
+              />
+            ) : (
+              <>render drop and browse component with delete button</>
+            )}
+          </div>
           <div className="w-full">Additional Files</div>
         </div>
         <div className="flex flex-row space-x-10">

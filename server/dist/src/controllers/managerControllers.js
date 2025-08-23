@@ -65,11 +65,15 @@ const getCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void 0,
                     where: { invoiceNo: order.customerInvoice },
                 });
             }
+            const customer = yield prisma.customer.findUnique({
+                where: { id: invoice === null || invoice === void 0 ? void 0 : invoice.customerId },
+            });
             const productDetails = yield prisma.productDetails.findUnique({
                 where: { id: order.productId },
             });
             let customerOrder = {
                 customerInvoice: order.customerInvoice,
+                customerName: customer === null || customer === void 0 ? void 0 : customer.name,
                 dateOrdered: order.dateOrdered,
                 // customer order does not create the product order. customer order is just a ticket. manager creates the product order.
                 // manager assigns a product order to a customer order ticket.
@@ -109,11 +113,7 @@ const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void
     try {
         const invoiceNo = parseInt(req.params.invoiceNo, 10);
         console.log("🚀 ~ updateCustomerOrdersManager ~ invoiceNo:", invoiceNo);
-        const { orderNo, productId, productOrderId, status, type, name, color, height, width, length,
-        // measurementPdf,
-        // customerCopyPdf,
-        // additionalFiles,
-         } = req.body;
+        const { orderNo, productId, productOrderId, status, type, name, color, height, width, length, } = req.body;
         console.log("🚀 ~ updateCustomerOrdersManager ~ req.body:", req.body);
         if (!invoiceNo) {
             res.status(400).json({ error: "Missing invoiceNo in params" });
@@ -124,15 +124,6 @@ const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void
             return;
         }
         const [productDetails, productOrder] = yield prisma.$transaction([
-            // prisma.customerOrderDetails.update({
-            //   where: { invoiceNo },
-            //   data: {
-            //     // dateOrdered,
-            //     // measurementPdf,
-            //     // customerCopyPdf,
-            // additionalFiles,
-            //   },
-            // }),
             prisma.productDetails.update({
                 where: { id: productId },
                 data: {

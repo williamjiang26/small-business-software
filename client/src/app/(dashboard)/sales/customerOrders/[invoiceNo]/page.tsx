@@ -1,22 +1,86 @@
 "use client";
-import { useGetInvoiceDetailsByInvoiceNoQuery } from "@/state/api";
-import React from "react";
+import {
+  useCreateCustomerOrderMutation,
+  useGetInvoiceDetailsByInvoiceNoQuery,
+  useUpdateCustomerOrderMutation,
+} from "@/state/api";
+import React, { useEffect } from "react";
 import Link from "../../../../../../node_modules/next/link";
 import { ArrowLeft, MapPin, Phone, User, Mail, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import OrderSummary from "../OrderSummary";
+import { CustomFormField } from "@/app/(components)/FormField";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form } from "@/components/ui/form";
+
+const formSchema = z.object({
+  // Files
+  measurementPdf: z.array(z.instanceof(File)).optional(), // single file
+  customerCopyPdf: z.array(z.instanceof(File)).optional(), // single file
+  additionalFiles: z.array(z.instanceof(File)).optional(), // multiple files
+});
 
 const Page = ({ params }: { params: { invoiceNo: number } }) => {
   const { invoiceNo } = params;
-
+  const [updateCustomerOrder, { isLoading: isUpdating }] =
+    useUpdateCustomerOrderMutation();
   const {
     data: invoiceDetails,
     isLoading,
     isError,
   } = useGetInvoiceDetailsByInvoiceNoQuery(invoiceNo);
-    console.log("🚀 ~ Page ~ invoiceDetails:", invoiceDetails)
+  console.log("🚀 ~ Page ~ invoiceDetails:", invoiceDetails);
 
-  // now handle UI states
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      measurementPdf: [],
+      customerCopyPdf: [],
+      additionalFiles: [],
+    },
+  });
+
+  const isLoading2 = form.formState.isSubmitting;
+
+  const onSubmit = async ({
+    measurementPdf,
+    customerCopyPdf,
+    additionalFiles,
+  }: z.infer<typeof formSchema>) => {
+    try {
+      const formData = new FormData();
+
+      if (measurementPdf?.length)
+        formData.append("measurementPdf", measurementPdf[0]);
+      if (customerCopyPdf?.length)
+        formData.append("customerCopyPdf", customerCopyPdf[0]);
+      additionalFiles?.forEach((file) =>
+        formData.append("additionalFiles", file)
+      );
+
+      await updateCustomerOrder({ invoiceNo, data: formData }).unwrap();
+      console.log("✅ Uploaded successfully");
+    } catch (error) {
+      console.error("❌ Failed to update customer order:", error);
+    }
+  };
+
+  useEffect(() => {
+    const subscription = form.watch((values, { name }) => {
+      if (
+        ["measurementPdf", "customerCopyPdf", "additionalFiles"].includes(
+          name || ""
+        )
+      ) {
+        form.handleSubmit(onSubmit)();
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, onSubmit]);
+
+  // ✅ UI states must live here, not inside onSubmit
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
@@ -28,8 +92,6 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
       </div>
     );
   }
- 
-
   return (
     <div className="p-5">
       <div className="flex justify-between">
@@ -81,38 +143,57 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
         {/* Left column: Order summary */}
         <OrderSummary invoiceDetails={invoiceDetails} />
 
-        {/* Right column: PDFs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid grid-cols-2 gap-6 sm:px-0 px-4 w-full "
+          >
             {invoiceDetails?.measurementPdf ? (
-              <iframe
-                src={invoiceDetails.measurementPdf}
-                width="100%"
-                height="400"
-                title="Measurement PDF"
-              />
+              <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+                {/* Header */}
+                <h3 className="text-lg font-medium px-7 pt-5 pb-2">
+                  Measurement PDF
+                </h3>
+                <hr />
+                <iframe
+                  src={invoiceDetails.measurementPdf}
+                  width="100%"
+                  height="400"
+                  title="Measurement PDF"
+                />
+              </div>
             ) : (
-              <>render drop and browse component with delete button</>
+              <CustomFormField
+                name="measurementPdf"
+                label=""
+                type="file-single"
+                accept="image/*"
+              />
             )}
-          </div>
-          <div>
             {invoiceDetails?.customerCopyPdf ? (
-              <iframe
-                src={invoiceDetails.customerCopyPdf}
-                width="100%"
-                height="400"
-                title="Customer Signature"
-              />
+              <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+                {/* Header */}
+                <h3 className="text-lg font-medium px-7 pt-5 pb-2">
+                  Customer Signature
+                </h3>
+                <hr />
+                <iframe
+                  src={invoiceDetails.customerCopyPdf}
+                  width="100%"
+                  height="400"
+                  title="Customer Copy PDF"
+                />
+              </div>
             ) : (
-              <>render drop and browse component with delete button</>
+              <CustomFormField
+                name="customerCopyPdf"
+                label=""
+                type="file-single"
+                accept="image/*"
+              />
             )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols">
-          {/* Folder to hold additional files */}
-          {/* <AdditionalFiles /> */}
-        </div>
+          </form>
+        </Form>
       </div>
     </div>
   );
