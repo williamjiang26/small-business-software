@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { OrderStatusEnum } from "@prisma/client";
+import AWS from "aws-sdk";
 
 const prisma = new PrismaClient();
+
+export const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID, // from your AWS IAM
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
 // GET
 export const getManager = async (
@@ -109,7 +116,6 @@ export const getCustomerOrdersManager = async (
       .json({ message: "Error retrieving Customer Orders", error });
   }
 };
-
 // UPDATE
 export const updateCustomerOrdersManager = async (
   req: Request,
@@ -117,7 +123,6 @@ export const updateCustomerOrdersManager = async (
 ): Promise<void> => {
   try {
     const invoiceNo = parseInt(req.params.invoiceNo, 10);
-    console.log("🚀 ~ updateCustomerOrdersManager ~ invoiceNo:", invoiceNo);
 
     const {
       orderNo,
@@ -132,8 +137,6 @@ export const updateCustomerOrdersManager = async (
       length,
     } = req.body;
 
-    console.log("🚀 ~ updateCustomerOrdersManager ~ req.body:", req.body);
-
     if (!invoiceNo) {
       res.status(400).json({ error: "Missing invoiceNo in params" });
       return;
@@ -144,22 +147,47 @@ export const updateCustomerOrdersManager = async (
       return;
     }
 
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    const photos = files?.photos || []; // now it's an array of files
+    console.log("🚀 ~ updateCustomerOrdersManager ~ photos:", photos);
+
+    const uploadFile = async (file?: Express.Multer.File) => {
+      if (!file) return null;
+      const result = await s3
+        .upload({
+          Bucket: process.env.S3_BUCKET_NAME!,
+          Key: `${Date.now()}_${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          ACL: "public-read",
+        })
+        .promise();
+      return result.Location;
+    };
+    const photoUrls: string[] = [];
+
+    for (const file of photos || []) {
+      const url = await uploadFile(file);
+      if (url) photoUrls.push(url);
+    }
+
     const [productDetails, productOrder] = await prisma.$transaction([
       prisma.productDetails.update({
-        where: { id: productId },
+        where: { id: Number(productId) },
         data: {
           type,
           color,
-          height,
-          width,
-          length,
+          height: Number(height),
+          width: Number(width),
+          length: Number(length),
           name,
+          photos: photoUrls,
         },
       }),
       prisma.productOrder.update({
-        where: { productOrderId },
+        where: { productOrderId: Number(productOrderId) },
         data: {
-          orderNo,
+          orderNo: Number(orderNo),
           status,
         },
       }),
@@ -218,7 +246,6 @@ export const updateCustomerOrdersManager = async (
       });
     }
 
-
     res.json({
       message: "Customer order updated successfully",
       // invoice,
@@ -228,5 +255,24 @@ export const updateCustomerOrdersManager = async (
   } catch (error) {
     console.error("❌ Error updating customer order:", error);
     res.status(500).json({ message: "Error updating Customer Orders", error });
+  }
+};
+
+export const getInventory = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const products = await prisma.productDetails.findMany({ where: {} });
+
+    if (products.length > 0) {
+      res.json(products);
+    } else {
+      res.status(404).json({ message: "Customer Orders not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error retrieving Customer Orders", error });
   }
 };

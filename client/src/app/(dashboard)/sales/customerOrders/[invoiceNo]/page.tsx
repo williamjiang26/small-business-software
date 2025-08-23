@@ -148,50 +148,50 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid grid-cols-2 gap-6 sm:px-0 px-4 w-full "
           >
-            {invoiceDetails?.measurementPdf ? (
-              <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
-                {/* Header */}
-                <h3 className="text-lg font-medium px-7 pt-5 pb-2">
-                  Measurement PDF
-                </h3>
-                <hr />
+            <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+              {/* Header */}
+              <h3 className="text-lg font-medium px-7 pt-5 pb-2">
+                Measurement PDF
+              </h3>
+              <hr />
+              {invoiceDetails?.measurementPdf ? (
                 <iframe
                   src={invoiceDetails.measurementPdf}
                   width="100%"
                   height="400"
                   title="Measurement PDF"
                 />
-              </div>
-            ) : (
-              <CustomFormField
-                name="measurementPdf"
-                label=""
-                type="file-single"
-                accept="image/*"
-              />
-            )}
-            {invoiceDetails?.customerCopyPdf ? (
-              <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
-                {/* Header */}
-                <h3 className="text-lg font-medium px-7 pt-5 pb-2">
-                  Customer Signature
-                </h3>
-                <hr />
+              ) : (
+                <CustomFormField
+                  name="measurementPdf"
+                  label=""
+                  type="file-single"
+                  accept="image/*"
+                />
+              )}
+            </div>
+            <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+              {/* Header */}
+              <h3 className="text-lg font-medium px-7 pt-5 pb-2">
+                Customer Signature
+              </h3>
+              <hr />
+              {invoiceDetails?.customerCopyPdf ? (
                 <iframe
                   src={invoiceDetails.customerCopyPdf}
                   width="100%"
                   height="400"
                   title="Customer Copy PDF"
                 />
-              </div>
-            ) : (
-              <CustomFormField
-                name="customerCopyPdf"
-                label=""
-                type="file-single"
-                accept="image/*"
-              />
-            )}
+              ) : (
+                <CustomFormField
+                  name="customerCopyPdf"
+                  label=""
+                  type="file-single"
+                  accept="image/*"
+                />
+              )}
+            </div>
           </form>
         </Form>
       </div>

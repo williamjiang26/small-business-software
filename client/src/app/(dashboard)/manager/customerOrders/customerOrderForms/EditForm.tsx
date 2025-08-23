@@ -32,6 +32,7 @@ const formSchema = z.object({
   // measurement pdf
   // customercopy pdf
   // additional files
+  photos: z.array(z.instanceof(File)).optional(), // multiple files
 });
 
 // if status is processing edit all fields
@@ -54,6 +55,7 @@ const EditForm = ({ order, setIsOpen }) => {
       orderNo: order?.orderNo ?? 0,
       productId: order?.productId ?? 0,
       productOrderId: order?.productOrderId ?? 0,
+      photos: [],
     },
   });
 
@@ -87,16 +89,34 @@ const EditForm = ({ order, setIsOpen }) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log("submitted", values);
+      const formData = new FormData();
+
+      // append photos properly
+      if (values.photos && values.photos.length > 0) {
+        values.photos.forEach((file: File) => {
+          formData.append("photos", file);
+        });
+      }
+
+      // append scalar fields
+      Object.entries(values).forEach(([key, value]) => {
+        if (key !== "photos") {
+          formData.append(key, String(value));
+        }
+      });
+
       await updateCustomerOrder({
         invoiceNo: order.customerInvoice,
-        data: values,
-      });
+        data: formData,
+      }).unwrap();
+
+      console.log("Submitted successfully");
       setIsOpen(false);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to update order:", error);
     }
   };
+
   return (
     <Form {...form}>
       <form
@@ -120,9 +140,20 @@ const EditForm = ({ order, setIsOpen }) => {
             </div>
           </div>
         </div>
-        {/* product details */}
+        {/* product details */}{" "}
+        <div className=" bg-white shadow-md rounded-2xl pb-1  ">
+          <h2 className="text-lg font-semibold text-gray-800 ">
+            Product Photos
+          </h2>
+          <hr />{" "}
+          <CustomFormField
+            name="photos"
+            label=""
+            type="file"
+            accept="image/*"
+          />
+        </div>
         <div className="flex flex-row gap-1">
-          <div className="  w-full flex flex-col">Drop image template</div>
           <div className="  w-full flex flex-col ">
             <CustomFormField
               name="type"
@@ -153,33 +184,56 @@ const EditForm = ({ order, setIsOpen }) => {
             <CustomFormField name="length" label="Length" type="number" />
           </div>
         </div>
-
         <div className="flex flex-row justify-between">
-          <div className="w-full">
-            {order?.measurementPdf ? (
-              <iframe
-                src={order.measurementPdf}
-                width="100%"
-                height="400"
-                title="Measurement PDF"
-              />
-            ) : (
-              <>render drop and browse component with delete button</>
-            )}
+          <div className="w-full ">
+            <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+              {/* Header */}
+              <h3 className="text-lg font-medium px-7 pt-5 pb-2">
+                Measurement
+              </h3>
+              <hr />
+              {order?.measurementPdf ? (
+                <iframe
+                  src={order.measurementPdf}
+                  width="100%"
+                  height="400"
+                  title="Measurement PDF"
+                />
+              ) : (
+                <>render drop and browse component with delete button</>
+              )}
+            </div>
           </div>
           <div className="w-full">
-             {order?.customerCopyPdf ? (
-              <iframe
-                src={order.customerCopyPdf}
-                width="100%"
-                height="400"
-                title="customerCopy PDF"
-              />
-            ) : (
-              <>render drop and browse component with delete button</>
-            )}
+            {" "}
+            <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+              {/* Header */}
+              <h3 className="text-lg font-medium px-7 pt-5 pb-2">
+                Customer Signature
+              </h3>
+              <hr />
+              {order?.customerCopyPdf ? (
+                <iframe
+                  src={order.customerCopyPdf}
+                  width="100%"
+                  height="400"
+                  title="customerCopy PDF"
+                />
+              ) : (
+                <>render drop and browse component with delete button</>
+              )}
+            </div>
           </div>
-          <div className="w-full">Additional Files</div>
+          <div className="w-full">
+            {" "}
+            <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
+              {/* Header */}
+              <h3 className="text-lg font-medium px-7 pt-5 pb-2">
+                Additional Files
+              </h3>
+              <hr />
+            </div>
+          </div>
         </div>
         <div className="flex flex-row space-x-10">
           <div className="flex flex-row space-x-10 items-center ">

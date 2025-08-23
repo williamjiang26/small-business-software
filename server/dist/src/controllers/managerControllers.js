@@ -8,11 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCustomerOrdersManager = exports.getCustomerOrdersManager = exports.createManager = exports.getManager = void 0;
+exports.getInventory = exports.updateCustomerOrdersManager = exports.getCustomerOrdersManager = exports.createManager = exports.getManager = exports.s3 = void 0;
 const client_1 = require("@prisma/client");
 const client_2 = require("@prisma/client");
+const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
+exports.s3 = new aws_sdk_1.default.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID, // from your AWS IAM
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+});
 // GET
 const getManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -112,9 +121,7 @@ exports.getCustomerOrdersManager = getCustomerOrdersManager;
 const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const invoiceNo = parseInt(req.params.invoiceNo, 10);
-        console.log("🚀 ~ updateCustomerOrdersManager ~ invoiceNo:", invoiceNo);
         const { orderNo, productId, productOrderId, status, type, name, color, height, width, length, } = req.body;
-        console.log("🚀 ~ updateCustomerOrdersManager ~ req.body:", req.body);
         if (!invoiceNo) {
             res.status(400).json({ error: "Missing invoiceNo in params" });
             return;
@@ -123,22 +130,46 @@ const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void
             res.status(400).json({ error: "Missing productId or productOrderId" });
             return;
         }
+        const files = req.files;
+        const photos = (files === null || files === void 0 ? void 0 : files.photos) || []; // now it's an array of files
+        console.log("🚀 ~ updateCustomerOrdersManager ~ photos:", photos);
+        const uploadFile = (file) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!file)
+                return null;
+            const result = yield exports.s3
+                .upload({
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: `${Date.now()}_${file.originalname}`,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+                ACL: "public-read",
+            })
+                .promise();
+            return result.Location;
+        });
+        const photoUrls = [];
+        for (const file of photos || []) {
+            const url = yield uploadFile(file);
+            if (url)
+                photoUrls.push(url);
+        }
         const [productDetails, productOrder] = yield prisma.$transaction([
             prisma.productDetails.update({
-                where: { id: productId },
+                where: { id: Number(productId) },
                 data: {
                     type,
                     color,
-                    height,
-                    width,
-                    length,
+                    height: Number(height),
+                    width: Number(width),
+                    length: Number(length),
                     name,
+                    photos: photoUrls,
                 },
             }),
             prisma.productOrder.update({
-                where: { productOrderId },
+                where: { productOrderId: Number(productOrderId) },
                 data: {
-                    orderNo,
+                    orderNo: Number(orderNo),
                     status,
                 },
             }),
@@ -204,3 +235,20 @@ const updateCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void
     }
 });
 exports.updateCustomerOrdersManager = updateCustomerOrdersManager;
+const getInventory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield prisma.productDetails.findMany({ where: {} });
+        if (products.length > 0) {
+            res.json(products);
+        }
+        else {
+            res.status(404).json({ message: "Customer Orders not found" });
+        }
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: "Error retrieving Customer Orders", error });
+    }
+});
+exports.getInventory = getInventory;

@@ -168,6 +168,12 @@ export const api = createApi({
       providesTags: ["CustomerOrders"],
     }),
 
+    getInventoryManager: build.query<ProductDetails[], string | void>({
+      query: (search) =>
+        `/manager/inventory/${search ? `?search=${search}` : ""}`,
+      providesTags: ["ProductDetails"],
+    }),
+
     createCustomerOrder: build.mutation<
       CustomerOrderResponse,
       CustomerOrderCreate
@@ -206,7 +212,7 @@ export const api = createApi({
     }),
     updateCustomerOrdersManager: build.mutation<
       CustomerOrderResponse,
-      { invoiceNo: number; data: Partial<CustomerOrderResponse> }
+      { invoiceNo: number; data: FormData }
     >({
       query: ({ invoiceNo, data }) => ({
         url: `/manager/customerOrders/invoice/${invoiceNo}`,
@@ -226,6 +232,7 @@ export const {
   useGetAuthUserQuery,
   useGetCustomerOrdersQuery,
   useGetCustomerOrdersManagerQuery,
+  useGetInventoryManagerQuery,
   useCreateCustomerOrderMutation,
   useUpdateCustomerOrderMutation,
   useGetCustomerByIdQuery,
