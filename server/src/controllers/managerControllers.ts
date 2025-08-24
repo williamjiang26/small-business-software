@@ -65,11 +65,16 @@ export const getCustomerOrdersManager = async (
 
     for (let order of orders) {
       let invoice = null;
+      let store = null;
 
       if (order.customerInvoice) {
         invoice = await prisma.customerOrderDetails.findUnique({
           where: { invoiceNo: order.customerInvoice },
         });
+        store = await prisma.store.findUnique({
+          where: { id: invoice?.storeId },
+        });
+        console.log("🚀 ~ getCustomerOrdersManager ~ store:", store)
       }
       const customer = await prisma.customer.findUnique({
         where: { id: invoice?.customerId },
@@ -82,6 +87,7 @@ export const getCustomerOrdersManager = async (
         customerInvoice: order.customerInvoice,
         customerName: customer?.name,
         dateOrdered: order.dateOrdered,
+        store: store?.address,
         // customer order does not create the product order. customer order is just a ticket. manager creates the product order.
         // manager assigns a product order to a customer order ticket.
         orderNo: order.orderNo,

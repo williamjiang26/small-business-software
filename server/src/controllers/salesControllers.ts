@@ -54,8 +54,9 @@ export const getCustomerOrders = async (
   res: Response
 ): Promise<void> => {
   try {
+    const storeId = parseInt(req.params.storeId, 10) || "";
     const customerOrders = await prisma.customerOrderDetails.findMany({
-      where: {},
+      where: { storeId: Number(storeId) },
     });
     if (customerOrders) {
       res.json(customerOrders);
@@ -394,7 +395,7 @@ export const getSalesById = async (
 ): Promise<void> => {
   try {
     const salesId = req.params.id;
-    console.log("🚀 ~ getSalesById ~ salesId:", salesId)
+    console.log("🚀 ~ getSalesById ~ salesId:", salesId);
 
     const sales = await prisma.sales.findUnique({
       where: {

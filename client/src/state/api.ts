@@ -66,6 +66,8 @@ export interface CustomerOrderResponse {
   email: string;
   dateOrdered: Date;
   customerId: number;
+  salesId: number;
+  storeId: number;
   status: string;
   measurementPdf: string;
   customerCopyPdf: string;
@@ -173,11 +175,8 @@ export const api = createApi({
       query: (id) => `/sales/id/${id}`,
       providesTags: ["Sales"],
     }),
-    getCustomerOrders: build.query<CustomerOrderResponse[], string | void>({
-      query: (search) => ({
-        url: "/sales/customerOrders",
-        params: search ? { search } : {},
-      }),
+    getCustomerOrders: build.query<CustomerOrderResponse[], number | void>({
+      query: (storeId) => `/sales/customerOrders/${storeId}`,
       providesTags: ["CustomerOrders"],
     }),
     getCustomerOrdersManager: build.query<

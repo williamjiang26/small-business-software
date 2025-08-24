@@ -69,10 +69,15 @@ const getCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void 0,
         });
         for (let order of orders) {
             let invoice = null;
+            let store = null;
             if (order.customerInvoice) {
                 invoice = yield prisma.customerOrderDetails.findUnique({
                     where: { invoiceNo: order.customerInvoice },
                 });
+                store = yield prisma.store.findUnique({
+                    where: { id: invoice === null || invoice === void 0 ? void 0 : invoice.storeId },
+                });
+                console.log("🚀 ~ getCustomerOrdersManager ~ store:", store);
             }
             const customer = yield prisma.customer.findUnique({
                 where: { id: invoice === null || invoice === void 0 ? void 0 : invoice.customerId },
@@ -84,6 +89,7 @@ const getCustomerOrdersManager = (req, res) => __awaiter(void 0, void 0, void 0,
                 customerInvoice: order.customerInvoice,
                 customerName: customer === null || customer === void 0 ? void 0 : customer.name,
                 dateOrdered: order.dateOrdered,
+                store: store === null || store === void 0 ? void 0 : store.address,
                 // customer order does not create the product order. customer order is just a ticket. manager creates the product order.
                 // manager assigns a product order to a customer order ticket.
                 orderNo: order.orderNo,

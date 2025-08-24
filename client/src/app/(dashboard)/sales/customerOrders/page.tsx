@@ -35,7 +35,6 @@ import IconMenu from "@/app/(components)/ui/IconMenu";
 import { useRouter } from "next/navigation"; // for App Router
 
 const ProductOrder = ({ id }) => {
-  console.log("🚀 ~ ProductOrder ~ id:", id);
   const {
     data: product,
     isLoading,
@@ -172,11 +171,14 @@ const Item = ({
   );
 };
 const Page = () => {
+  const { data: authUser } = useGetAuthUserQuery();
+  console.log("🚀 ~ Page ~ authUser:", authUser);
+
   const {
     data: customerOrders,
     isLoading,
     isError,
-  } = useGetCustomerOrdersQuery();
+  } = useGetCustomerOrdersQuery(authUser.userStoreId);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 

@@ -40,9 +40,10 @@ const Items = ({ ...order }) => {
     length,
     name,
     status,
+    store,
     measurementPdf,
     customerCopyPdf,
-    additionalFiles
+    additionalFiles,
   } = order;
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -66,7 +67,7 @@ const Items = ({ ...order }) => {
         </div>
         <div>{customerName}</div>
         <div>{customerInvoice}</div>
-        <div>Store No</div>
+        <div>Store: {store}</div>
         <div className="flex items-center justify-between gap-2">
           <span className="bg-green-400 text-white rounded-full w-fit text-sm px-2 py-1">
             {status}
@@ -112,7 +113,7 @@ const CustomerOrdersPage = () => {
     isLoading,
     isError,
   } = useGetCustomerOrdersManagerQuery();
-    console.log("🚀 ~ CustomerOrdersPage ~ orders:", orders)
+  console.log("🚀 ~ CustomerOrdersPage ~ orders:", orders);
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }

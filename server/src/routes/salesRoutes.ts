@@ -31,8 +31,9 @@ router.put(
   uploadFields,
   updateCustomerOrder
 );
-router.get("/customerOrders", getCustomerOrders);
+
 router.get("/customerOrders/invoice/:invoiceNo", getInvoiceDetailsByInvoiceNo);
+router.get("/customerOrders/:storeId", getCustomerOrders);
 
 router.post("/customerOrders", uploadFields, createCustomerOrder);
 

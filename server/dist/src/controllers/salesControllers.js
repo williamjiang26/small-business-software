@@ -64,8 +64,9 @@ exports.createSales = createSales;
 // GET
 const getCustomerOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const storeId = parseInt(req.params.storeId, 10) || "";
         const customerOrders = yield prisma.customerOrderDetails.findMany({
-            where: {},
+            where: { storeId: Number(storeId) },
         });
         if (customerOrders) {
             res.json(customerOrders);

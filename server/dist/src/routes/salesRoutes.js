@@ -18,8 +18,8 @@ const uploadFields = upload.fields([
 router.get("/customer/:id", salesControllers_1.getCustomerById);
 // Orders / Invoices
 router.put("/customerOrders/updateInvoice/:invoiceNo", uploadFields, salesControllers_1.updateCustomerOrder);
-router.get("/customerOrders", salesControllers_1.getCustomerOrders);
 router.get("/customerOrders/invoice/:invoiceNo", salesControllers_1.getInvoiceDetailsByInvoiceNo);
+router.get("/customerOrders/:storeId", salesControllers_1.getCustomerOrders);
 router.post("/customerOrders", uploadFields, salesControllers_1.createCustomerOrder);
 // Product Orders / Products
 router.get("/inventory", salesControllers_1.getInventory);
