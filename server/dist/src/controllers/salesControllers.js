@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.updateCustomerOrder = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = exports.s3 = void 0;
+exports.getSalesById = exports.getInventory = exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.updateCustomerOrder = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = exports.s3 = void 0;
 const client_1 = require("@prisma/client");
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
@@ -43,13 +43,15 @@ exports.getSales = getSales;
 // CREATE
 const createSales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { cognitoId, name, email, phoneNumber } = req.body;
+        const { cognitoId, name, email, phoneNumber, storeId } = req.body;
+        console.log("🚀 ~ createSales ~ req.body:", req.body);
         const sales = yield prisma.sales.create({
             data: {
                 cognitoId,
                 name,
                 email,
                 phoneNumber,
+                storeId,
             },
         });
         res.status(201).json(sales);
@@ -83,9 +85,12 @@ exports.getCustomerOrders = getCustomerOrders;
 const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        const { invoiceNo, dateOrdered, status, customerId, address, name, phone, email, orderSummary, } = req.body;
+        const { invoiceNo, dateOrdered, status, customerId, storeId, salesId, address, name, phone, email, orderSummary, } = req.body;
+        console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body);
         if (!invoiceNo ||
             !customerId ||
+            !storeId ||
+            !salesId ||
             !dateOrdered ||
             !status ||
             !address ||
@@ -140,6 +145,8 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
                 customerId: Number(customerId),
                 dateOrdered: parsedDate,
                 status,
+                salesId: Number(salesId),
+                storeId: Number(storeId),
                 measurementPdf: measurementPdfUrl || null,
                 customerCopyPdf: customerCopyPdfUrl || null,
                 additionalFiles: additionalFilesUrls,
@@ -334,3 +341,36 @@ const getInvoiceDetailsByInvoiceNo = (req, res) => __awaiter(void 0, void 0, voi
     }
 });
 exports.getInvoiceDetailsByInvoiceNo = getInvoiceDetailsByInvoiceNo;
+const getInventory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield prisma.productDetails.findMany({ where: {} });
+        if (products.length > 0) {
+            res.json(products);
+        }
+        else {
+            res.status(404).json({ message: "Customer Orders not found" });
+        }
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: "Error retrieving Customer Orders", error });
+    }
+});
+exports.getInventory = getInventory;
+const getSalesById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const salesId = req.params.id;
+        console.log("🚀 ~ getSalesById ~ salesId:", salesId);
+        const sales = yield prisma.sales.findUnique({
+            where: {
+                id: Number(salesId),
+            },
+        });
+        res.json(sales);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error retrieving sales", error });
+    }
+});
+exports.getSalesById = getSalesById;

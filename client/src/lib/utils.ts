@@ -1,3 +1,4 @@
+import { User } from "@/state/api";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -8,21 +9,37 @@ export const createNewUserInDatabase = async (
   user: any,
   idToken: any,
   userRole: string,
+  userStoreId: number,
   fetchWithBQ: any
 ) => {
   const createEndpoint =
     userRole?.toLowerCase() === "manager" ? "/manager" : "/sales";
 
-  const createUserResponse = await fetchWithBQ({
-    url: createEndpoint,
-    method: "POST",
-    body: {
-      cognitoId: user.userId,
-      name: user.username,
-      email: idToken?.payload?.email || "",
-      phoneNumber: "",
-    },
-  });
+  const createUserResponse = await fetchWithBQ(
+    userRole?.toLowerCase() === "manager"
+      ? {
+          url: createEndpoint,
+          method: "POST",
+          body: {
+            cognitoId: user.userId,
+            name: user.username,
+            email: idToken?.payload?.email || "",
+            phoneNumber: "",
+          },
+        }
+      : {
+          url: createEndpoint,
+          method: "POST",
+          body: {
+            cognitoId: user.userId,
+            name: user.username,
+            email: idToken?.payload?.email || "",
+            phoneNumber: "",
+            storeId: Number(userStoreId),
+          },
+        }
+  );
+
   console.log("🚀 ~ createUserResponse:", createUserResponse);
 
   if (createUserResponse.error) {

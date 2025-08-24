@@ -21,6 +21,7 @@ import {
   useGetCustomerOrdersQuery,
   useGetProductByProductOrderIdQuery,
   useGetProductOrdersByInvoiceNoQuery,
+  useGetSalesByIdQuery,
 } from "@/state/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -60,6 +61,7 @@ const Item = ({
   status,
   measurementPdf,
   customerCopyPdf,
+  salesId,
 }) => {
   // get customer info by customerID
   const {
@@ -73,7 +75,10 @@ const Item = ({
     isLoading: isProductOrdersLoading,
     isError: isProductOrdersLoadingError,
   } = useGetProductOrdersByInvoiceNoQuery(invoiceNo);
-  console.log("🚀 ~ Item ~ productOrders:", productOrders);
+
+  const { data: sales } = useGetSalesByIdQuery(salesId);
+  console.log("🚀 ~ Item ~ sales:", sales);
+
   const router = useRouter();
 
   // now handle UI states
@@ -122,7 +127,7 @@ const Item = ({
 
         <div>
           <div className=""> {new Date(dateOrdered).toLocaleDateString()}</div>
-          <div className="">Sales Rep</div>
+          <div className="">Sales Rep : {sales.name}</div>
         </div>
 
         <div className="flex flex-row  text-sm min-w-[120px] space-x-2">

@@ -6,10 +6,14 @@ import {
   Heading,
   RadioGroupField,
   Radio,
+  Flex,
+  Fieldset,
+  SelectField,
 } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useGetStoresQuery } from "@/state/api";
 
 Amplify.configure({
   Auth: {
@@ -100,6 +104,10 @@ const components = {
   SignUp: {
     FormFields() {
       const { validationErrors } = useAuthenticator();
+      const { data: stores, isLoading, isError } = useGetStoresQuery();
+      const [value, setValue] = useState("");
+
+      console.log("🚀 ~ stores:", stores);
       return (
         <>
           <Authenticator.SignUp.FormFields />
@@ -113,6 +121,28 @@ const components = {
             <Radio value="sales">Sales</Radio>
             <Radio value="manager">Manager</Radio>
           </RadioGroupField>
+          <div className="relative w-full">
+            <SelectField
+              label="Select your store:"
+              name="custom:storeId"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="w-full my-store-select"
+              isRequired
+              errorMessage={validationErrors?.["custom:storeId"]}
+              hasError={!!validationErrors?.["custom:storeId"]}
+            >
+              {!isLoading && stores?.length > 0 ? (
+                stores.map((store) => (
+                  <option key={store.id} value={store.id}>
+                    {store.address}
+                  </option>
+                ))
+              ) : (
+                <option disabled>Loading stores...</option>
+              )}
+            </SelectField>
+          </div>
         </>
       );
     },

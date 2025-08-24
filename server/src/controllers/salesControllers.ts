@@ -31,13 +31,15 @@ export const createSales = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId, name, email, phoneNumber } = req.body;
+    const { cognitoId, name, email, phoneNumber, storeId } = req.body;
+    console.log("🚀 ~ createSales ~ req.body:", req.body);
     const sales = await prisma.sales.create({
       data: {
         cognitoId,
         name,
         email,
         phoneNumber,
+        storeId,
       },
     });
 
@@ -77,16 +79,21 @@ export const createCustomerOrder = async (
       dateOrdered,
       status,
       customerId,
+      storeId,
+      salesId,
       address,
       name,
       phone,
       email,
       orderSummary,
     } = req.body;
+    console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body);
 
     if (
       !invoiceNo ||
       !customerId ||
+      !storeId ||
+      !salesId ||
       !dateOrdered ||
       !status ||
       !address ||
@@ -146,6 +153,9 @@ export const createCustomerOrder = async (
         customerId: Number(customerId),
         dateOrdered: parsedDate,
         status,
+        salesId: Number(salesId),
+
+        storeId: Number(storeId),
         measurementPdf: measurementPdfUrl || null,
         customerCopyPdf: customerCopyPdfUrl || null,
         additionalFiles: additionalFilesUrls,
@@ -356,5 +366,44 @@ export const getInvoiceDetailsByInvoiceNo = async (
     });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving product orders", error });
+  }
+};
+
+export const getInventory = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const products = await prisma.productDetails.findMany({ where: {} });
+
+    if (products.length > 0) {
+      res.json(products);
+    } else {
+      res.status(404).json({ message: "Customer Orders not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error retrieving Customer Orders", error });
+  }
+};
+
+export const getSalesById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const salesId = req.params.id;
+    console.log("🚀 ~ getSalesById ~ salesId:", salesId)
+
+    const sales = await prisma.sales.findUnique({
+      where: {
+        id: Number(salesId),
+      },
+    });
+
+    res.json(sales);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving sales", error });
   }
 };

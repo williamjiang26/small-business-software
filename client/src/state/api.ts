@@ -7,6 +7,7 @@ export interface Sales {
   name: string;
   email: string;
   phoneNumber: string;
+  storeId: number;
 }
 export interface Manager {
   cognitoId: string;
@@ -19,6 +20,10 @@ export interface User {
   cognitoInfo: AuthUser;
   userInfo: Sales | Manager;
   userRole: string;
+}
+export interface Store {
+  id: number;
+  address: string;
 }
 export interface Customer {
   id: number;
@@ -97,6 +102,7 @@ export const api = createApi({
   reducerPath: "api",
   tagTypes: [
     "Sales",
+    "Stores",
     "CustomerOrders",
     "Customers",
     "ProductOrders",
@@ -110,6 +116,8 @@ export const api = createApi({
           const { idToken } = session.tokens ?? {};
           const user = await getCurrentUser();
           const userRole = idToken?.payload["custom:role"] as string;
+          const userStoreId = idToken?.payload["custom:storeId"] as string;
+          console.log("🚀 ~ userStoreId:", userStoreId);
           console.log("🚀 ~ userRole:", userRole);
 
           const endpoint =
@@ -128,6 +136,7 @@ export const api = createApi({
               user,
               idToken,
               userRole,
+              userStoreId,
               fetchWithBQ
             );
           }
@@ -137,6 +146,7 @@ export const api = createApi({
               cognitoInfo: { ...user },
               userInfo: userDetailsResponse.data as Sales | Manager,
               userRole,
+              userStoreId,
             },
           };
         } catch (error) {
@@ -151,6 +161,17 @@ export const api = createApi({
           };
         }
       },
+    }),
+    getStores: build.query<Store, string | void>({
+      query: (search) => ({
+        url: "/stores",
+        params: search ? { search } : {},
+      }),
+      providesTags: ["Stores"],
+    }),
+    getSalesById: build.query<Sales, number | void>({
+      query: (id) => `/sales/id/${id}`,
+      providesTags: ["Sales"],
     }),
     getCustomerOrders: build.query<CustomerOrderResponse[], string | void>({
       query: (search) => ({
@@ -173,7 +194,11 @@ export const api = createApi({
         `/manager/inventory/${search ? `?search=${search}` : ""}`,
       providesTags: ["ProductDetails"],
     }),
-
+    getInventorySales: build.query<ProductDetails[], string | void>({
+      query: (search) =>
+        `/sales/inventory/${search ? `?search=${search}` : ""}`,
+      providesTags: ["ProductDetails"],
+    }),
     createCustomerOrder: build.mutation<
       CustomerOrderResponse,
       CustomerOrderCreate
@@ -230,9 +255,13 @@ export const api = createApi({
 
 export const {
   useGetAuthUserQuery,
+  useGetStoresQuery,
+  useGetSalesByIdQuery,
   useGetCustomerOrdersQuery,
   useGetCustomerOrdersManagerQuery,
   useGetInventoryManagerQuery,
+  useGetInventorySalesQuery,
+
   useCreateCustomerOrderMutation,
   useUpdateCustomerOrderMutation,
   useGetCustomerByIdQuery,

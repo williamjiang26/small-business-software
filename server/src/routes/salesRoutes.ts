@@ -10,6 +10,8 @@ import {
   getProductByProductOrderId,
   getInvoiceDetailsByInvoiceNo,
   updateCustomerOrder,
+  getInventory,
+  getSalesById,
 } from "../controllers/salesControllers";
 
 const router = express.Router();
@@ -35,11 +37,14 @@ router.get("/customerOrders/invoice/:invoiceNo", getInvoiceDetailsByInvoiceNo);
 router.post("/customerOrders", uploadFields, createCustomerOrder);
 
 // Product Orders / Products
+router.get("/inventory", getInventory);
+
 router.get("/productOrders/invoice/:invoiceNo", getProductOrdersByInvoiceNo);
 router.get("/product/:productId", getProductByProductOrderId);
 
 // Sales
 router.get("/:cognitoId", getSales);
+router.get("/id/:id", getSalesById);
 router.post("/", createSales);
 
 export default router;

@@ -3,7 +3,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useCreateCustomerOrderMutation } from "@/state/api";
+import {
+  useCreateCustomerOrderMutation,
+  useGetAuthUserQuery,
+} from "@/state/api";
 import { CustomFormField } from "@/app/(components)/FormField";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -150,6 +153,8 @@ const CreateForm = ({
   const [createCustomerOrder] = useCreateCustomerOrderMutation();
   const [orderSummary, setOrderSummary] = useState<Product[]>([]);
   const [isCreateSecondOpen, setIsCreateSecondOpen] = useState(false);
+  const { data: authUser } = useGetAuthUserQuery();
+  console.log("🚀 ~ CreateForm ~ authUser:", authUser);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -181,13 +186,14 @@ const CreateForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Only send non-file fields
     const payload: any = {};
-  
+
     Object.entries(values).forEach(([key, value]) => {
       // Skip file fields
-      if (["measurementPdf", "customerCopyPdf", "additionalFiles"].includes(key)) {
+      if (
+        ["measurementPdf", "customerCopyPdf", "additionalFiles"].includes(key)
+      ) {
         return;
       }
-  
       // Serialize arrays/objects
       if (typeof value === "object") {
         payload[key] = JSON.stringify(value);
@@ -195,16 +201,17 @@ const CreateForm = ({
         payload[key] = value;
       }
     });
-  
+
+    payload["storeId"] = Number(authUser.userInfo.storeId);
+    payload["salesId"] = Number(authUser.userInfo.id);
+
     try {
       await createCustomerOrder(payload).unwrap();
-      console.log("🚀 ~ onSubmit ~ payload:", payload);
       setIsOpen(false);
     } catch (error) {
       console.error("Failed to create customer order:", error);
     }
   };
-  
 
   return (
     <Form {...form}>

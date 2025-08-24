@@ -18,6 +18,9 @@ enum OrderStatusEnum {
 model Store {
   id       Int            @id @unique
   address  String 
+  salesTeam Sales[]
+
+  customerOrders CustomerOrderDetails[]
 }
 
 model Manager {
@@ -26,6 +29,7 @@ model Manager {
   name        String
   email       String
   phoneNumber String
+  profilePic  String? 
 }
 
 model Sales {
@@ -34,12 +38,22 @@ model Sales {
   name            String
   email           String
   phoneNumber     String
+  storeId         Int
+  store           Store @relation(fields: [storeId], references: [id])
+  customerOrders CustomerOrderDetails[]
+
 }
 
 model CustomerOrderDetails {
   invoiceNo        Int           @unique
   createdAt        DateTime?     @default(now())
   dateOrdered      DateTime?
+
+  storeId         Int
+  store           Store @relation(fields: [storeId], references: [id])
+
+  salesId         Int
+  sales           Sales @relation(fields: [salesId], references: [id])
 
   customerId       Int   
   customer         Customer       @relation(fields: [customerId], references: [id])

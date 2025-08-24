@@ -22,9 +22,11 @@ router.get("/customerOrders", salesControllers_1.getCustomerOrders);
 router.get("/customerOrders/invoice/:invoiceNo", salesControllers_1.getInvoiceDetailsByInvoiceNo);
 router.post("/customerOrders", uploadFields, salesControllers_1.createCustomerOrder);
 // Product Orders / Products
+router.get("/inventory", salesControllers_1.getInventory);
 router.get("/productOrders/invoice/:invoiceNo", salesControllers_1.getProductOrdersByInvoiceNo);
 router.get("/product/:productId", salesControllers_1.getProductByProductOrderId);
 // Sales
 router.get("/:cognitoId", salesControllers_1.getSales);
+router.get("/id/:id", salesControllers_1.getSalesById);
 router.post("/", salesControllers_1.createSales);
 exports.default = router;
