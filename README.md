@@ -25,8 +25,8 @@ v1:
 - sales training
 
 ## Currently: 
-editing photos in forms and creating drop and browse compoents with pdf viewer - complete
-authentication and user dashboards(manager and sales) - complete
-auto generates id where needed
-improving the user centered interface
-deploying backend on a cloud server 
+- editing photos in forms and creating drop and browse compoents with pdf viewer - complete
+- authentication and user dashboards(manager and sales) - complete
+- auto generates id where needed
+- improving the user centered interface
+- deploying backend on a cloud server 
