@@ -33,9 +33,6 @@ import {
 import IconMenu from "../../../(components)/ui/IconMenu";
 import CreateForm from "../../sales/customerOrders/CreateForm";
 import { Card } from "@/components/ui/card";
-import EditForm from "./customerOrderForms/EditForm";
-import DeleteForm from "./customerOrderForms/DeleteForm";
-import Link from "next/link";
 import { ProductEnum, ProductTypeIcons } from "@/lib/constants";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "../../../../../node_modules/next/image";
@@ -174,7 +171,7 @@ const Products = () => {
         </TabsList>{" "}
         <TabsContent value="all">
           {inventory?.map((product) => (
-            <Items {...product} />
+            <Items key={product.id} {...product} />
           ))}
         </TabsContent>{" "}
         <TabsContent value="tracking"></TabsContent>

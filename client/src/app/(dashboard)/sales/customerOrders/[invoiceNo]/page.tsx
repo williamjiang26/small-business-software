@@ -4,7 +4,7 @@ import {
   useGetInvoiceDetailsByInvoiceNoQuery,
   useUpdateCustomerOrderMutation,
 } from "@/state/api";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import Link from "../../../../../../node_modules/next/link";
 import { ArrowLeft, MapPin, Phone, User, Mail, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -44,28 +44,31 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
 
   const isLoading2 = form.formState.isSubmitting;
 
-  const onSubmit = async ({
-    measurementPdf,
-    customerCopyPdf,
-    additionalFiles,
-  }: z.infer<typeof formSchema>) => {
-    try {
-      const formData = new FormData();
+  const onSubmit = useCallback(
+    async ({
+      measurementPdf,
+      customerCopyPdf,
+      additionalFiles,
+    }: z.infer<typeof formSchema>) => {
+      try {
+        const formData = new FormData();
 
-      if (measurementPdf?.length)
-        formData.append("measurementPdf", measurementPdf[0]);
-      if (customerCopyPdf?.length)
-        formData.append("customerCopyPdf", customerCopyPdf[0]);
-      additionalFiles?.forEach((file) =>
-        formData.append("additionalFiles", file)
-      );
+        if (measurementPdf?.length)
+          formData.append("measurementPdf", measurementPdf[0]);
+        if (customerCopyPdf?.length)
+          formData.append("customerCopyPdf", customerCopyPdf[0]);
+        additionalFiles?.forEach((file) =>
+          formData.append("additionalFiles", file)
+        );
 
-      await updateCustomerOrder({ invoiceNo, data: formData }).unwrap();
-      console.log("✅ Uploaded successfully");
-    } catch (error) {
-      console.error("❌ Failed to update customer order:", error);
-    }
-  };
+        await updateCustomerOrder({ invoiceNo, data: formData }).unwrap();
+        console.log("✅ Uploaded successfully");
+      } catch (error) {
+        console.error("❌ Failed to update customer order:", error);
+      }
+    },
+    [updateCustomerOrder, invoiceNo]
+  );
 
   useEffect(() => {
     const subscription = form.watch((values, { name }) => {

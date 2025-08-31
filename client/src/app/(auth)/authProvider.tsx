@@ -6,10 +6,9 @@ import {
   Heading,
   RadioGroupField,
   Radio,
-  Flex,
-  Fieldset,
   SelectField,
 } from "@aws-amplify/ui-react";
+
 import "@aws-amplify/ui-react/styles.css";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -25,7 +24,6 @@ Amplify.configure({
   },
 });
 
-// Fixed field names
 const formFields = {
   signIn: {
     username: {
@@ -106,8 +104,10 @@ const components = {
       const { validationErrors } = useAuthenticator();
       const { data: stores, isLoading, isError } = useGetStoresQuery();
       const [value, setValue] = useState("");
-
-      console.log("🚀 ~ stores:", stores);
+      // type Store = {
+      //   id: string;      
+      //   address: string;
+      // };
       return (
         <>
           <Authenticator.SignUp.FormFields />
@@ -132,7 +132,7 @@ const components = {
               errorMessage={validationErrors?.["custom:storeId"]}
               hasError={!!validationErrors?.["custom:storeId"]}
             >
-              {!isLoading && stores?.length > 0 ? (
+              {!isLoading && stores ? (
                 stores.map((store) => (
                   <option key={store.id} value={store.id}>
                     {store.address}
@@ -151,7 +151,7 @@ const components = {
       return (
         <View className="text-center mt-4">
           <p className="text-muted-foreground">
-            Already have an account?{" "}
+            Already have an account?
             <button
               onClick={toSignIn}
               className="text-primary hover:underline bg-transparent border-none p-0"
@@ -173,15 +173,12 @@ const Auth = ({ children }: { children: React.ReactNode }) => {
   const isDashboardPage =
     pathname.startsWith("/manager") || pathname.startsWith("/sales");
 
-  // Avoid redirecting away from signup page when testing
   useEffect(() => {
     if (user && isAuthPage && !pathname.includes("signup")) {
       router.push(`/`);
     }
   }, [user, isAuthPage, router, pathname]);
 
-  console.log(user);
-  // Public pages
   if (!isAuthPage && !isDashboardPage) {
     return <>{children}</>;
   }

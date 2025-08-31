@@ -126,7 +126,7 @@ const Item = ({
 
         <div>
           <div className=""> {new Date(dateOrdered).toLocaleDateString()}</div>
-          <div className="">Sales Rep : {sales.name}</div>
+          <div className="">Sales Rep : {sales ? sales.name : ""}</div>
         </div>
 
         <div className="flex flex-row  text-sm min-w-[120px] space-x-2">
@@ -172,14 +172,11 @@ const Item = ({
 };
 const Page = () => {
   const { data: authUser } = useGetAuthUserQuery();
-  console.log("🚀 ~ Page ~ authUser:", authUser);
-
   const {
     data: customerOrders,
     isLoading,
     isError,
-  } = useGetCustomerOrdersQuery(authUser.userStoreId);
-
+  } = useGetCustomerOrdersQuery(authUser?.userStoreId);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   if (isLoading) {

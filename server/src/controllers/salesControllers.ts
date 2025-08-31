@@ -5,7 +5,7 @@ import AWS from "aws-sdk";
 const prisma = new PrismaClient();
 
 export const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID, // from your AWS IAM
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
 });
@@ -32,7 +32,6 @@ export const createSales = async (
 ): Promise<void> => {
   try {
     const { cognitoId, name, email, phoneNumber, storeId } = req.body;
-    console.log("🚀 ~ createSales ~ req.body:", req.body);
     const sales = await prisma.sales.create({
       data: {
         cognitoId,
@@ -55,6 +54,8 @@ export const getCustomerOrders = async (
 ): Promise<void> => {
   try {
     const storeId = parseInt(req.params.storeId, 10) || "";
+    console.log("🚀 ~ getCustomerOrders ~ storeId:", storeId)
+    
     const customerOrders = await prisma.customerOrderDetails.findMany({
       where: { storeId: Number(storeId) },
     });
@@ -88,8 +89,7 @@ export const createCustomerOrder = async (
       email,
       orderSummary,
     } = req.body;
-    console.log("🚀 ~ createCustomerOrder ~ req.body:", req.body);
-
+ 
     if (
       !invoiceNo ||
       !customerId ||
@@ -197,8 +197,7 @@ export const updateCustomerOrder = async (
 ): Promise<void> => {
   try {
     const invoiceNo = parseInt(req.params.invoiceNo, 10);
-    console.log("🚀 ~ updateCustomerOrder ~ invoiceNo:", invoiceNo);
-
+ 
     const files = req.files as Record<string, Express.Multer.File[]>;
     const uploadFile = async (file?: Express.Multer.File) => {
       if (!file) return null;
@@ -327,18 +326,14 @@ export const getInvoiceDetailsByInvoiceNo = async (
     const invoice = await prisma.customerOrderDetails.findUnique({
       where: { invoiceNo },
     });
-    console.log("🚀 ~ getInvoiceDetailsByInvoiceNo ~ invoice:", invoice);
-    const customer = await prisma.customer.findUnique({
+     const customer = await prisma.customer.findUnique({
       where: { id: invoice?.customerId },
     });
 
     const productOrders = await prisma.productOrder.findMany({
       where: { customerInvoice: invoiceNo },
     });
-    console.log(
-      "🚀 ~ getInvoiceDetailsByInvoiceNo ~ productOrders:",
-      productOrders
-    );
+ 
 
     let productDetails = [];
 
@@ -348,10 +343,7 @@ export const getInvoiceDetailsByInvoiceNo = async (
       });
       productDetails.push(product);
     }
-    console.log(
-      "🚀 ~ getInvoiceDetailsByInvoiceNo ~ productDetails:",
-      productDetails
-    );
+ 
     res.json({
       invoiceNo: invoice?.invoiceNo,
       createdAt: invoice?.createdAt,
@@ -395,8 +387,6 @@ export const getSalesById = async (
 ): Promise<void> => {
   try {
     const salesId = req.params.id;
-    console.log("🚀 ~ getSalesById ~ salesId:", salesId);
-
     const sales = await prisma.sales.findUnique({
       where: {
         id: Number(salesId),

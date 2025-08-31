@@ -171,7 +171,7 @@ const Products = () => {
         </TabsList>{" "}
         <TabsContent value="all">
           {inventory?.map((product) => (
-            <Items {...product} />
+            <Items key={product.id} {...product} />
           ))}
         </TabsContent>{" "}
         <TabsContent value="tracking"></TabsContent>

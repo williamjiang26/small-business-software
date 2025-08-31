@@ -202,8 +202,13 @@ const CreateForm = ({
       }
     });
 
-    payload["storeId"] = Number(authUser.userInfo.storeId);
-    payload["salesId"] = Number(authUser.userInfo.id);
+    if (authUser?.userRole === "sales") {
+      const userInfo = authUser.userInfo;
+      if ("storeId" in userInfo) { 
+        payload["storeId"] = Number(userInfo.storeId);
+        payload["salesId"] = Number(userInfo.id);
+      }
+    }
 
     try {
       await createCustomerOrder(payload).unwrap();

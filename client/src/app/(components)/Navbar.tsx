@@ -14,20 +14,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Header from "./Header";
 
 const Navbar = () => {
-  const { data: authUser } = useGetAuthUserQuery();
+  const { data: authUser, isLoading, isError } = useGetAuthUserQuery();
   const router = useRouter();
   const pathname = usePathname();
-
-  // const isDashboardPage =
-  //   pathname.includes("/manager") || pathname.includes("/sales");
+  const isDashboardPage =
+    pathname.includes("/manager") || pathname.includes("/sales");
 
   const handleSignOut = async () => {
     await signOut();
     window.location.href = "/";
   };
+  if (isLoading) {
+    return <div className="py-4">Loading...</div>;
+  }
 
   return (
     <div

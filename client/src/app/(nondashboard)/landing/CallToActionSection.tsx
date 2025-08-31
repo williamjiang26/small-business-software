@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import HeroPhoto from "../../../assets/tdcdashboard.png"
+import HeroPhoto from "../../../assets/tdcdashboard.png";
 
 const CallToActionSection = () => {
   return (
@@ -36,14 +36,14 @@ const CallToActionSection = () => {
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 className="inline-block text-primary-700 bg-white rounded-lg px-6 py-3 font-semibold hover:bg-primary-500 hover:text-primary-50"
               >
-                Book a Demo
+                Book a Demo 
               </button>
               <Link
                 href="/signup"
-                className="inline-block text-white bg-secondary-500 rounded-lg px-6 py-3 font-semibold hover:bg-secondary-600 "
+                className="inline-block text-white border-2 border-white bg-secondary-500 rounded-lg px-6 py-3 font-semibold hover:bg-secondary-600 "
                 scroll={false}
               >
-                Sign Up
+                Sign Up 
               </Link>
             </div>
           </div>

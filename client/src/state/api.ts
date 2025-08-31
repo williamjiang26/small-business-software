@@ -8,6 +8,7 @@ export interface Sales {
   email: string;
   phoneNumber: string;
   storeId: number;
+  id: number;
 }
 export interface Manager {
   cognitoId: string;
@@ -20,6 +21,7 @@ export interface User {
   cognitoInfo: AuthUser;
   userInfo: Sales | Manager;
   userRole: string;
+  userStoreId: number;
 }
 export interface Store {
   id: number;
@@ -118,10 +120,7 @@ export const api = createApi({
           const { idToken } = session.tokens ?? {};
           const user = await getCurrentUser();
           const userRole = idToken?.payload["custom:role"] as string;
-          const userStoreId = idToken?.payload["custom:storeId"] as string;
-          console.log("🚀 ~ userStoreId:", userStoreId);
-          console.log("🚀 ~ userRole:", userRole);
-
+          const userStoreId = idToken?.payload["custom:storeId"] as number;
           const endpoint =
             userRole === "manager"
               ? `/manager/${user.userId}`
@@ -164,7 +163,7 @@ export const api = createApi({
         }
       },
     }),
-    getStores: build.query<Store, string | void>({
+    getStores: build.query<Store[], string | void>({
       query: (search) => ({
         url: "/stores",
         params: search ? { search } : {},
