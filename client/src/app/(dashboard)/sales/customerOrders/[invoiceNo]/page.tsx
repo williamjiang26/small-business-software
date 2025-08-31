@@ -24,14 +24,12 @@ const formSchema = z.object({
 
 const Page = ({ params }: { params: { invoiceNo: number } }) => {
   const { invoiceNo } = params;
-  const [updateCustomerOrder, { isLoading: isUpdating }] =
-    useUpdateCustomerOrderMutation();
+  const [updateCustomerOrder] = useUpdateCustomerOrderMutation();
   const {
     data: invoiceDetails,
     isLoading,
     isError,
   } = useGetInvoiceDetailsByInvoiceNoQuery(invoiceNo);
-  console.log("🚀 ~ Page ~ invoiceDetails:", invoiceDetails);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,7 +50,6 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
     }: z.infer<typeof formSchema>) => {
       try {
         const formData = new FormData();
-
         if (measurementPdf?.length)
           formData.append("measurementPdf", measurementPdf[0]);
         if (customerCopyPdf?.length)
@@ -60,7 +57,6 @@ const Page = ({ params }: { params: { invoiceNo: number } }) => {
         additionalFiles?.forEach((file) =>
           formData.append("additionalFiles", file)
         );
-
         await updateCustomerOrder({ invoiceNo, data: formData }).unwrap();
         console.log("✅ Uploaded successfully");
       } catch (error) {
