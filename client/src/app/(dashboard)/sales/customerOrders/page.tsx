@@ -76,8 +76,7 @@ const Item = ({
   } = useGetProductOrdersByInvoiceNoQuery(invoiceNo);
 
   const { data: sales } = useGetSalesByIdQuery(salesId);
-  console.log("🚀 ~ Item ~ sales:", sales);
-
+ 
   const router = useRouter();
 
   // now handle UI states

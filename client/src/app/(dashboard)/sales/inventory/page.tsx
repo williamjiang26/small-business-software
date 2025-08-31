@@ -40,8 +40,7 @@ import Image from "../../../../../node_modules/next/image";
 const Items = ({ ...product }) => {
   const { id, photos, type, name, color, width, height, length, status } =
     product;
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
+ 
   return (
     <>
       {/* <ResponsiveDialog
@@ -128,8 +127,7 @@ const Items = ({ ...product }) => {
 const Products = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const { data: inventory, isLoading, isError } = useGetInventorySalesQuery();
-  console.log("🚀 ~ Products ~ inventory:", inventory);
-  if (isLoading) {
+   if (isLoading) {
     return <div className="py-4">Loading...</div>;
   }
 
@@ -143,7 +141,7 @@ const Products = () => {
 
   return (
     <div>
-      {" "}
+ 
       <div>
         <div className="relative w-full p-1 flex justify-end rounded-lg hover:bg-gray-50 transition">
           <ResponsiveDialog

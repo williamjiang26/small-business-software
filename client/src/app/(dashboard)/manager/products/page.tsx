@@ -40,8 +40,7 @@ import Image from "../../../../../node_modules/next/image";
 const Items = ({ ...product }) => {
   const { id, photos, type, name, color, width, height, length, status } =
     product;
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
+ 
   return (
     <>
       {/* <ResponsiveDialog
