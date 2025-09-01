@@ -9,11 +9,11 @@ store customer cases, make updates to their order
 scale the business
 
 
-## Product Solution
+## Broad Product Solution
 a tool to manage the fulfillment of orders in a small business
 
 
-## Engineering Roadmap
+## Functional Requirements
 v1:
 - create customer order
 - track customer orders
