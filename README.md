@@ -24,6 +24,9 @@ v1:
 - track customer cases
 - sales training
 
+## Product Roadmap
+Crud customer orders for sales reps -> Crud customer orders for manager ->   
+
 ## Currently: 
 - editing photos in forms and creating drop and browse compoents with pdf viewer - complete
 - authentication and user dashboards(manager and sales) - complete
