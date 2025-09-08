@@ -58,10 +58,11 @@ const Items = ({ ...order }) => {
         <EditForm order={order} setIsOpen={setIsEditOpen} />
       </ResponsiveDialog>
 
-      <div className="rounded grid grid-cols-8 text-md hover:border-2 hover:shadow-xl duration-200 transition-all p-1 relative">
+      <div className="rounded grid grid-cols-9 text-md hover:border-2 hover:shadow-xl duration-200 transition-all p-1 relative">
         <div>{new Date(dateOrdered).toLocaleDateString()}</div>
         <div>{type}</div>
         <div>{name}</div>
+        <div>img</div>
         <div>
           {width} x {height} x {length}
         </div>

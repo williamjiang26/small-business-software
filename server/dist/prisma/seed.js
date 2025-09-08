@@ -44,7 +44,6 @@ function main() {
             "customer.json",
             "customerOrderDetails.json",
             "productDetails.json",
-            "productPhoto.json",
             "productOrder.json",
         ];
         yield deleteAllData(orderedFileNames);

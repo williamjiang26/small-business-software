@@ -5,9 +5,12 @@ const prisma = new PrismaClient();
 // GET
 export const getStores = async (req: Request, res: Response): Promise<void> => {
   try {
-    const stores = await prisma.store.findMany({
-      where: {},
-    });
+    const stores = await prisma.store.findMany();
+
+    if (stores.length === 0) {
+      res.status(404).json({ message: "No stores found" });
+    }
+
     if (stores) {
       res.json(stores);
     } else {

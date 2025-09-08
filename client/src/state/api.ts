@@ -10,6 +10,7 @@ export interface Sales {
   storeId: number;
   id: number;
 }
+
 export interface Manager {
   cognitoId: string;
   name: string;
@@ -23,10 +24,12 @@ export interface User {
   userRole: string;
   userStoreId: number;
 }
+
 export interface Store {
   id: number;
   address: string;
 }
+
 export interface Customer {
   id: number;
   name: string;
@@ -74,6 +77,7 @@ export interface CustomerOrderResponse {
   measurementPdf: string;
   customerCopyPdf: string;
 }
+
 export interface CustomerOrderCreate {
   invoiceNo: number;
   dateOrdered: Date;
@@ -163,10 +167,9 @@ export const api = createApi({
         }
       },
     }),
-    getStores: build.query<Store[], string | void>({
-      query: (search) => ({
+    getStores: build.query<Store[], void>({
+      query: () => ({
         url: "/stores",
-        params: search ? { search } : {},
       }),
       providesTags: ["Stores"],
     }),

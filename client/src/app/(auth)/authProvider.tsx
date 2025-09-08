@@ -105,9 +105,21 @@ const components = {
       const { data: stores, isLoading, isError } = useGetStoresQuery();
       const [value, setValue] = useState("");
       // type Store = {
-      //   id: string;      
+      //   id: string;
       //   address: string;
       // };
+      
+      if (isLoading) {
+        return <div className="py-4">Loading...</div>;
+      }
+    
+      if (isError) {
+        return (
+          <div className="text-center text-red-500 py-4">
+            Failed to Fetch stores
+          </div>
+        );
+      }
       return (
         <>
           <Authenticator.SignUp.FormFields />

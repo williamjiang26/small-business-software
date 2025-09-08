@@ -54,8 +54,7 @@ export const getCustomerOrders = async (
 ): Promise<void> => {
   try {
     const storeId = parseInt(req.params.storeId, 10) || "";
-    console.log("🚀 ~ getCustomerOrders ~ storeId:", storeId)
-    
+     
     const customerOrders = await prisma.customerOrderDetails.findMany({
       where: { storeId: Number(storeId) },
     });

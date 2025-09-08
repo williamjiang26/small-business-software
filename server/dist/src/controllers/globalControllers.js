@@ -15,9 +15,10 @@ const prisma = new client_1.PrismaClient();
 // GET
 const getStores = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const stores = yield prisma.store.findMany({
-            where: {},
-        });
+        const stores = yield prisma.store.findMany();
+        if (stores.length === 0) {
+            res.status(404).json({ message: "No stores found" });
+        }
         if (stores) {
             res.json(stores);
         }
