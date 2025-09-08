@@ -9,11 +9,11 @@ store customer cases, make updates to their order
 scale the business
 
 
-## Product Solution
+## Broad Product Solution
 a tool to manage the fulfillment of orders in a small business
 
 
-## Engineering Roadmap
+## Functional Requirements
 v1:
 - create customer order
 - track customer orders
@@ -23,6 +23,9 @@ v1:
 - track revenue and sales
 - track customer cases
 - sales training
+
+## Product Roadmap
+Crud customer orders for sales reps -> Crud customer orders for manager ->   
 
 ## Currently: 
 - editing photos in forms and creating drop and browse compoents with pdf viewer - complete
