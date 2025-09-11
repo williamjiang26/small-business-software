@@ -171,7 +171,7 @@ export const api = createApi({
     }),
     getStores: build.query<Store[], void>({
       query: () => ({
-        url: "/stores",
+        url: "/app/stores",
       }),
       providesTags: ["Stores"],
     }),
