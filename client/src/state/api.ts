@@ -131,6 +131,7 @@ export const api = createApi({
               : `/sales/${user.userId}`;
 
           let userDetailsResponse = await fetchWithBQ(endpoint);
+          console.log("🚀 ~ userDetailsResponse:", userDetailsResponse)
 
           // if user doesn't exist, create new user
           if (
@@ -144,6 +145,7 @@ export const api = createApi({
               userStoreId,
               fetchWithBQ
             );
+            
           }
 
           return {

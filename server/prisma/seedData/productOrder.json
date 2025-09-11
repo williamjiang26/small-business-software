@@ -1,13 +1,3 @@
 [
-  {
-    "orderNo": 9763,
-    "productId": 1,
-    "dateOrdered": "2025-10-26T00:00:00Z",
-    "section": 1,
-    "row": 11,
-    "dateStocked": "2025-10-26T00:00:00Z",
-    "dateSold": "2025-10-26T00:00:00Z",
-    "customerInvoice" : 15765
-    
-  }
+
 ]

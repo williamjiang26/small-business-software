@@ -14,16 +14,20 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form } from "@/components/ui/form";
+import { useParams } from "next/navigation";
+
 
 const formSchema = z.object({
-  // Files
   measurementPdf: z.array(z.instanceof(File)).optional(), // single file
   customerCopyPdf: z.array(z.instanceof(File)).optional(), // single file
   additionalFiles: z.array(z.instanceof(File)).optional(), // multiple files
 });
 
-const Page = ({ params }: { params: { invoiceNo: number } }) => {
-  const { invoiceNo } = params;
+
+
+const Page = () => {
+  const params = useParams();  
+  const invoiceNo = Number(params?.invoiceNo);
   const [updateCustomerOrder] = useUpdateCustomerOrderMutation();
   const {
     data: invoiceDetails,

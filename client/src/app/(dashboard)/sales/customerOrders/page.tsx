@@ -76,7 +76,7 @@ const Item = ({
   } = useGetProductOrdersByInvoiceNoQuery(invoiceNo);
 
   const { data: sales } = useGetSalesByIdQuery(salesId);
- 
+
   const router = useRouter();
 
   // now handle UI states
@@ -172,22 +172,11 @@ const Item = ({
 const Page = () => {
   const { data: authUser } = useGetAuthUserQuery();
   const {
-    data: customerOrders,
+    data: customerOrders = [],
     isLoading,
     isError,
   } = useGetCustomerOrdersQuery(authUser?.userStoreId);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-
-  if (isLoading) {
-    return <div className="py-4">Loading...</div>;
-  }
-  if (isError || !customerOrders) {
-    return (
-      <div className="text-center text-red-500 py-4">
-        Failed to Fetch Customers
-      </div>
-    );
-  }
 
   return (
     <div className="p-4">
@@ -246,6 +235,16 @@ const Page = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Loading */}
+      {isLoading && <div className="py-4">Loading...</div>}
+
+      {/* Error */}
+      {isError && (
+        <div className="text-center text-red-500 py-4">
+          Failed to Fetch Customers
+        </div>
+      )}
     </div>
   );
 };
