@@ -21,7 +21,7 @@ export const createNewUserInDatabase = async (
       ? {
           url: createEndpoint,
           method: "POST",
-          headers: { Authorization: `Bearer ${token}` }, 
+          // headers: { Authorization: `Bearer ${token}` }, 
           body: {
             cognitoId: user.userId,
             name: user.username,
