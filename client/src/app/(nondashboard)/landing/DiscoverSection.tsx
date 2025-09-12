@@ -1,9 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "../../../../node_modules/next/link";
-import HeroPhoto from "@/assets/tdcdashboard.png";
-
 
 const containerVariants = {
   hidden: { opactiy: 0 },
@@ -34,10 +31,12 @@ const DiscoverSection = () => {
             Organize
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            Organize your business with our operations tools to scale and succeed
+            Organize your business with our operations tools to scale and
+            succeed
           </p>
           <p className="mt-2 text-gray-500 max-w-3xl mx-auto">
-            Our systems are proven create a clear strategy for your business to succeed. 
+            Our systems are proven create a clear strategy for your business to
+            succeed.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">

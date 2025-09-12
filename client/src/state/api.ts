@@ -98,12 +98,14 @@ export const api = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: async (headers) => {
       const session = await fetchAuthSession();
+      const { accessToken } = session.tokens ?? {}; 
       const { idToken } = session.tokens ?? {};
+      console.log("idToken", idToken);
+      console.log("accessToken", accessToken);
       if (idToken) {
         headers.set("Authorization", `Bearer ${idToken}`);
       }
       console.log("Prepared headers:", Object.fromEntries(headers.entries()));
-
       return headers;
     },
   }),
@@ -191,7 +193,6 @@ export const api = createApi({
         `/manager/customerOrders${search ? `?search=${search}` : ""}`,
       providesTags: ["CustomerOrders"],
     }),
-
     getInventoryManager: build.query<ProductDetails[], string | void>({
       query: (search) =>
         `/manager/inventory/${search ? `?search=${search}` : ""}`,

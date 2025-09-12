@@ -14,12 +14,14 @@ export const createNewUserInDatabase = async (
 ) => {
   const createEndpoint =
     userRole?.toLowerCase() === "manager" ? "/manager" : "/sales";
+  const token = idToken?.jwtToken || idToken; // depends on what you pass
 
   const createUserResponse = await fetchWithBQ(
     userRole?.toLowerCase() === "manager"
       ? {
           url: createEndpoint,
           method: "POST",
+          headers: { Authorization: `Bearer ${token}` }, 
           body: {
             cognitoId: user.userId,
             name: user.username,
@@ -30,6 +32,7 @@ export const createNewUserInDatabase = async (
       : {
           url: createEndpoint,
           method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
           body: {
             cognitoId: user.userId,
             name: user.username,
@@ -39,8 +42,6 @@ export const createNewUserInDatabase = async (
           },
         }
   );
-
- 
 
   if (createUserResponse.error) {
     throw new Error("Failed to create user record");

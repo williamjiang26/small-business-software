@@ -8,7 +8,7 @@ const HeroSection = () => {
     <div className="relative h-screen w-screen">
       <Image
         src={HeroPhoto}
-        alt="Rental Platform Hero Section"
+        alt=""
         fill
         className="object-cover object-center"
         priority
