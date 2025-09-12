@@ -122,12 +122,14 @@ export const api = createApi({
           const session = await fetchAuthSession();
           const { idToken } = session.tokens ?? {};
           const user = await getCurrentUser();
+ 
           const userRole = idToken?.payload["custom:role"] as string;
           const userStoreId = idToken?.payload["custom:storeId"] as number;
           const endpoint =
             userRole === "manager"
               ? `/manager/${user.userId}`
               : `/sales/${user.userId}`;
+          console.log("🚀 ~ endpoint:", endpoint)
 
           let userDetailsResponse = await fetchWithBQ(endpoint);
           console.log("🚀 ~ userDetailsResponse:", userDetailsResponse)
