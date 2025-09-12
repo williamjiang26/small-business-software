@@ -27,7 +27,7 @@ app.use((0, cors_1.default)());
 // routes
 app.use("/sales", (0, authMiddleware_1.authMiddleware)(["sales"]), salesRoutes_1.default);
 app.use("/manager", (0, authMiddleware_1.authMiddleware)(["manager"]), managerRoutes_1.default);
-app.use("/", globalRoutes_1.default);
+app.use("/app", globalRoutes_1.default);
 // server
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

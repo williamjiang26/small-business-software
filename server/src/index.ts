@@ -25,7 +25,7 @@ app.use(cors());
 // routes
 app.use("/sales", authMiddleware(["sales"]), salesRoutes);
 app.use("/manager", authMiddleware(["manager"]), managerRoutes);
-app.use("/", globalRoutes);
+app.use("/app", globalRoutes);
 
 // server
 const port = process.env.PORT || 3001;

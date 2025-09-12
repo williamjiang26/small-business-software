@@ -98,10 +98,7 @@ export const api = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: async (headers) => {
       const session = await fetchAuthSession();
-      const { accessToken } = session.tokens ?? {}; 
       const { idToken } = session.tokens ?? {};
-      console.log("idToken", idToken);
-      console.log("accessToken", accessToken);
       if (idToken) {
         headers.set("Authorization", `Bearer ${idToken}`);
       }
@@ -147,7 +144,6 @@ export const api = createApi({
               userStoreId,
               fetchWithBQ
             );
-            
           }
 
           return {

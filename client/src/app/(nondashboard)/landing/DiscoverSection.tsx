@@ -48,12 +48,12 @@ const DiscoverSection = () => {
                 "Successfully manage your business operations with our proven systems",
             },
             {
-              imageSrc: "/landing-icon-calendar.png",
+              imageSrc: "",
               title: "Logical, Intuitive and Aesthetic Interface",
               description: "Utilize our logical workflows ",
             },
             {
-              imageSrc: "/landing-icon-heart.png",
+              imageSrc: "",
               title: "Robust and Scalable Storage",
               description: "Robust storage",
             },
