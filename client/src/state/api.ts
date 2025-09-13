@@ -101,11 +101,12 @@ export const api = createApi({
       const { idToken } = session.tokens ?? {};
       if (idToken) {
         headers.set("Authorization", `Bearer ${idToken}`);
+        console.log("Prepared headers:", Object.fromEntries(headers.entries()));
       }
-      console.log("Prepared headers:", Object.fromEntries(headers.entries()));
       return headers;
     },
   }),
+
   reducerPath: "api",
   tagTypes: [
     "Sales",
@@ -122,18 +123,18 @@ export const api = createApi({
           const session = await fetchAuthSession();
           const { idToken } = session.tokens ?? {};
           const user = await getCurrentUser();
-
           const userRole = idToken?.payload["custom:role"] as string;
           const userStoreId = idToken?.payload["custom:storeId"] as number;
+
+          console.log("🚀 ~ user.userId:", user.userId);
           const endpoint =
             userRole === "manager"
               ? `/manager/${user.userId}`
               : `/sales/${user.userId}`;
-          console.log("🚀 ~ endpoint:", endpoint);
 
           let userDetailsResponse = await fetchWithBQ(endpoint);
-          console.log("🚀 ~ userDetailsResponse:", userDetailsResponse);
 
+          console.log("🚀 ~ userDetailsResponse new:", userDetailsResponse);
           // if user doesn't exist, create new user
           if (
             userDetailsResponse.error &&
@@ -263,7 +264,6 @@ export const {
   useGetCustomerOrdersManagerQuery,
   useGetInventoryManagerQuery,
   useGetInventorySalesQuery,
-
   useCreateCustomerOrderMutation,
   useUpdateCustomerOrderMutation,
   useGetCustomerByIdQuery,
