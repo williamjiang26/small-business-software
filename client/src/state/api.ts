@@ -101,8 +101,7 @@ export const api = createApi({
       const { idToken } = session.tokens ?? {};
       if (idToken) {
         headers.set("Authorization", `Bearer ${idToken}`);
-        console.log("Prepared headers:", Object.fromEntries(headers.entries()));
-      }
+       }
       return headers;
     },
   }),
@@ -126,8 +125,7 @@ export const api = createApi({
           const userRole = idToken?.payload["custom:role"] as string;
           const userStoreId = idToken?.payload["custom:storeId"] as number;
 
-          console.log("🚀 ~ user.userId:", user.userId);
-          const endpoint =
+           const endpoint =
             userRole === "manager"
               ? `/manager/${user.userId}`
               : `/sales/${user.userId}`;

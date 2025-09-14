@@ -12,14 +12,15 @@ export const createNewUserInDatabase = async (
   userStoreId: number,
   fetchWithBQ: any
 ) => {
-  const createEndpoint =
-    userRole?.toLowerCase() === "manager" ? "/manager" : "/sales";
+  console.log("🚀 ~ createNewUserInDatabase ~ idToken:", idToken);
+  const endpoint = userRole === "manager" ? `/manager/` : `/sales/`;
+
   const createUserResponse = await fetchWithBQ(
     userRole?.toLowerCase() === "manager"
       ? {
-          url: createEndpoint,
+          url: endpoint,
           method: "POST",
-          headers: { Authorization: `Bearer ${idToken}` },
+          // headers: { Authorization: `Bearer ${idToken}` },
           body: {
             cognitoId: user.userId,
             name: user.username,
@@ -28,9 +29,9 @@ export const createNewUserInDatabase = async (
           },
         }
       : {
-          url: createEndpoint,
+          url: endpoint,
           method: "POST",
-          headers: { Authorization: `Bearer ${idToken}` },
+          // headers: { Authorization: `Bearer ${idToken}` },
           body: {
             cognitoId: user.userId,
             name: user.username,
