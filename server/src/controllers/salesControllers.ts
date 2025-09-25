@@ -200,17 +200,10 @@ export const getPresignedURL = async (req: Request, res: Response) => {
     const uploadUrl = await s3.getSignedUrlPromise("putObject", {
       Bucket: process.env.S3_BUCKET_NAME!,
       Key: key,
-      ContentType: filetype, // optional; helps S3 store correct type
+      // ContentType: filetype, // optional; helps S3 store correct type
       Expires: 300, // 5 minutes
       ACL: "public-read",
 
-    });
-
-    // Generate GET URL for viewing
-    const viewUrl = await s3.getSignedUrlPromise("getObject", {
-      Bucket: process.env.S3_BUCKET_NAME!,
-      Key: key,
-      Expires: 300, // 5 minutes
     });
 
     res.json({ uploadUrl, key });

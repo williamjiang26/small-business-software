@@ -219,7 +219,7 @@ export const api = createApi({
       query: ({ invoiceNo, data }) => ({
         url: `/sales/customerOrders/updateInvoice/${invoiceNo}`,
         method: "PUT",
-        body: data, // pass FormData directly
+        body: data,  
       }),
       invalidatesTags: ["CustomerOrders"],
     }),

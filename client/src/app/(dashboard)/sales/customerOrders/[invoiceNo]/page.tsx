@@ -48,27 +48,38 @@ const Page = () => {
   const uploadFile = async (file: File) => {
     try {
       // Step 1: Ask backend for signed URL
-       const { uploadUrl } = await getPresignedUrl({
+      console.log("hi");
+      const { uploadUrl } = await getPresignedUrl({
         filename: file.name,
         filetype: file.type,
       }).unwrap();
-      
+      console.log("filename", file.name);
+      console.log("filetype", file.type);
+      console.log("presigned url", uploadUrl);
+
       // Optional: upload directly to S3 here if needed
-      await fetch(uploadUrl, {
+      const response = await fetch(uploadUrl, {
         method: "PUT",
         body: file,
-        headers: { "Content-Type": file.type },
+        headers: {
+          "Content-Type": file.type, // must match Lambda's ContentType
+        },
       });
 
+      console.log("Response status:", response.status);
+      console.log("Response statusText:", response.statusText);
+      console.log("Response headers:", [...response.headers.entries()]);
+      const text = await response.text();
+      console.log("Response body:", text);
+
       // Return the permanent S3 URL
-        
-      return uploadUrl;
+
+      return uploadUrl.split("?")[0];
     } catch (err) {
       console.error("Error generating presigned URL:", err);
       return null;
     }
   };
-
   useEffect(() => {
     const subscription = form.watch((values, { name }) => {
       if (!name) return;
@@ -83,31 +94,29 @@ const Page = () => {
       const files = values[name as keyof typeof values] as File[] | undefined;
       if (!files || files.length === 0) return;
 
-      const fileKey = `${name}_${files[0].name}`;
-      if (uploadedFilesRef.current[fileKey]) return; // already uploaded
-
       (async () => {
-        const fileUrl = await uploadFile(files[0]);
-        if (!fileUrl) return;
+        for (const file of files) {
+          const fileKey = `${name}_${file.name}`;
+          if (uploadedFilesRef.current[fileKey]) continue; // skip already uploaded
 
-        uploadedFilesRef.current[fileKey] = fileUrl; // mark as uploaded
+          const fileUrl = await uploadFile(file);
+          if (!fileUrl) continue;
 
-        // Build FormData with only this file
-        const formData = new FormData();
-        if (name === "measurementPdf")
-          formData.append("measurementPdf", fileUrl);
-        if (name === "customerCopyPdf")
-          formData.append("customerCopyPdf", fileUrl);
-        if (name === "additionalFiles")
-          formData.append("additionalFiles", fileUrl);
+          // Mark as uploaded
+          uploadedFilesRef.current[fileKey] = fileUrl;
 
-        // Call backend
-        await updateCustomerOrder({
-          invoiceNo,
-          data: formData,
-        }).unwrap();
+          // Update backend with this single file URL
+          const formData = new FormData();
+          if (name === "measurementPdf")
+            formData.append("measurementPdf", fileUrl);
+          if (name === "customerCopyPdf")
+            formData.append("customerCopyPdf", fileUrl);
+          if (name === "additionalFiles")
+            formData.append("additionalFiles", fileUrl);
 
-        console.log("Backend updated with new file URL!");
+          await updateCustomerOrder({ invoiceNo, data: formData }).unwrap();
+          console.log(`Uploaded ${file.name} for ${name}`);
+        }
       })();
     });
 
@@ -190,6 +199,7 @@ const Page = () => {
                   Measurement PDF
                 </h3>
                 <hr />
+
                 {invoiceDetails?.measurementPdf ? (
                   <iframe
                     src={invoiceDetails.measurementPdf}
