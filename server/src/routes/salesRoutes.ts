@@ -12,6 +12,7 @@ import {
   updateCustomerOrder,
   getInventory,
   getSalesById,
+  getPresignedURL,
 } from "../controllers/salesControllers";
 
 const router = express.Router();
@@ -34,12 +35,10 @@ router.put(
 
 router.get("/customerOrders/invoice/:invoiceNo", getInvoiceDetailsByInvoiceNo);
 router.get("/customerOrders/:storeId", getCustomerOrders);
-
 router.post("/customerOrders", uploadFields, createCustomerOrder);
 
 // Product Orders / Products
 router.get("/inventory", getInventory);
-
 router.get("/productOrders/invoice/:invoiceNo", getProductOrdersByInvoiceNo);
 router.get("/product/:productId", getProductByProductOrderId);
 
@@ -47,5 +46,6 @@ router.get("/product/:productId", getProductByProductOrderId);
 router.get("/:cognitoId", getSales);
 router.get("/id/:id", getSalesById);
 router.post("/", createSales);
+router.post("/s3/signed-url", getPresignedURL);
 
 export default router;

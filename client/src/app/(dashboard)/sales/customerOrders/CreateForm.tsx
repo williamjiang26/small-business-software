@@ -14,6 +14,18 @@ import { Loader2, Plus } from "lucide-react";
 import { OrderStatusEnum, ProductColorEnum } from "@/lib/constants";
 import ResponsiveDialog from "@/app/(components)/ui/ResponsiveDialog";
 import { ProductEnum } from "@/lib/constants";
+import Image from "../../../../../node_modules/next/image";
+import Logo from "../../../../assets/TDCLogo.png";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const productFormSchema = z.object({
   type: z.string().min(1, "Type is required"),
@@ -69,9 +81,9 @@ const CreateProductForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-row-4 gap-6 sm:px-0 px-4"
+        className="grid grid-cols-4 gap-1 w-full"
       >
-        <div className="flex flex-row">
+        <div className="">
           <CustomFormField
             name="type"
             label="Type"
@@ -81,9 +93,13 @@ const CreateProductForm = ({
               label: type,
             }))}
           />
+        </div>
+        <div className="flex flex-row">
           <CustomFormField name="width" label="Width" type="number" />
           <CustomFormField name="height" label="Height" type="number" />
           <CustomFormField name="length" label="Length" type="number" />
+        </div>
+        <div className="">
           <CustomFormField
             name="color"
             label="Color"
@@ -93,11 +109,13 @@ const CreateProductForm = ({
               label: type,
             }))}
           />
+        </div>
+        <div className="">
           <CustomFormField name="price" label="Unit Price" type="number" />
         </div>
 
         {/* SUBMIT BUTTON - adds a produt json to the order summary list*/}
-        <div className="sm:col-span-2 flex sm:justify-end">
+        <div className="col-span-4 flex justify-end mr-2 mt-2">
           <Button
             type="submit"
             disabled={isLoading}
@@ -139,9 +157,14 @@ const formSchema = z.object({
 
 const Item = ({ type, height, width, length, color, price }) => {
   return (
-    <div>
-      {type} | {width} x {height} x {length} | {color} | {price}
-    </div>
+    <TableRow>
+      <TableCell> {type}</TableCell>
+      <TableCell>
+        {width} x {height} x {length}{" "}
+      </TableCell>
+      <TableCell> {color}</TableCell>
+      <TableCell> {price}</TableCell>
+    </TableRow>
   );
 };
 
@@ -154,7 +177,6 @@ const CreateForm = ({
   const [orderSummary, setOrderSummary] = useState<Product[]>([]);
   const [isCreateSecondOpen, setIsCreateSecondOpen] = useState(false);
   const { data: authUser } = useGetAuthUserQuery();
-  console.log("🚀 ~ CreateForm ~ authUser:", authUser);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -172,9 +194,7 @@ const CreateForm = ({
   });
 
   useEffect(() => {
-    const subscription = form.watch((value) => {
-      console.log("Current form values:", value);
-    });
+    const subscription = form.watch((value) => {});
     return () => subscription.unsubscribe();
   }, [form]);
   useEffect(() => {
@@ -204,7 +224,7 @@ const CreateForm = ({
 
     if (authUser?.userRole === "sales") {
       const userInfo = authUser.userInfo;
-      if ("storeId" in userInfo) { 
+      if ("storeId" in userInfo) {
         payload["storeId"] = Number(userInfo.storeId);
         payload["salesId"] = Number(userInfo.id);
       }
@@ -226,8 +246,21 @@ const CreateForm = ({
       >
         <div className="flex flex-col gap-6">
           {/* Invoice */}
-          <div className="flex flex-row">
-            <div></div>
+          <div className="grid grid-cols-3 items-start gap-6 w-full">
+            <div className="flex justify-center">
+              <Image src={''} alt="TDC Logo" width={200} />
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="font-bold text-lg">TDC DOORS</div>
+              <div className="text-gray-600 text-sm">946 3rd AVENUE</div>{" "}
+              <div className="text-gray-600 text-sm">BROOKLYN,NY 11232</div>{" "}
+              <div className="text-gray-600 text-sm">(TEL): (718)-788-2888</div>
+              <div className="text-gray-600 text-sm">(FAX): (718)-788-2888</div>
+              <div className="text-gray-600 text-sm">
+                HTTP://WWW.TDCDOORS.COM
+              </div>
+            </div>
+
             <div className="flex flex-col ml-auto">
               <CustomFormField
                 name="invoiceNo"
@@ -288,33 +321,39 @@ const CreateForm = ({
               setOrderSummary={setOrderSummary}
             />
           </ResponsiveDialog>
-          <div className="flex flex-row justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800 ">
-              Type | H x W x J | Color | QTY | Price
-            </h2>
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-8 w-8 p-0 flex items-center rounded-md bg-white shadow-md hover:bg-gray-100"
-              onClick={() => {
-                setIsCreateSecondOpen(true);
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>{" "}
-          <hr />
-          {/* Contents */}
-          <div className="min-h-40">
-            {orderSummary.length > 0 ? (
-              orderSummary.map((order, index) => (
-                <Item key={index} {...order} />
-              ))
-            ) : (
-              <div>No items in this order</div>
-            )}
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead> Type </TableHead>
+                <TableHead> H x W x J </TableHead>
+                <TableHead> Color</TableHead>
+                <TableHead> Price</TableHead>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-8 w-8 p-0 flex items-center rounded-md bg-white shadow-md hover:bg-gray-100"
+                  onClick={() => {
+                    setIsCreateSecondOpen(true);
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {/* Contents */}
+              {orderSummary.length > 0 ? (
+                orderSummary.map((order, index) => (
+                  <Item key={index} {...order} />
+                ))
+              ) : (
+                <div>No items in this order</div>
+              )}
+            </TableBody>
+          </Table>
         </div>
+        {/* I dont add these because the sales rep usually adds this when updating the order */}
+        {/*         
         <div className="grid grid-cols-2 gap-5">
           <div className=" bg-white shadow-md rounded-2xl pb-1  ">
             <h2 className="text-lg font-semibold text-gray-800 ">
@@ -352,7 +391,7 @@ const CreateForm = ({
             type="file"
             accept="image/*"
           />
-        </div>
+        </div> */}
         <div className="flex w-full sm:justify-end">
           <Button
             type="submit"

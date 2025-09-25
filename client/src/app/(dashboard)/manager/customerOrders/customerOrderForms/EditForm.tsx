@@ -143,9 +143,9 @@ const EditForm = ({ order, setIsOpen }) => {
         {/* product details */}{" "}
         <div className=" bg-white shadow-md rounded-2xl pb-1  ">
           <h2 className="text-lg font-semibold text-gray-800 ">
-            Product Photos
+            Product Design
           </h2>
-          <hr />{" "}
+          <hr /> 
           <CustomFormField
             name="photos"
             label=""
@@ -184,6 +184,8 @@ const EditForm = ({ order, setIsOpen }) => {
             <CustomFormField name="length" label="Length" type="number" />
           </div>
         </div>
+
+
         <div className="flex flex-row justify-between">
           <div className="w-full ">
             <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl pb-1 flex flex-col">
@@ -235,6 +237,9 @@ const EditForm = ({ order, setIsOpen }) => {
             </div>
           </div>
         </div>
+
+
+        {/* Submit Secit */}
         <div className="flex flex-row space-x-10">
           <div className="flex flex-row space-x-10 items-center ">
             <div>Status:</div>

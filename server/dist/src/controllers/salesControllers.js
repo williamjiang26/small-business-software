@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSalesById = exports.getInventory = exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.updateCustomerOrder = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = exports.s3 = void 0;
+exports.getSalesById = exports.getInventory = exports.getInvoiceDetailsByInvoiceNo = exports.getProductByProductOrderId = exports.getProductOrdersByInvoiceNo = exports.getCustomerById = exports.updateCustomerOrder = exports.getPresignedURL = exports.createCustomerOrder = exports.getCustomerOrders = exports.createSales = exports.getSales = exports.s3 = void 0;
 const client_1 = require("@prisma/client");
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
@@ -179,46 +179,54 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.createCustomerOrder = createCustomerOrder;
+// GET Signed url
+const getPresignedURL = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { filename, filetype } = req.body;
+        const key = `${Date.now()}-${filename}`;
+        // Generate PUT URL for uploading
+        const uploadUrl = yield exports.s3.getSignedUrlPromise("putObject", {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: key,
+            ContentType: filetype, // optional; helps S3 store correct type
+            Expires: 300, // 5 minutes
+            ACL: "public-read",
+        });
+        // Generate GET URL for viewing
+        const viewUrl = yield exports.s3.getSignedUrlPromise("getObject", {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: key,
+            Expires: 300, // 5 minutes
+        });
+        res.json({ uploadUrl, viewUrl, key });
+    }
+    catch (error) {
+        console.error("Error generating signed URL:", error);
+        res.status(500).json({ error: "Failed to generate signed URL" });
+    }
+});
+exports.getPresignedURL = getPresignedURL;
 // UPDATE
 const updateCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
     try {
         const invoiceNo = parseInt(req.params.invoiceNo, 10);
-        const files = req.files;
-        const uploadFile = (file) => __awaiter(void 0, void 0, void 0, function* () {
-            if (!file)
-                return null;
-            const result = yield exports.s3
-                .upload({
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: `${Date.now()}_${file.originalname}`,
-                Body: file.buffer,
-                ContentType: file.mimetype,
-                ACL: "public-read",
-            })
-                .promise();
-            return result.Location;
-        });
-        const measurementPdfUrl = yield uploadFile((_a = files === null || files === void 0 ? void 0 : files.measurementPdf) === null || _a === void 0 ? void 0 : _a[0]);
-        const customerCopyPdfUrl = yield uploadFile((_b = files === null || files === void 0 ? void 0 : files.customerCopyPdf) === null || _b === void 0 ? void 0 : _b[0]);
-        const additionalFilesUrls = [];
-        for (const file of (files === null || files === void 0 ? void 0 : files.additionalFiles) || []) {
-            const url = yield uploadFile(file);
-            if (url)
-                additionalFilesUrls.push(url);
-        }
-        console.log("🚀 ~ updateCustomerOrder ~ req.body:", files);
         if (!invoiceNo) {
             res.status(400).json({ error: "Missing invoiceNo in params" });
             return;
         }
+        // Extract uploaded S3 URLs from request body
+        const { measurementPdf, customerCopyPdf, additionalFiles } = req.body;
+        // Build update object dynamically
+        const updateData = {};
+        if (measurementPdf !== undefined)
+            updateData.measurementPdf = measurementPdf;
+        if (customerCopyPdf !== undefined)
+            updateData.customerCopyPdf = customerCopyPdf;
+        if (additionalFiles !== undefined)
+            updateData.additionalFiles = additionalFiles;
         const updatedCustomerOrder = yield prisma.customerOrderDetails.update({
             where: { invoiceNo },
-            data: {
-                measurementPdf: measurementPdfUrl || null,
-                customerCopyPdf: customerCopyPdfUrl || null,
-                additionalFiles: additionalFilesUrls,
-            },
+            data: updateData,
         });
         res.json({
             message: "Customer order updated successfully",

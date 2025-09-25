@@ -101,7 +101,7 @@ export const api = createApi({
       const { idToken } = session.tokens ?? {};
       if (idToken) {
         headers.set("Authorization", `Bearer ${idToken}`);
-       }
+      }
       return headers;
     },
   }),
@@ -125,7 +125,7 @@ export const api = createApi({
           const userRole = idToken?.payload["custom:role"] as string;
           const userStoreId = idToken?.payload["custom:storeId"] as number;
 
-           const endpoint =
+          const endpoint =
             userRole === "manager"
               ? `/manager/${user.userId}`
               : `/sales/${user.userId}`;
@@ -207,7 +207,7 @@ export const api = createApi({
       query: (formData) => ({
         url: "/sales/customerOrders",
         method: "POST",
-        body: formData, // pass FormData directly
+        body: formData,
       }),
       invalidatesTags: ["CustomerOrders"],
     }),
@@ -251,6 +251,16 @@ export const api = createApi({
       query: (invoiceNo) => `/sales/customerOrders/invoice/${invoiceNo}`,
       providesTags: ["CustomerOrders"],
     }),
+    getPresignedUrl: build.mutation<
+      { uploadUrl: string },
+      { filename: string; filetype: string }
+    >({
+      query: (body) => ({
+        url: "/sales/s3/signed-url",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -269,4 +279,5 @@ export const {
   useGetProductByProductOrderIdQuery,
   useUpdateCustomerOrdersManagerMutation,
   useGetInvoiceDetailsByInvoiceNoQuery,
+  useGetPresignedUrlMutation,
 } = api;

@@ -18,7 +18,8 @@ const client_2 = require("@prisma/client");
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const prisma = new client_1.PrismaClient();
 exports.s3 = new aws_sdk_1.default.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID, // from your AWS IAM
+    // dont need this when deployed on lambda
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: process.env.AWS_REGION,
 });

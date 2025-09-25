@@ -9,6 +9,7 @@ export const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
 });
+
 // GET
 export const getSales = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -54,7 +55,7 @@ export const getCustomerOrders = async (
 ): Promise<void> => {
   try {
     const storeId = parseInt(req.params.storeId, 10) || "";
-     
+
     const customerOrders = await prisma.customerOrderDetails.findMany({
       where: { storeId: Number(storeId) },
     });
@@ -88,7 +89,7 @@ export const createCustomerOrder = async (
       email,
       orderSummary,
     } = req.body;
- 
+
     if (
       !invoiceNo ||
       !customerId ||
@@ -189,6 +190,36 @@ export const createCustomerOrder = async (
   }
 };
 
+// GET Signed url
+export const getPresignedURL = async (req: Request, res: Response) => {
+  try {
+    const { filename, filetype } = req.body; 
+    const key = `${Date.now()}-${filename}`;
+
+    // Generate PUT URL for uploading
+    const uploadUrl = await s3.getSignedUrlPromise("putObject", {
+      Bucket: process.env.S3_BUCKET_NAME!,
+      Key: key,
+      ContentType: filetype, // optional; helps S3 store correct type
+      Expires: 300, // 5 minutes
+      ACL: "public-read",
+
+    });
+
+    // Generate GET URL for viewing
+    const viewUrl = await s3.getSignedUrlPromise("getObject", {
+      Bucket: process.env.S3_BUCKET_NAME!,
+      Key: key,
+      Expires: 300, // 5 minutes
+    });
+
+    res.json({ uploadUrl, key });
+  } catch (error) {
+    console.error("Error generating signed URL:", error);
+    res.status(500).json({ error: "Failed to generate signed URL" });
+  }
+};
+
 // UPDATE
 export const updateCustomerOrder = async (
   req: Request,
@@ -196,44 +227,26 @@ export const updateCustomerOrder = async (
 ): Promise<void> => {
   try {
     const invoiceNo = parseInt(req.params.invoiceNo, 10);
- 
-    const files = req.files as Record<string, Express.Multer.File[]>;
-    const uploadFile = async (file?: Express.Multer.File) => {
-      if (!file) return null;
-      const result = await s3
-        .upload({
-          Bucket: process.env.S3_BUCKET_NAME!,
-          Key: `${Date.now()}_${file.originalname}`,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-          ACL: "public-read",
-        })
-        .promise();
-      return result.Location;
-    };
-
-    const measurementPdfUrl = await uploadFile(files?.measurementPdf?.[0]);
-    const customerCopyPdfUrl = await uploadFile(files?.customerCopyPdf?.[0]);
-    const additionalFilesUrls: string[] = [];
-
-    for (const file of files?.additionalFiles || []) {
-      const url = await uploadFile(file);
-      if (url) additionalFilesUrls.push(url);
-    }
-    console.log("🚀 ~ updateCustomerOrder ~ req.body:", files);
-
     if (!invoiceNo) {
       res.status(400).json({ error: "Missing invoiceNo in params" });
       return;
     }
 
+    // Extract uploaded S3 URLs from request body
+    const { measurementPdf, customerCopyPdf, additionalFiles } = req.body;
+
+    // Build update object dynamically
+    const updateData: any = {};
+    if (measurementPdf !== undefined)
+      updateData.measurementPdf = measurementPdf;
+    if (customerCopyPdf !== undefined)
+      updateData.customerCopyPdf = customerCopyPdf;
+    if (additionalFiles !== undefined)
+      updateData.additionalFiles = additionalFiles;
+
     const updatedCustomerOrder = await prisma.customerOrderDetails.update({
       where: { invoiceNo },
-      data: {
-        measurementPdf: measurementPdfUrl || null,
-        customerCopyPdf: customerCopyPdfUrl || null,
-        additionalFiles: additionalFilesUrls,
-      },
+      data: updateData,
     });
 
     res.json({
@@ -245,6 +258,7 @@ export const updateCustomerOrder = async (
     res.status(500).json({ message: "Error updating Customer Orders", error });
   }
 };
+
 // get customer by id
 export const getCustomerById = async (
   req: Request,
@@ -325,14 +339,13 @@ export const getInvoiceDetailsByInvoiceNo = async (
     const invoice = await prisma.customerOrderDetails.findUnique({
       where: { invoiceNo },
     });
-     const customer = await prisma.customer.findUnique({
+    const customer = await prisma.customer.findUnique({
       where: { id: invoice?.customerId },
     });
 
     const productOrders = await prisma.productOrder.findMany({
       where: { customerInvoice: invoiceNo },
     });
- 
 
     let productDetails = [];
 
@@ -342,7 +355,7 @@ export const getInvoiceDetailsByInvoiceNo = async (
       });
       productDetails.push(product);
     }
- 
+
     res.json({
       invoiceNo: invoice?.invoiceNo,
       createdAt: invoice?.createdAt,

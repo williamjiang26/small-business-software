@@ -42,7 +42,7 @@ const ResponsiveDialog = ({
     return (
       // dialog
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[888px] bg-white">
+        <DialogContent className="sm:max-w-[888px] bg-white max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl">{title}</DialogTitle>
             {description && (

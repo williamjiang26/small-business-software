@@ -42,7 +42,9 @@ const Header = () => {
           {authUser ? (
             <>
               <DropdownMenu>
-                <DropdownMenuTrigger className=" flex flex-row items-center space-x-1 "> <p className="text-primary-200 hidden md:block">
+                <DropdownMenuTrigger className=" flex flex-row items-center space-x-1 ">
+                  {" "}
+                  <p className="text-primary-200 hidden md:block">
                     {authUser.cognitoInfo?.username}
                   </p>
                   <Avatar className="border-2 bg-gray">
@@ -51,7 +53,6 @@ const Header = () => {
                       {authUser.userRole?.[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                 
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white text-primary-700">
                   <DropdownMenuItem
@@ -92,9 +93,7 @@ const Header = () => {
             </>
           )}
           <Link
-            href={`/settings`}
-            // rel="noopener noreferrer"/
-            target="_blank"
+            href={`/${authUser?.userRole}/settings`}
             className="dark:text-foreground"
           >
             <Button variant="ghost" className="hidden sm:flex ">

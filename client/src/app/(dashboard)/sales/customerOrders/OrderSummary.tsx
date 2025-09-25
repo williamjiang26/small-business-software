@@ -3,8 +3,7 @@ import { Card } from "@/components/ui/card";
 import React, { useState } from "react";
 
 const Items = ({ productId, onPrice, order, details }) => {
-  console.log("🚀 ~ Items ~ details:", details);
-  console.log("🚀 ~ Items ~ order:", order);
+ 
   //   const {
   //     data: productPhotoUrls,
   //     // isError2,

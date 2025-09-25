@@ -29,4 +29,5 @@ router.get("/product/:productId", salesControllers_1.getProductByProductOrderId)
 router.get("/:cognitoId", salesControllers_1.getSales);
 router.get("/id/:id", salesControllers_1.getSalesById);
 router.post("/", salesControllers_1.createSales);
+router.post("/s3/signed-url", salesControllers_1.getPresignedURL);
 exports.default = router;

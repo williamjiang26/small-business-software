@@ -124,11 +124,11 @@ const Item = ({
         </div>
 
         <div>
-          <div className=""> {new Date(dateOrdered).toLocaleDateString()}</div>
           <div className="">Sales Rep : {sales ? sales.name : ""}</div>
         </div>
 
-        <div className="flex flex-row  text-sm min-w-[120px] space-x-2">
+        <div className="flex flex-col items-end text-sm min-w-[120px] space-x-2">
+          <div className=""> {new Date(dateOrdered).toLocaleDateString()}</div>
           <div className="text-green-600">{status}</div>
         </div>
 
@@ -186,7 +186,7 @@ const Page = () => {
           <ResponsiveDialog
             isOpen={isCreateOpen}
             setIsOpen={setIsCreateOpen}
-            title="Invoice"
+            title="New Invoice"
             description=" "
           >
             <CreateForm setIsOpen={setIsCreateOpen} />

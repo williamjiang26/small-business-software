@@ -5,8 +5,10 @@ import AWS from "aws-sdk";
 
 const prisma = new PrismaClient();
 
+
 export const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID, // from your AWS IAM
+  // dont need this when deployed on lambda
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,  
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
 });
