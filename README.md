@@ -35,6 +35,8 @@ Crud customer orders for sales reps -> Crud customer orders for manager ->
 - authentication and user dashboards(manager and sales) - complete
 - auto generates id where needed
 - improving the user centered interface
-- deploying backend on a cloud server 
+- deploying backend on a cloud server - complete
+- get drop and re-render working on cloud deployment
+- 
 
 I learned that cors options hits api gateway before cognito that is why without cors, you can get into cognito but with cors incorrectly set, you cannot even sign in
