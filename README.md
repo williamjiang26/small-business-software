@@ -1,8 +1,7 @@
 ## 🎥 Demo
 
-https://github.com/user-attachments/assets/d8f0bcc5-f864-4c2c-9307-6348a47bdc66
 
-
+https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
 
 ## The Problem
 
