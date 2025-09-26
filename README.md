@@ -1,7 +1,7 @@
 ## 🎥 Demo
 
 <div align="center">
-<img src="./assets/animation.gif" alt="My animation" width="800" />
+<video src="./assets/demo.mp4" width="70%" poster="./assets/linkedincover.jpg" />
 
 </div>
 
