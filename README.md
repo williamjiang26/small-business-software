@@ -1,9 +1,5 @@
 ## 🎥 Demo
 
-<div align="center">
-  <video src=" https://github.com/user-attachments/williamjiang26/small-business-software/tree/main/client/assets/Untitled.mp4" width="70%" poster="./assets/video_poster.png"> </video>
-</div>
-
 
 
 https://github.com/user-attachments/assets/f5f2dce3-366f-42c5-bfa8-3f47e1f53f92
