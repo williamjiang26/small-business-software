@@ -1,9 +1,6 @@
 ## 🎥 Demo
 
-<div align="center">
-<video src="./client/assets/Untitled.mp4" width="70%" poster="./client/assets/linkedincover.jpg" />
-
-</div>
+[![Watch the video](https://raw.githubusercontent.com/williamjiang26/small-business-software/tree/main/client/assets/linkedincover.jpg)](https://raw.githubusercontent.com/williamjiang26/small-business-software/main/client/assets/Untitled.mp4)
 
 ## The Problem
 
