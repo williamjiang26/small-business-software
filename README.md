@@ -1,7 +1,7 @@
 ## 🎥 Demo
 
 <div align="center">
-<video src="./assets/Untitled.mp4" width="70%" poster="./assets/linkedincover.jpg" />
+<video src="./client/assets/Untitled.mp4" width="70%" poster="./client/assets/linkedincover.jpg" />
 
 </div>
 
