@@ -1,23 +1,29 @@
-## Demo
+## 🎥 Demo
 
+<div align="center">
+<img src="./assets/animation.gif" alt="My animation" width="800" />
+
+</div>
 
 ## The Problem
-Managing a business is difficult. There are many parts to running a successful business from operations to finances and sales and what success looks like in each part is different. There is a lot of context switching and figuring out what the problems and bottlenecks are in a business. Some businesses operate like a tangled mess and owners dont know where to start. There are lots of repetitive processes for each customer's order, which is tedious to do and leads to careless mistakes. Additionally it is difficult to remember all the details about each order as well as changes made throughtout without software allowing you to easily filter and store lots of details. 
 
+Managing a business is difficult. There are many parts to running a successful business from operations to finances and sales and what success looks like in each part is different. There is a lot of context switching and figuring out what the problems and bottlenecks are in a business. Some businesses operate like a tangled mess and owners dont know where to start. There are lots of repetitive processes for each customer's order, which is tedious to do and leads to careless mistakes. Additionally it is difficult to remember all the details about each order as well as changes made throughtout without software allowing you to easily filter and store lots of details.
 
 ## Jobs to be done
+
 organize products in inventory, product location, types and sizes, stock levels, re-stocking info
 update customer order details, track status of customer orders, store customer info
 store customer cases, make updates to their order
 scale the business
 
-
 ## Broad Product Solution
+
 a tool to manage the fulfillment of orders in a small business
 
-
 ## Functional Requirements
+
 v1:
+
 - create customer order
 - track customer orders
 - create product order
@@ -28,15 +34,17 @@ v1:
 - sales training
 
 ## Product Roadmap
-Crud customer orders for sales reps -> Crud customer orders for manager ->   
 
-## Currently: 
+Crud customer orders for sales reps -> Crud customer orders for manager ->
+
+## Currently:
+
 - editing photos in forms and creating drop and browse compoents with pdf viewer - complete
 - authentication and user dashboards(manager and sales) - complete
 - auto generates id where needed
 - improving the user centered interface
 - deploying backend on a cloud server - complete
 - get drop and re-render working on cloud deployment
-- 
+-
 
 I learned that cors options hits api gateway before cognito that is why without cors, you can get into cognito but with cors incorrectly set, you cannot even sign in
