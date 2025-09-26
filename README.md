@@ -3,7 +3,7 @@
 
 https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
 
-Watch the full demo[![here]( )]([ https://nyu.zoom.us/rec/share/x4AL8Ti5yZPSwIVT3hFFfza__7uJZKEP0MigbEupprJnygtLVkBdAABvYE-Qh84-.DWtOGlCA6LJTwSqD?startTime=1758897189000])
+Watch the full demo[![here]( https://youtu.be/cuWIr642fZo)] 
 ## The Problem
 
 Managing a business is difficult. There are many parts to running a successful business from operations to finances and sales and what success looks like in each part is different. There is a lot of context switching and figuring out what the problems and bottlenecks are in a business. Some businesses operate like a tangled mess and owners dont know where to start. There are lots of repetitive processes for each customer's order, which is tedious to do and leads to careless mistakes. Additionally it is difficult to remember all the details about each order as well as changes made throughtout without software allowing you to easily filter and store lots of details.
