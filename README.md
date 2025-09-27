@@ -3,47 +3,43 @@
 
 https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
 
-Watch the full demo[![here]()](https://youtu.be/cuWIr642fZo)
-## The Problem
+Watch the full demo[![here]("./client/assets/linkedincover.jpeg")]( link)
 
-Managing a business is difficult. There are many parts to running a successful business from operations to finances and sales and what success looks like in each part is different. There is a lot of context switching and figuring out what the problems and bottlenecks are in a business. Some businesses operate like a tangled mess and owners dont know where to start. There are lots of repetitive processes for each customer's order, which is tedious to do and leads to careless mistakes. Additionally it is difficult to remember all the details about each order as well as changes made throughtout without software allowing you to easily filter and store lots of details.
+## The Problem
+Managing a business is difficult. You have to develop your product and service which is the niche of your business and what the customer directly interacts with. Behind the scenes, you have to develop business operations, the sales and marketing. You have to manage finances, payroll and compliance. There are many parts to running a successful business and what success looks like in each part is different. Some businesses operate like a tangled mess and owners dont know where to start. There is a lot of context switching and figuring out what the problems and bottlenecks are in a business. I am building an all in one business software for home improvement businesses.
+
+
+## The Sub Problem
+I started by tackling operations. I think that if your operations are successful, this gives way to all the other stuff. If you have a thoughtful strategy on operations, well-defined processes, you can figure out where you went wrong and adjust. I built an order management dashboard to manage customer orders from creating the order to fulfillment. 
+
+There are lots of repetitive processes for each customer's order, which is tedious to do and leads to careless mistakes when you are dealing with multiple orders. Additionally it is difficult to remember all the details about each order as well as changes made by the customer throughout the fulfillment process without software allowing you to filter orders fast and store all the details. 
 
 ## Jobs to be done
+- update customer order details, track status of customer orders, store customer info
+- organize products in inventory, product location, types and sizes, stock levels, re-stocking info
+- store customer cases, make updates to their order
 
-organize products in inventory, product location, types and sizes, stock levels, re-stocking info
-update customer order details, track status of customer orders, store customer info
-store customer cases, make updates to their order
-scale the business
 
 ## Broad Product Solution
-
-a tool to manage the fulfillment of orders in a small business
+a tool to manage order fulfillment in a small business
 
 ## Functional Requirements
-
-v1:
 
 - create customer order
 - track customer orders
 - create product order
 - track product orders
 - schedule deliveries
-- track revenue and sales
 - track customer cases
-- sales training
+- track revenue and sales
+
 
 ## Product Roadmap
-
-Crud customer orders for sales reps -> Crud customer orders for manager ->
+Crud customer orders for sales reps -> Crud customer orders for manager -> CRUD inventory products -> schedule deliveries -> track customer cases -> track revenue and sales 
 
 ## Currently:
-
-- editing photos in forms and creating drop and browse compoents with pdf viewer - complete
-- authentication and user dashboards(manager and sales) - complete
 - auto generates id where needed
-- improving the user centered interface
-- deploying backend on a cloud server - complete
-- get drop and re-render working on cloud deployment
--
+- improve the user interface, design, user-friendly
+
 
 I learned that cors options hits api gateway before cognito that is why without cors, you can get into cognito but with cors incorrectly set, you cannot even sign in
