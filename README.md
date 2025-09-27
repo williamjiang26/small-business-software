@@ -3,7 +3,7 @@
 
 https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
 
-Click [![here]("./client/assets/linkedincover.jpeg")]( link) for the full workflow 
+Click [![here]("./client/assets/linkedincover.jpeg")]( link) for the full workflow/demo
 
 ## The Problem
 Managing a business is difficult. You have to develop your product and service which is the niche of your business and what the customer directly interacts with. Behind the scenes, you have to develop business operations, the sales and marketing. You have to manage finances, payroll and compliance. There are many parts to running a successful business and what success looks like in each part is different. Some businesses operate like a tangled mess and owners dont know where to start. There is a lot of context switching and figuring out what the problems and bottlenecks are in a business. I am building an all in one software for home improvement businesses.
