@@ -140,7 +140,6 @@ const formSchema = z.object({
   invoiceNo: z.coerce.number(), // converts input to number
   dateOrdered: z.string().min(1, "Date is required"),
   status: z.string().min(1, "Status is required"),
-  customerId: z.coerce.number(),
   address: z.string().min(1, "Address is required"),
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone number is required"),
@@ -183,7 +182,6 @@ const CreateForm = ({
       invoiceNo: 0,
       dateOrdered: "",
       status: "CREATEORDER",
-      customerId: 0,
       address: "",
       name: "",
       phone: "",
@@ -292,9 +290,6 @@ const CreateForm = ({
 
           {/* Customer */}
           <div className="grid grid-cols-2">
-            <div className="col-span-2  ">
-              <CustomFormField name="customerId" label="ID" />
-            </div>
             <div className="col-span-2 ">
               <CustomFormField name="address" label="Address" />{" "}
             </div>

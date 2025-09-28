@@ -80,7 +80,6 @@ export const createCustomerOrder = async (
       invoiceNo,
       dateOrdered,
       status,
-      customerId,
       storeId,
       salesId,
       address,
@@ -92,7 +91,6 @@ export const createCustomerOrder = async (
 
     if (
       !invoiceNo ||
-      !customerId ||
       !storeId ||
       !salesId ||
       !dateOrdered ||
@@ -112,15 +110,15 @@ export const createCustomerOrder = async (
       return;
     }
 
-    // create customer if not exists
-    const existingCustomer = await prisma.customer.findUnique({
-      where: { id: Number(customerId) },
+    // create customer if not exists, search by phone number
+    // const existingCustomer = await prisma.customer.findUnique({
+    //   where: { phone: phone },
+    // });
+    // if (!existingCustomer) {
+    const newCustomer = await prisma.customer.create({
+      data: { name, address, phone, email },
     });
-    if (!existingCustomer) {
-      await prisma.customer.create({
-        data: { id: Number(customerId), name, address, phone, email },
-      });
-    }
+    // }
 
     // handle files ...
     const files = req.files as Record<string, Express.Multer.File[]>;
@@ -150,12 +148,11 @@ export const createCustomerOrder = async (
     // create customer order
     const newCustomerOrder = await prisma.customerOrderDetails.create({
       data: {
+        customerId: Number(newCustomer.id),
         invoiceNo: Number(invoiceNo),
-        customerId: Number(customerId),
         dateOrdered: parsedDate,
         status,
         salesId: Number(salesId),
-
         storeId: Number(storeId),
         measurementPdf: measurementPdfUrl || null,
         customerCopyPdf: customerCopyPdfUrl || null,
@@ -193,7 +190,7 @@ export const createCustomerOrder = async (
 // GET Signed url
 export const getPresignedURL = async (req: Request, res: Response) => {
   try {
-    const { filename, filetype } = req.body; 
+    const { filename, filetype } = req.body;
     const key = `${Date.now()}-${filename}`;
 
     // Generate PUT URL for uploading
@@ -203,7 +200,6 @@ export const getPresignedURL = async (req: Request, res: Response) => {
       // ContentType: filetype, // optional; helps S3 store correct type
       Expires: 300, // 5 minutes
       ACL: "public-read",
-
     });
 
     res.json({ uploadUrl, key });

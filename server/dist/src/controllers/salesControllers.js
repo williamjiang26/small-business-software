@@ -85,9 +85,8 @@ exports.getCustomerOrders = getCustomerOrders;
 const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        const { invoiceNo, dateOrdered, status, customerId, storeId, salesId, address, name, phone, email, orderSummary, } = req.body;
+        const { invoiceNo, dateOrdered, status, storeId, salesId, address, name, phone, email, orderSummary, } = req.body;
         if (!invoiceNo ||
-            !customerId ||
             !storeId ||
             !salesId ||
             !dateOrdered ||
@@ -104,15 +103,15 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
             res.status(400).json({ message: "Invalid dateOrdered format" });
             return;
         }
-        // create customer if not exists
-        const existingCustomer = yield prisma.customer.findUnique({
-            where: { id: Number(customerId) },
+        // create customer if not exists, search by phone number
+        // const existingCustomer = await prisma.customer.findUnique({
+        //   where: { phone: phone },
+        // });
+        // if (!existingCustomer) {
+        const newCustomer = yield prisma.customer.create({
+            data: { name, address, phone, email },
         });
-        if (!existingCustomer) {
-            yield prisma.customer.create({
-                data: { id: Number(customerId), name, address, phone, email },
-            });
-        }
+        // }
         // handle files ...
         const files = req.files;
         const uploadFile = (file) => __awaiter(void 0, void 0, void 0, function* () {
@@ -140,8 +139,8 @@ const createCustomerOrder = (req, res) => __awaiter(void 0, void 0, void 0, func
         // create customer order
         const newCustomerOrder = yield prisma.customerOrderDetails.create({
             data: {
+                customerId: Number(newCustomer.id),
                 invoiceNo: Number(invoiceNo),
-                customerId: Number(customerId),
                 dateOrdered: parsedDate,
                 status,
                 salesId: Number(salesId),

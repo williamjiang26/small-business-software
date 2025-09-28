@@ -42,18 +42,18 @@ const DiscoverSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
           {[
             {
-              imageSrc: "",
+              // imageSrc: "",
               title: "Proven Successful Systems",
               description:
                 "Successfully manage your business operations with our proven systems",
             },
             {
-              imageSrc: "",
+              // imageSrc: "",
               title: "Logical, Intuitive and Aesthetic Interface",
               description: "Utilize our logical workflows ",
             },
             {
-              imageSrc: "",
+              // imageSrc: "",
               title: "Robust and Scalable Storage",
               description: "Robust storage",
             },
@@ -69,23 +69,23 @@ const DiscoverSection = () => {
 };
 
 const DiscoverCard = ({
-  imageSrc,
+  // imageSrc,
   title,
   description,
 }: {
-  imageSrc: string;
+  // imageSrc: string ;
   title: string;
   description: string;
 }) => (
   <div className="px-4 py-12 shadow-lg rounded-lg bg-primary-50 md:h-72">
     <div className="bg-primary-700 p-[0.6rem] rounded-full mb-4 h-10 w-10 mx-auto">
-      <Image
+      {/* <Image
         src={imageSrc}
         width={30}
         height={30}
         className="w-full h-full"
         alt={title}
-      />
+      /> */}
     </div>
     <h3 className="mt-4 text-xl font-medium text-gray-800">{title}</h3>
     <p className="mt-2 text-base text-gray-500">{description}</p>
