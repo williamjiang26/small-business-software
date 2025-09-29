@@ -1,3 +1,8 @@
+## 🎥 Demo
+https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
+
+For the full demo click[![here]()]( https://youtu.be/RbUmQDcYyxI ) 
+
 ## The Problem
 Managing a business is difficult. You have to develop your product and service which is the niche of your business and what the customer directly interacts with. Behind the scenes, you have to develop business operations, the sales and marketing. You have to manage finances, payroll and compliance. There are many parts to running a successful business and what success looks like in each part is different. Some businesses operate like a tangled mess and owners dont know where to start. There is a lot of context switching and figuring out what the problems and bottlenecks are in a business. I am building an all in one software for home improvement businesses.
 
@@ -34,7 +39,3 @@ Crud customer orders for sales reps -> Crud customer orders for manager -> CRUD 
 - auto generates id where needed
 - improve the user interface, design -> user-friendly and aesthetic
 
-## 🎥 Demo
-https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
-
-For the full demo click[![here]()]( https://youtu.be/RbUmQDcYyxI ) 
