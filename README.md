@@ -1,7 +1,6 @@
 ## 🎥 Demo
 https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
 
-For the full demo click[![here]()]( https://youtu.be/RbUmQDcYyxI ) 
 
 ## Introduction
 Managing a small business is difficult. As a small business owner, you have to develop your product and service which is the niche of your business and what the customer directly interacts with. Behind the scenes, you have to develop business operations, the sales and marketing. You have to manage finances, payroll and compliance. There are many parts to running a successful business and what success looks like in each part is different. Some businesses operate like a tangled mess and owners dont know where to start. There is a lot of context switching in order to figure out where the problems and bottlenecks are.
