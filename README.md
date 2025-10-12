@@ -1,5 +1,5 @@
 ## 🎥 Demo
-https://github.com/user-attachments/assets/78b650a2-0303-48c5-9811-ae707867176b
+
 
 
 ## Introduction
